@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-
+const PORT = process.env.PORT || 3000;
 
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = 'mongodb+srv://wsko:59912121@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'
+const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'`;
 
 let DBConnection;
 
@@ -21,7 +21,7 @@ connectToDB().then(function(){
 
 
 
-http.listen(3000,() =>{
+http.listen(PORT,() =>{
   console.log('Сервер запущен');
 });
 

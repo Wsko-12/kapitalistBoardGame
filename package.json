@@ -1,7 +1,7 @@
 {
   "name": "kapitalistboardgame",
   "version": "1.0.0",
-  "description": "",
+  "description": "our web board game",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/Wsko-12/kapitalistBoardGame.git"
   },
-  "author": "",
+  "engines": {
+    "node": "12.x"
+  },
+  "author": "wsko",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Wsko-12/kapitalistBoardGame/issues"

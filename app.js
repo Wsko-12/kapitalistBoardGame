@@ -11,13 +11,13 @@ const AUTH = require('./modules/auth.js');
 
 
 DB.connectToDB().then(function(){
-  console.log('База данных подключена');
+  // console.log('База данных подключена');
 });
 
 
 
 http.listen(PORT,() =>{
-  console.log('Сервер запущен');
+  // console.log('Сервер запущен');
 });
 
 app.get('/',(req,res) =>{
@@ -38,7 +38,7 @@ app.use('/',express.static(__dirname + '/client'));
 const io = require('socket.io')(http);
 
 io.sockets.on('connection', function(socket){
-  console.log('Кто-то зашел на сервер');
+  // console.log('Кто-то зашел на сервер');
 
   socket.on('AUTH_Registration',function(userRegPack){
     AUTH.register(userRegPack,socket);
@@ -50,6 +50,6 @@ io.sockets.on('connection', function(socket){
 
 
   socket.on('disconnect',function(){
-    console.log('Покинул сервер');
+    // console.log('Покинул сервер');
   });
 });

@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>const socket = io()</script>
+
+  </head>
+  <body>
+    <input placeholder="login" id="inputLogin">
+    <input placeholder="password" id="inputPassword">
+    <button id="logInButton">Log In</button>
+  </body>
+  <script type="text/javascript">
+    const inputLogin = document.getElementById('inputLogin');
+    const inputPassword = document.getElementById('inputPassword');
+    const logInButton = document.getElementById('logInButton');
+
+
+    logInButton.onclick = function(){
+      let Данные = {
+        Логин: inputLogin.value,
+        Пароль: inputPassword.value,
+      };
+
+      socket.emit('Регистрируюсь', Данные);
+    };
+  </script>
+</html>

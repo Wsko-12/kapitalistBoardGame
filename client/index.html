@@ -6,27 +6,27 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-      let check = false;
-      socket.emit('DEVICE_Check');
-      socket.on('DEVICE_Check',function(){
-        check = true;
-      });
-      alert('LWER');
-      function block(){
-        if(!check){
-          alert('your device doesn\'t support this app');
-        };
-        delete check;
-        delete block;
-      };
-      setTimeout(block,1000);
-
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
+    <script>
+        let check = false;
+        socket.emit('DEVICE_Check');
+        socket.on('DEVICE_Check',function(){
+          check = true;
+        });
+        function block(){
+          if(!check){
+            alert('your device doesn\'t support this app');
+          };
+          delete check;
+          delete block;
+        };
+        setTimeout(block,1000);
+    </script>
     <section id="loadingSection"></section>
     <section class="sign__section" id="signSection">
       <div style="display:flex;flex-direction: column;margin:auto">
@@ -54,6 +54,7 @@
           </div>
         </div>
       </div>
+
       <script type="text/javascript">
         function showSignUpForm(bool) {
           if (bool) {

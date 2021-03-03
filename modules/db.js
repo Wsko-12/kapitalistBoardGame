@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'`;
+// const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'`;
 
 
 let DBConnection;
@@ -9,6 +9,7 @@ let DBConnection;
 
 module.exports.connectToDB = async function connectToDB(){
   DBConnection = await MongoClient.connect(uri,{useUnifiedTopology:true,useNewUrlParser:true});
+
 
 
   return;

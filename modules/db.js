@@ -1,8 +1,9 @@
 const MongoClient = require('mongodb').MongoClient;
-// const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'`;
+const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority'`;
 
 
 let DBConnection;
+
 
 
 

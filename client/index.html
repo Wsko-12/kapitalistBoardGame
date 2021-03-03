@@ -3,9 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>kapitalist</title>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="socket.js"></script>
     <script>
       const socket = io();
+      let check = false;
+      socket.emit('DEVICE_Check');
+      socket.on('DEVICE_Check',function(){
+        check === true;
+      });
+      setTimeout(1000,function(){
+        if(!check){
+          alert('you your device doesn\'t support this app');
+        };
+      });
+
+      delete check;
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">

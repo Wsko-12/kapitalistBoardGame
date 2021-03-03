@@ -40,6 +40,12 @@ const io = require('socket.io')(http);
 io.sockets.on('connection', function(socket){
   // console.log('Кто-то зашел на сервер');
 
+
+  socket.on('DEVICE_Check',function(){
+    socket.emit('DEVICE_Check');
+  });
+
+
   socket.on('AUTH_Registration',function(userRegPack){
     AUTH.register(userRegPack,socket);
   });

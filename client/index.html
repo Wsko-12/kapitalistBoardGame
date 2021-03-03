@@ -9,15 +9,17 @@
       let check = false;
       socket.emit('DEVICE_Check');
       socket.on('DEVICE_Check',function(){
-        check === true;
+        check = true;
       });
-      setTimeout(1000,function(){
+      function block(){
         if(!check){
-          alert('you your device doesn\'t support this app');
+          alert('your device doesn\'t support this app');
         };
-      });
+        delete check;
+        delete block;
+      };
+      setTimeout(block,1000);
 
-      delete check;
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">

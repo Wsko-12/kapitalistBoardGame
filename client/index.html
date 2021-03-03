@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>kapitalist</title>
-    <script src="socket.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
       let check = false;
@@ -11,7 +11,6 @@
       socket.on('DEVICE_Check',function(){
         check === true;
       });
-      alert('alert check');
       setTimeout(1000,function(){
         if(!check){
           alert('you your device doesn\'t support this app');

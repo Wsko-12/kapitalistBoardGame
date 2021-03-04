@@ -3,15 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>kapitalist</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-    </script>
+
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
+
 
     <section id="loadingSection"></section>
     <section class="sign__section" id="signSection">
@@ -59,6 +57,10 @@
       </script>
     </section>
   </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+  </script>
   <script>
       let check = false;
       socket.emit('DEVICE_Check');
@@ -85,5 +87,6 @@
   };
   </script>
   <script src="auth/auth.js" type="module"></script>
+
 
 </html>

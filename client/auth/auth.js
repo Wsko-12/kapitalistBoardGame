@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", function(blaa) {
+  const socket = io();
 const AUTH_ShowError = function(error){
   let div = document.getElementById('AUTH__error');
   div.innerHTML = error;
@@ -52,3 +54,4 @@ socket.on('AUTH__LoginRegistered',function(){AUTH_ShowError('Login already regis
 socket.on('AUTH__LoginPasswordError',function(){AUTH_ShowError('Incorrect login or password');LOADING_Screen(false);});
 
 socket.on('AUTH__True',function(){LOADING_Screen(false);});
+});

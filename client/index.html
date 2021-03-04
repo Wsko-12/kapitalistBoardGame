@@ -55,37 +55,39 @@
           div.innerHTML = '';
         };
       </script>
+      <script>
+      function LOADING_Screen(bool) {
+        const screen =  document.getElementById('loadingSection');
+        if(bool){
+          screen.style.display = 'block';
+        }else{
+          screen.style.display = 'none';
+        };
+      };
+      </script>
     </section>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
-  </script>
-  <script>
-      let check = false;
-      socket.emit('DEVICE_Check');
-      socket.on('DEVICE_Check',function(){
-        check = true;
-      });
-      function block(){
-        if(!check){
-          document.querySelector('body').innerHTML = `your device doesn't support this app`;
+    document.addEventListener("DOMContentLoaded", function(event) {
+        const socket = io();
+        let check = false;
+        socket.emit('DEVICE_Check');
+        socket.on('DEVICE_Check',function(){
+          check = true;
+        });
+        function block(){
+          if(!check){
+            document.querySelector('body').innerHTML = `your device doesn't support this app`;
+          };
+          delete check;
+          delete block;
         };
-        delete check;
-        delete block;
-      };
-      setTimeout(block,500);
+        setTimeout(block,500);
+      });
+
   </script>
-  <script>
-  function LOADING_Screen(bool) {
-    const screen =  document.getElementById('loadingSection');
-    if(bool){
-      screen.style.display = 'block';
-    }else{
-      screen.style.display = 'none';
-    };
-  };
-  </script>
+
   <script src="auth/auth.js" type="module"></script>
 
 

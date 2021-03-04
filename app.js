@@ -37,7 +37,7 @@ app.use('/',express.static(__dirname + '/client'));
 
 const io = require('socket.io')(http);
 
-io.sockets.on('connection', function(socket){
+io.on('connection', function(socket){
   // console.log('Кто-то зашел на сервер');
 
 

@@ -68,26 +68,6 @@
     </section>
   </body>
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-        const socket = io();
-        let check = false;
-        socket.emit('DEVICE_Check');
-        socket.on('DEVICE_Check',function(){
-          check = true;
-        });
-        function block(){
-          if(!check){
-            document.querySelector('body').innerHTML = `your device doesn't support this app`;
-          };
-          delete check;
-          delete block;
-        };
-        setTimeout(block,500);
-      });
-
-  </script>
-
   <script src="auth/auth.js" type="module"></script>
 
 

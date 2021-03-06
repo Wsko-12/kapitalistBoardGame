@@ -4,10 +4,8 @@ const http = require('http').createServer(app);
 const PORT = process.env.PORT || 3000;
 const DB = require('./modules/db.js');
 const AUTH = require('./modules/auth.js');
-
-
-
-
+global.SOCKET_LIST = {};
+global.PLAYERS_ONLINE = {};
 
 
 DB.connectToDB().then(function(){
@@ -38,11 +36,12 @@ app.use('/',express.static(__dirname + '/client'));
 const io = require('socket.io')(http);
 
 io.on('connection', function(socket){
+  global.SOCKET_LIST[socket.id] = socket;
   console.log('Кто-то зашел на сервер');
+  console.log('online:',global.PLAYERS_ONLINE);
 
-
-  socket.on('DEVICE_Check',function(){
-    socket.emit('DEVICE_Check');
+  socket.on('testSocket',function(){
+    console.log(socket.id);
   });
 
 
@@ -56,6 +55,12 @@ io.on('connection', function(socket){
 
 
   socket.on('disconnect',function(){
-    console.log('Покинул сервер');
-  });
+      //Проверяем залогинился ли уже
+      if(global.SOCKET_LIST[socket.id].login){
+        //Если да, то удаляем из онлайна
+        delete global.PLAYERS_ONLINE[global.SOCKET_LIST[socket.id].login];
+      };
+      delete SOCKET_LIST[socket.id];
+      console.log('Socket disconnected');
+    });
 });

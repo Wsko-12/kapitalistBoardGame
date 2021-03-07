@@ -372,16 +372,48 @@ ul {
 
 
 
-
-
+.notif_section{
+  position: fixed;
+  pointer-events: none;
+  right: 0px;
+  width: 200px;
+  height: 100vh;
+  z-index: 100;
+}
+.notif_container{
+  width: 90%;
+  margin: auto;
+  height: 90px;
+  background-image: url('https://i.postimg.cc/52YKMMQz/New-Project-5.png ');
+  background-size: contain;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  color: #ffc500;
+  font-family: 'Calistoga', cursive;
+  display: flex
+}
+.notif_contant{
+  margin: auto;
+  font-size: 15px;
+}
+/* ffc500 */
+/* https://i.postimg.cc/52YKMMQz/New-Project-5.png */
 @media only screen and (max-width: 980px) {
 
   body{
     overflow: hidden;
 
   }
+  .notif_section{
+    width: 40vw;
+  }
 
-
+  .notif_container{
+    height: 18vw;
+  }
+  .notif_contant{
+    font-size: 2.5vw;
+  }
   .acc_button{
     border: solid 0.5vw #72604d;
     font-size: 3vw;

@@ -2,9 +2,8 @@ import {
   socket
 } from "/scripts/socketInit.js";
 
+import {sendNotification} from "/scripts/notifications.js";
 let PLAYER;
-
-
 const ACC_page = `
 <section class="acc_section">
   <div class="acc_container">
@@ -206,14 +205,14 @@ document.addEventListener("DOMContentLoaded", function(blaa) {
     if(disconIndex > -1){
       PLAYER.friends.all.online.splice(friendDisconnected, 1);
     };
-    console.log(`friend disconnected: ${friendDisconnected}`);
+    sendNotification('friendOffline',friendDisconnected,true);
   });
   socket.on('ACC_UpdateOnlineList_Connected',function(friendConnected){
     const cconnectedIndex = PLAYER.friends.all.online.indexOf(friendConnected);
     if(cconnectedIndex === -1){
       PLAYER.friends.all.online.push(friendConnected, 1);
     };
-    console.log(`friend connected: ${friendConnected}`);
+    sendNotification('friendOnline',friendConnected,true);
   });
 });
 

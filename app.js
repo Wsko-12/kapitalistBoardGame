@@ -54,12 +54,80 @@ io.on('connection', function(socket){
 
 
 
+
+  socket.on('ACC_CheckOnlineFriends',function(friendsArr){
+    let friendsObj = {
+      all:friendsArr,
+      online:[],
+      offline:[],
+    };
+    friendsArr.forEach((friend, i) => {
+      if(!PLAYERS_ONLINE[friend]){
+        //если у нас такого в онлайне нет
+        friendsObj.offline.push(friend)
+      }else{
+        //если у друга такого нет в онлайне, то добавляем
+        //на всякий проверяем его
+        if(PLAYERS_ONLINE[friend]){
+          if(PLAYERS_ONLINE[friend].friends.all.online.indexOf(SOCKET_LIST[socket.id].login) === -1){
+            PLAYERS_ONLINE[friend].friends.all.online.push(SOCKET_LIST[socket.id].login);
+
+            //и высылаем уведомление ему
+            //на всякий проверяем
+            if(SOCKET_LIST[PLAYERS_ONLINE[friend].socket]){
+              SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Connected', SOCKET_LIST[socket.id].login);
+            };
+          };
+        };
+
+
+        friendsObj.online.push(friend);
+      };
+    });
+
+
+    PLAYERS_ONLINE[SOCKET_LIST[socket.id].login].friends.all = friendsObj;
+    socket.emit('ACC_CheckOnlineFriends_True',friendsObj);
+  });
+
+
+
+  socket.on('ACC_FriendsRequestsNumberUpdate',function(login){
+    DB.PLAYER_find(login).then(result =>{
+
+      socket.emit('ACC_FriendsRequestsNumberUpdate_True',result);
+    });
+  });
+
   socket.on('disconnect',function(){
       //Проверяем залогинился ли уже
-      if(global.SOCKET_LIST[socket.id].login){
-        //Если да, то удаляем из онлайна
-        delete global.PLAYERS_ONLINE[global.SOCKET_LIST[socket.id].login];
+      if(SOCKET_LIST[socket.id].login){
+        //Если да, то удаляем из онлайна у его друзей
+        const disconLogin = SOCKET_LIST[socket.id].login
+
+
+        //проходимся по всем его друзьям в онлайне
+        PLAYERS_ONLINE[disconLogin].friends.all.online.forEach((friend) => {
+
+          if(PLAYERS_ONLINE[friend]){//если и у нас такой в онлайне есть, то:
+            //удаляем у него
+            const disconIndex = PLAYERS_ONLINE[friend].friends.all.online.indexOf(disconLogin);
+            if( disconIndex > -1){
+
+              PLAYERS_ONLINE[friend].friends.all.online.splice(disconIndex, 1);
+              //и высылаем ему апдейт
+              //на всякий проверяем
+              if(SOCKET_LIST[PLAYERS_ONLINE[friend].socket]){
+                SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Disconnect',disconLogin);
+              };
+            };
+          };
+        });
+
+        //удаляем из онлайна
+        delete PLAYERS_ONLINE[disconLogin];
       };
+      //удаляем сокет
       delete SOCKET_LIST[socket.id];
       console.log('Socket disconnected');
     });

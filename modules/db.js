@@ -15,7 +15,7 @@ module.exports.connectToDB = async function connectToDB() {
   });
   // DBConnection.db('kapitalistDB').collection('users').remove();
   // DBConnection.db('kapitalistDB').collection('players').remove();
-  
+
   return;
 };;
 

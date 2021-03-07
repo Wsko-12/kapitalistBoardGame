@@ -1,6 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Fjalla+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
+/*  NOISE
+    https://i.postimg.cc/mrZgs22g/New-Project-2.png --- 5%
+    https://i.postimg.cc/Qtw81QgF/New-Project-3.png --- 10%
+    https://i.postimg.cc/mgjT8fNf/New-Project-4.png --- 15%
+*/
 *{
   box-sizing: border-box;
 }
+
 body{
   margin: 0px;
   font-family: 'Roboto', sans-serif;
@@ -14,6 +24,9 @@ ul {
     padding-left: 0;
    }
 
+#body{
+  display: flex;
+}
 #loadingSection{
   position: fixed;
   width: 100vw;height: 100vh;
@@ -32,7 +45,6 @@ ul {
   background-position: center;
   z-index: 0;
 }
-
 
 .container{
   /* background:linear-gradient(180deg, rgba(255,255,255, 0.2) 0%, rgba(255,255,255, 0) 70%); */
@@ -181,4 +193,227 @@ ul {
   background-color: rgba(0,0,0,0.4);
   border-top-left-radius: 50px;
 
+}
+
+
+
+
+.acc_button{
+  border: solid 2px #72604d;
+  color: #72604d;
+  font-family: 'Vast Shadow', cursive;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 15px;
+  background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+  background-color: #d9c8a9;
+}
+.acc_input{
+  border: dotted 2px #72604d;
+  color: #72604d;
+  font-family: 'Anton', sans-serif;
+  background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+  background-color: #d9c8a9;
+  width: 80%;
+  font-size: 20px;
+}
+.acc_input::placeholder{
+  color: #857b68;
+}
+.acc_button:hover{
+  background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+  background-color: #72604d;
+  color: #d9c8a9;
+}
+.acc_button-checked{
+  background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+  background-color: #72604d;
+  color: #d9c8a9;
+}
+.acc_section{
+  background: rgb(240,219,179);
+
+  background: radial-gradient(circle, rgba(240,219,179,1) 55%, rgba(141,114,89,1) 94%, rgba(126,109,75,1) 100%);
+
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  z-index: 1;
+}
+.acc_background{
+  background-image: url('https://freedesignfile.com/upload/2016/02/Vintage-newspapers-vector-template-04.jpg');
+  filter: blur(10px);
+  -webkit-filter:blur(10px);
+  background-size: cover;
+  opacity:0.8;
+  z-index: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+.acc_container{
+  position: relative;
+  z-index: 1;
+  width: 400px;
+  height: 400px;
+  border: double 4px #72604d;
+  margin: auto;
+  background-color: #d9c8a9;
+  box-shadow: 50px 50px 40px rgba(75, 64, 52, 0.6);
+
+  background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+}
+  .acc_container-header{
+    width: 100%;
+    height: 20%;
+    background-color: #72604d;
+    display: flex;
+    background-image: url('https://i.postimg.cc/mrZgs22g/New-Project-2.png ');
+    flex:auto;
+  }
+    .acc_playerLogin{
+      margin: auto;
+      font-family: 'Anton', sans-serif;
+      color:#d9c8a9;
+      font-size: 50px;
+      text-align: center;
+      background-image:
+
+    }
+  .acc_container-footer{
+    width: 100%;
+    height: 80%;
+  }
+    .acc_container-footer-top{
+      width: 100%;
+      height: 20%;
+      display: flex;
+    }
+
+    .acc_container-footer-bottom{
+      width: 100%;
+      height: 80%;
+
+    }
+
+
+.acc_container-button{
+  flex:1 1 auto;
+  margin: 5px;
+}
+.acc_friendsContainer{
+  width: 90%;
+  height: 100%;
+  margin: auto;
+}
+  .acc_friendsContainer-header{
+    width: 100%;
+    height: 20%;
+    display: flex;
+  }
+  .acc_friendsContainer-footer{
+    width: 100%;
+    height: 80%;
+  }
+  .acc_friendsContainer-footer-top{
+    width: 100%;
+    height:80%;
+  }
+
+
+
+      .acc_friendsList{
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+          }
+        .acc_friendsList-item{
+          display: flex;
+          width: 100%;
+          color:#72604d;
+          border-bottom: dotted 2px #72604d;
+          margin-bottom: 10px
+        }
+        .acc_friendsList-item-left{
+          display: flex;
+          width: 90%;
+        }
+        .acc_friendsList-item-login{
+          margin-right: 10px;
+          font-size: 20px;
+          font-family: 'Calistoga', cursive;
+        }
+        .acc_friendsList-item-online{
+          margin-right: 10px;
+          font-size: 8px;
+          font-family: 'Anton', sans-serif;
+        }
+        .acc_friendsList-item-button{
+
+          border: none;
+          background-color: transparent;
+          font-size: 20px;
+          color:inherit;
+        }
+        .acc_friendsContainer-footer-bottom-container{
+          color: #72604d;
+          font-family: 'Staatliches', cursive;
+          display: flex;
+          justify-content: flex-end;
+          font-size: 15px;
+        }
+        .acc_friendsContainer-footer-bottom-container:hover{
+          color:#d9c8a9;
+          background-color: #72604d;
+        }
+
+
+
+
+
+@media only screen and (max-width: 980px) {
+
+  body{
+    overflow: hidden;
+
+  }
+
+
+  .acc_button{
+    border: solid 0.5vw #72604d;
+    font-size: 3vw;
+  }
+  .acc_container{
+    width: 90vw;
+    height: 80vh;
+  }
+  .acc_playerLogin{
+    font-size: 8vw;
+  }
+  .acc_container-button{
+    margin: 2vw;
+  }
+  .acc_input{
+    font-size: 4vw;
+  }
+  .acc_friendsContainer-footer-bottom-container{
+    font-size: 3vw;
+  }
+  .acc_friendsList-item{
+    border-bottom: dotted 0.5vw #72604d;
+    margin-bottom: 3vw;
+  }
+  .acc_friendsList-item-login{
+    font-size: 4vw;
+  }
+  .acc_friendsList-item-online{
+    font-size: 1vw;
+  }
+  .acc_friendsList-item-button{
+
+    font-size: 4vw;
+  }
 }

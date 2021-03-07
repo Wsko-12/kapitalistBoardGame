@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="ru" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>kapitalist</title>
+
+<head>
+  <meta charset="utf-8">
+  <title>kapitalist</title>
 
 
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
 
 
-    <section id="loadingSection"></section>
+  <section id="loadingSection"></section>
+  <section id="body">
     <section class="sign__section" id="signSection">
-      <div style="display:flex;flex-direction: column;margin:auto">
+      <div style="display:flex;flex-direction: column;margin:auto" class="sign__container-all">
         <div class="container__error" id="AUTH__error"></div>
         <div class="sign__container container">
 
@@ -26,7 +29,7 @@
             </form>
             <button class="sign__button-register container__button" type="button" onclick="showSignUpForm(true)">
               Registration </button>
-              <!-- &#9652; -->
+            <!-- &#9652; -->
           </div>
           <div class="sign__content-hidden sign__content" id="signUnContentBox">
             <form id="AUTH_RegistrationForm" class="sign__form">
@@ -50,26 +53,29 @@
             document.getElementById('signUnContentBox').style.transform = 'none';
           }
         }
-        function AUTH_ClearError(){
+
+        function AUTH_ClearError() {
           let div = document.getElementById('AUTH__error')
           div.innerHTML = '';
         };
       </script>
-      <script>
-      function LOADING_Screen(bool) {
-        const screen =  document.getElementById('loadingSection');
-        if(bool){
-          screen.style.display = 'block';
-        }else{
-          screen.style.display = 'none';
-        };
-      };
-      </script>
     </section>
-  </body>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="auth/socketInit.js" type="module"></script>
-  <script src="auth/auth.js" type="module"></script>
+  </section>
+</body>
+<script>
+  function LOADING_Screen(bool) {
+    const screen = document.getElementById('loadingSection');
+    if (bool) {
+      screen.style.display = 'block';
+    } else {
+      screen.style.display = 'none';
+    };
+  };
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="scripts/socketInit.js" type="module"></script>
+<script src="scripts/auth.js" type="module"></script>
+<script src="scripts/accPage.js" type="module"></script>
 
 
 </html>

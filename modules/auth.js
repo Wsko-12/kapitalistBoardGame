@@ -27,9 +27,9 @@ async function createAndSaveNewPlayer(login, socket) {
 };
 
 function finishAutentification(socket, player) {
-  global.SOCKET_LIST[socket.id].login = player.login;
-  global.PLAYERS_ONLINE[player.login] = player;
-  global.PLAYERS_ONLINE[player.login].socket = socket.id;
+  SOCKET_LIST[socket.id].login = player.login;
+  PLAYERS_ONLINE[player.login] = player;
+  PLAYERS_ONLINE[player.login].socket = socket.id;
   socket.emit('AUTH__True', player);
 };
 

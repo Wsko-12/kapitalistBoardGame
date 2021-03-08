@@ -40,6 +40,14 @@ function sendNotification(message,login,reverse){
       body = 'is disconnected';
       additionally = login;
     break;
+    case 'friendsRequest':
+      body = 'wants to be friend';
+      additionally = login;
+    break;
+    case 'friendsAdd':
+      body = 'now is your friend!';
+      additionally = login;
+    break;
     default:
       body = message;
       additionally = login;

@@ -4,9 +4,6 @@
 <head>
   <meta charset="utf-8">
   <title>kapitalist</title>
-
-
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -15,51 +12,75 @@
   <section class="notif_section" id="NOTES_NotificationSection"></section>
   <section id="loadingSection"></section>
   <section id="body">
-    <section class="sign__section" id="signSection">
-      <div style="display:flex;flex-direction: column;margin:auto" class="sign__container-all">
-        <div class="container__error" id="AUTH__error"></div>
-        <div class="sign__container container">
+    <section class="full-section" id="AUTH_section" style="filter:grayscale(0.5)">
+		<div class="AUTH_Container">
+			<div class="AUTH_Container-header">
+				<p class="AUTH_Container-header-title">KAPITALIST</p>
+			</div>
+			<div class="AUTH_Container-body">
+				<div class="AUTH_Container-form-error" id="AUTH__error">
+					</div>
+				<form class="AUTH_Container-form" id="AUTH_LogInForm">
 
-          <div class="sign__content" id="signInContentBox">
-            <form id="AUTH_LogInForm" class="sign__form">
-              <input class="sign__input container__input" type="text" name="login" placeholder="login" onclick="AUTH_ClearError()">
-              <input class="sign__input container__input" type="password" name="password" placeholder="password" onclick="AUTH_ClearError()">
-              <button class="sign__button container__button" type="submit">Log In</button>
+					<div class="AUTH_Container-form-inputConntainer">
+						<div class="AUTH_Container-form-inputConntainer-title" >LOGIN</div>
+						<input type="text" name="login" class="AUTH_Container-form-input" id="AUTH_LogInForm_Login" onclick="AUTH_ClearError()">
+					</div>
+					<div class="AUTH_Container-form-inputConntainer">
+						<div class="AUTH_Container-form-inputConntainer-title" >PASSWORD</div>
+						<input type="password" name="login" class="AUTH_Container-form-input-password" id="AUTH_LogInForm_Password" onclick="AUTH_ClearError()">
+					</div>
 
-            </form>
-            <button class="sign__button-register container__button" type="button" onclick="showSignUpForm(true)">
-              Registration </button>
-            <!-- &#9652; -->
-          </div>
-          <div class="sign__content-hidden sign__content" id="signUnContentBox">
-            <form id="AUTH_RegistrationForm" class="sign__form">
-              <input class="sign__input container__input" type="text" name="login" placeholder="login" onclick="AUTH_ClearError()">
-              <input class="sign__input container__input" type="password" name="password" placeholder="password" onclick="AUTH_ClearError()">
-              <button class="sign__button container__button" type="submit">Register</button>
-            </form>
-            <button class="sign__button-back container__button-back" type="button" onclick="showSignUpForm(false)">Back</button>
-          </div>
-        </div>
-      </div>
+					<button type="submit" class="AUTH_Container-form-button"> LOG IN </button>
+				</form>
+				<form class="AUTH_Container-form" id="AUTH_RegistrationForm" style="display: none;">
+					<div class="AUTH_Container-form-inputConntainer">
+						<div class="AUTH_Container-form-inputConntainer-title" >LOGIN</div>
+						<input type="text" name="login" class="AUTH_Container-form-input" id="AUTH_RegistrationForm_Login" onclick="AUTH_ClearError()">
+					</div>
+					<div class="AUTH_Container-form-inputConntainer">
+						<div class="AUTH_Container-form-inputConntainer-title" >PASSWORD</div>
+						<input type="password" name="login" class="AUTH_Container-form-input-password" id="AUTH_RegistrationForm_Password" onclick="AUTH_ClearError()">
+					</div>
 
-      <script type="text/javascript">
-        function showSignUpForm(bool) {
-          if (bool) {
-            document.getElementById('signInContentBox').style.filter = 'blur(5px)';
-            document.getElementById('signUnContentBox').style.transform = 'translateY(-100%)';
+					<button type="submit" class="AUTH_Container-form-button-registration"> REGISTRATION</button>
+				</form>
+			</div>
+			<div class="AUTH_Container-footer">
+				<div class="AUTH_Container-footer-container" id="AUTH_RegistrationButton_Content">
+					<div class="AUTH_Container-footer-container-title">O.R.</div>
+					<div class="AUTH_Container-footer-container-button" onclick="showRegistration(true)">Registration</div>
+				</div>
+				<div class="AUTH_Container-footer-container" id="AUTH_LogInButton_Content" style="display: none;">
+					<div class="AUTH_Container-footer-container-title">O.R.</div>
+					<div class="AUTH_Container-footer-container-button" onclick="showRegistration(false)">Log in</div>
+				</div>
+			</div>
+		</div>
 
-          } else {
-            document.getElementById('signInContentBox').style.filter = 'none';
-            document.getElementById('signUnContentBox').style.transform = 'none';
-          }
-        }
+		<div class="AUTH_section_bgNNoise"></div>
+		<script type="text/javascript">
+			function showRegistration(bool) {
+				if(bool){
+					document.querySelector('#AUTH_LogInButton_Content').style.display = 'flex';
+					document.querySelector('#AUTH_RegistrationForm').style.display = 'block';
+					document.querySelector('#AUTH_RegistrationButton_Content').style.display = 'none';
+					document.querySelector('#AUTH_LogInForm').style.display = 'none';
+				}else{
+					document.querySelector('#AUTH_LogInButton_Content').style.display = 'none';
+					document.querySelector('#AUTH_RegistrationForm').style.display = 'none';
+					document.querySelector('#AUTH_RegistrationButton_Content').style.display = 'flex';
+					document.querySelector('#AUTH_LogInForm').style.display = 'block';
 
-        function AUTH_ClearError() {
-          let div = document.getElementById('AUTH__error')
-          div.innerHTML = '';
-        };
-      </script>
-    </section>
+				};
+			};
+      function AUTH_ClearError() {
+        let div = document.getElementById('AUTH__error')
+        div.innerHTML = '';
+      };
+		</script>
+
+	</section>
   </section>
 </body>
 <script>

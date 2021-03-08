@@ -12,15 +12,17 @@ document.addEventListener("DOMContentLoaded", function(blaa) {
 
   AUTH_LogInForm.onsubmit = function(e){
     e.preventDefault();
+    const login = document.querySelector('#AUTH_LogInForm_Login').value;
+    const password = document.querySelector('#AUTH_LogInForm_Password').value
     const pack = {
-      login:AUTH_LogInForm.login.value,
-      password:AUTH_LogInForm.password.value,
+      login:login,
+      password:password,
     };
-    if(AUTH_LogInForm.login.value.length<=3){
+    if(login.length<=3){
       AUTH_ShowError('Login is too short');
       return;
     };
-    if(AUTH_LogInForm.password.value.length<=3){
+    if(password.length<=3){
       AUTH_ShowError('Password is too short');
       return;
     };
@@ -34,15 +36,17 @@ document.addEventListener("DOMContentLoaded", function(blaa) {
 
   AUTH_RegistrationForm.onsubmit = function(e){
     e.preventDefault();
+    const login = document.querySelector('#AUTH_RegistrationForm_Login').value;
+    const password = document.querySelector('#AUTH_RegistrationForm_Password').value;
     const pack = {
-      login:AUTH_RegistrationForm.login.value,
-      password:AUTH_RegistrationForm.password.value,
+      login:login,
+      password:password,
     };
-    if(AUTH_RegistrationForm.login.value.length<=3){
+    if(login.length<=3){
       AUTH_ShowError('Login is too short');
       return;
     };
-    if(AUTH_RegistrationForm.password.value.length<=3){
+    if(password.length<=3){
       AUTH_ShowError('Password is too short');
       return;
     };

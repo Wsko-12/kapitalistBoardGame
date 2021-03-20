@@ -14,6 +14,28 @@ function GameEmitOwner(message,data){
     PLAYERS_ONLINE[this.playersInGame[this.owner]].emit(message,data);
   }
 };
+module.exports.StartDevGame = function(){
+  const gameServer = {
+    id:'DEV_GAME',
+    playersJoined:{test1:'test1',test2:'test2',test3:'test3',test4:'test4',},
+    playersInGame:{},
+    owner:'test1',
+    emit:GameEmit,
+    emitOwner:GameEmitOwner,
+  };
+  const gameClient = {};
+
+  for (let key in gameServer) {
+    gameClient[key] = gameServer[key];
+  }
+  delete gameClient.emit, gameClient.emitOwner;
+
+
+  global.GAMES[gameServer.id] = gameServer;
+
+  // ROOMS_WAITING[roomID].emit('GAME_starting_True',gameClient);
+  // delete ROOMS_WAITING[roomID]
+}
 
 module.exports.Start = function(socket, roomID){
   const gameServer = {

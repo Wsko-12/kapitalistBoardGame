@@ -11,6 +11,7 @@
 
 
 
+
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -21,10 +22,19 @@ const FRIENDS = require('./modules/friends.js');
 const ROOMS = require('./modules/rooms.js');
 const GAME = require('./modules/GAME/game.js');
 
+
+
+let DEV_PLAYERS_ONLINE = 0;
+const DEV_PLAYERS = ['test1','test2','test3','test4'];
+
+
+
 global.SOCKET_LIST = {};
 global.PLAYERS_ONLINE = {};
 global.ROOMS_WAITING = {};
 global.GAMES = {};
+const GAME_TEST = GAME.StartDevGame();
+
 
 
 DB.connectToDB().then(function() {
@@ -38,7 +48,7 @@ http.listen(PORT, '0.0.0.0', () => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/client/index.html');
+  res.sendFile(__dirname + '/client/DEVindex.html');
 });
 app.use('/', express.static(__dirname + '/client'));
 
@@ -128,6 +138,23 @@ io.on('connection', function(socket) {
   socket.on('GAME_starting_EnterGame',function(EnterGamePack){
     GAME.EnterGame(EnterGamePack);
   });
+
+
+
+
+  socket.on('DEV_newUser',function(){
+    DEV_PLAYERS_ONLINE++;
+    for(let user of DEV_PLAYERS){
+      if(!PLAYERS_ONLINE[user]){
+        AUTH.finishAutentification(socket,DEV_PLAYERS[DEV_PLAYERS.indexOf(user)]);
+        break;
+      };
+    };
+    console.log(GAMES);
+    socket.emit('GAME_starting_True',GAMES.DEV_GAME);
+  });
+
+
 
 
 

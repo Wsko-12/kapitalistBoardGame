@@ -33,8 +33,23 @@ async function createAndSaveNewPlayer(login, socket) {
     });
   });
 };
+                                      //DEV
+function finishAutentification(socket, login) {
+  //DEV
+  let player = {
+    login:login,
+    friends:{
+      all:{
+        all:[],
+        online:[],
+        offline:[],
+      },
+      sends:[],
+      requests:[],
+    },
+    sessions:[],
+  }
 
-function finishAutentification(socket, player) {
   SOCKET_LIST[socket.id].login = player.login;
   PLAYERS_ONLINE[player.login] = player;
   PLAYERS_ONLINE[player.login].socket = socket.id;
@@ -42,7 +57,6 @@ function finishAutentification(socket, player) {
   PLAYERS_ONLINE[player.login].emitFriends = PlayerEmitFriends;
   PLAYERS_ONLINE[player.login].joined = null;
   socket.emit('AUTH__True', player);
-
 
   //высылаем уведомлениее друзьям, чтоо зашел в онлайн
   PLAYERS_ONLINE[player.login].emitFriends('ACC_UpdateOnlineList_Connected',player.login);
@@ -106,3 +120,7 @@ module.exports.logIn = async function(userLogPack, socket) {
     socket.emit('AUTH__OnlineError');
   };
 };
+
+
+//FOR DEV
+module.exports.finishAutentification = finishAutentification;

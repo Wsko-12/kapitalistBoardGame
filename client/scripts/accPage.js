@@ -45,18 +45,9 @@ const ACC_page = `
 
 //билд контейнера "Друзья"
 function ACC_buildPage(player) {
+  // DEV
   PLAYER = player;
-  PLAYER.joinedRoom = null;
-  document.querySelector('#body').innerHTML = '';
-  document.querySelector('#body').innerHTML = ACC_page;
-
-  document.querySelector('#ACC_account_Login').innerHTML = player.login;
-
-  document.querySelector('#ACC_button_Friends').onclick = FRIENDS.buildFriendsContainer;
-  document.querySelector('#ACC_button_NewGame').onclick = ROOMS.buildNewGameContainer;
-  document.querySelector('#ACC_button_Games').onclick = ROOMS.buildGameContainer;
-  //запускаем сразу, чтобы пришло всем друзьям уведомление
-  FRIENDS.buildFriendsContainer();
+  console.log(PLAYER);
 };
 //снять цвет с кнопок Friends, Games, New Game
 function clearButtons(){

@@ -5,8 +5,10 @@ const PORT = process.env.PORT || 3000;
 const DB = require('./modules/db.js');
 const AUTH = require('./modules/auth.js');
 const FRIENDS = require('./modules/friends.js');
+const ROOMS = require('./modules/rooms.js');
 global.SOCKET_LIST = {};
 global.PLAYERS_ONLINE = {};
+global.ROOMS_WAITING = {};
 
 
 DB.connectToDB().then(function() {
@@ -81,12 +83,36 @@ io.on('connection', function(socket) {
   });
 
 
+  socket.on('ACC_NROOM_Create',function(newRoomPack){
+    ROOMS.Create(socket,newRoomPack);
+  });
+
+  socket.on('ACC_ROOM_Enter',function(roomID){
+    ROOMS.Enter(socket,roomID)
+  });
+
+  socket.on('ACC_ROOM_Join',function(JoinRoomPack){
+    ROOMS.Join(socket,JoinRoomPack);
+  });
+
+  socket.on('ACC_ROOM_Leave',function(LeaveRoomPack){
+    ROOMS.Leave(socket,LeaveRoomPack);
+  });
+
+
+  socket.on('ACC_GAMES_BuildList',function() {
+    ROOMS.BuildList(socket);
+  });
+
+
+
+
+
   socket.on('disconnect', function() {
     //Проверяем залогинился ли уже
     if (SOCKET_LIST[socket.id].login) {
       //Если да, то удаляем из онлайна у его друзей
       const disconLogin = SOCKET_LIST[socket.id].login
-
 
       //проходимся по всем его друзьям в онлайне
       PLAYERS_ONLINE[disconLogin].friends.all.online.forEach((friend) => {
@@ -97,14 +123,27 @@ io.on('connection', function(socket) {
           if (disconIndex > -1) {
 
             PLAYERS_ONLINE[friend].friends.all.online.splice(disconIndex, 1);
-            //и высылаем ему апдейт
+            //то что далее высылается новым способом
+            //и высылаем ему сообщение
             //на всякий проверяем
-            if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
-              SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Disconnect', disconLogin);
-            };
+            // if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
+            //   SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Disconnect', disconLogin);
+            // };
           };
         };
       });
+      //высылаем уведомление друзьям
+      PLAYERS_ONLINE[disconLogin].emitFriends('ACC_UpdateOnlineList_Disconnect', disconLogin);
+
+
+
+      //если был в комнате, то выкидываем
+      if(PLAYERS_ONLINE[disconLogin].joined != null){
+        delete ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].players[disconLogin]
+        ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[disconLogin].joined)
+      };
+
+
 
       //удаляем из онлайна
       delete PLAYERS_ONLINE[disconLogin];
@@ -114,3 +153,20 @@ io.on('connection', function(socket) {
     console.log('Socket disconnected');
   });
 });
+
+
+
+
+//постепенно очищать ROOMS_WAITING
+function clearRoomWaiting(){
+  const minutes = 5;
+  for(let room in ROOMS_WAITING){
+    if(Date.now() - ROOMS_WAITING[room].inWait > minutes*60*1000){
+      ROOMS_WAITING[room].inWait = 0;
+      DB.ROOMS_UpdateRoomFULL(room,ROOMS_WAITING[room]).then(result=>{
+        delete ROOMS_WAITING[room];
+      });
+    };
+  };
+};
+setInterval(clearRoomWaiting,60000);

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../styles/style.css">
+  <link rel="stylesheet" type="text/css" href="../styles/room.css">
+</head>
+
+<body>
+  <section class="acc_section">
+    <div class="acc_container">
+      <div class="acc_container-header">
+        <div class="acc_playerLogin" id="ACC_account_Login">
+          iamwsko
+        </div>
+      </div>
+      <div class="acc_container-footer">
+        <div class="acc_container-footer-top">
+          <div class="acc_button acc_container-button" id="ACC_button_Friends" name="friends">
+            FRIEDS
+          </div>
+          <div class="acc_button acc_container-button" id="ACC_button_Games" name="games">
+            GAMES
+          </div>
+          <div class="acc_button acc_container-button" id="ACC_button_Games" name="new">
+            NEW GAME
+          </div>
+        </div>
+        <div class="acc_container-footer-bottom" id="ACC_Content">
+
+          <!-- MODULE -->
+          <div class="acc_room_container" id="ACC_ROOM_${room.id}-container">
+            <div class="acc_room_container-header">
+              <div class="acc_room_title">
+                <div id="ACC_ROOM_id">${room.id}</div>
+                <div class="acc_room_postTitle" id="ACC_ROOM_status">${room.status}</div>
+              </div>
+              <button class="acc_room-button" id="ACC_ROOM_RefreshButton">↻</button>
+            </div>
+            <div class="acc_room_container-body">
+              <div class="acc_room_container-body_head">
+                  <div style="display:flex;">
+                    <div>
+                      Wait:
+                    </div>
+                    <div id="ACC_ROOM_waitCount">
+                        <!-- ${room.playersMax-Object.keys(room.players).length} -->
+                        0
+                    </div>
+                  </div>
+
+                  <button class="acc_room_jounButton" id="ACC_ROOM_JoinButton">JOIN</button>
+
+              </div>
+            </div>
+            <div class="acc_room_container-footer" id="ACC_ROOM_FOOTER_${room.id}-container"></div>
+          </div>
+
+          <!-- //MODULE -->
+
+          <!-- <div>
+            <div id="ACC_ROOM_id">id</div>
+            <div id="ACC_ROOM_status">wait players</div>
+            <div 2>
+              <div 3>
+                <div>
+                  Wait:
+                </div>
+                <div id="ACC_ROOM_waitCount">
+                  2
+                </div>
+              </div 3>
+              <button id="ACC_ROOM_JoinButton">JOIN</button>
+              <div 4>
+                <ul id="ACC_ROOM_list">
+                  <li id="ACC_ROOM_list-item">
+                    Login
+                  <li>
+                </ul>
+              </div 4>
+
+            </div 2>
+            <button id="ACC_ROOM_StartGameButton">Start Game</button>
+          </div 1> -->
+        </div>
+
+      </div>
+    </div>
+    <div class="acc_background"></div>
+  </section>
+  <script>
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Game</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" style="width:100%;height:100%;"></canvas>
+
+
+
+
+  </body>
+  <style>
+    body{
+      margin: 0;
+    }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="scripts/socketInit.js" type="module"></script>
+  <script>
+    const canvas = document.querySelector('#canvas');
+    const renderer = new THREE.WebGLRenderer({canvas});
+
+    const camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
+
+    camera.position.set(0, 40, 0);
+    camera.lookAt (0.0,0);
+
+    const scene = new THREE.Scene();
+
+    scene.background = new THREE.Color( 0xbbbbbb);
+
+
+    function setSizes() {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const pixelRatio = window.devicePixelRatio;
+
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(windowWidth, windowHeight,false);
+
+      camera.aspect = windowWidth / windowHeight;
+      camera.updateProjectionMatrix();
+    };
+
+    window.addEventListener("resize",setSizes);
+    setSizes();
+
+
+    function render(time){
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+
+  </script>
+  <script>
+  const RADIUS = 1;
+  const ROUNDS = 5;
+  const shiftZeroX = RADIUS*Math.cos(30*Math.PI/180)*2;
+  const shiftZeroZ = RADIUS*Math.cos(30*Math.PI/180)*Math.cos(30*Math.PI/180)*2;
+    hexagonJson = `{
+	"metadata": {
+		"version": 4.5,
+		"type": "BufferGeometry",
+		"generator": "BufferGeometry.toJSON"
+	},
+	"uuid": "6636341E-344B-4855-BAE1-43D648859627",
+	"type": "BufferGeometry",
+	"data": {
+		"attributes": {
+			"position": {
+				"itemSize": 3,
+				"type": "Float32Array",
+				"array": [0.086603,-0.05,-0.05,0.866025,-0.05,-0.5,0.866025,-0.05,0.5,0.086603,-0.05,0.05,0.086603,-0.05,-0.05,0.866025,-0.05,0.5,0,-0.05,-0.1,0,-0.05,-1,0.866025,-0.05,-0.5,0,-0.05,-0.1,0.866025,-0.05,-0.5,0.086603,-0.05,-0.05,-0.866025,-0.05,-0.5,0,-0.05,-1,0,-0.05,-0.1,-0.086603,-0.05,-0.05,-0.866025,-0.05,-0.5,0,-0.05,-0.1,-0.866025,-0.05,0.5,-0.866025,-0.05,-0.5,-0.086603,-0.05,-0.05,-0.866025,-0.05,0.5,-0.086603,-0.05,-0.05,-0.086603,-0.05,0.05,-0.866025,-0.05,0.5,-0.086603,-0.05,0.05,0,-0.05,0.1,-0.866025,-0.05,0.5,0,-0.05,0.1,0,-0.05,1,0,-0.05,0.1,0.086603,-0.05,0.05,0.866025,-0.05,0.5,0,-0.05,1,0,-0.05,0.1,0.866025,-0.05,0.5,0.866025,0.05,0.5,0.866025,0.05,-0.5,0.086603,0.05,-0.05,0.866025,0.05,0.5,0.086603,0.05,-0.05,0.086603,0.05,0.05,0.866025,0.05,-0.5,0,0.05,-1,0,0.05,-0.1,0.086603,0.05,-0.05,0.866025,0.05,-0.5,0,0.05,-0.1,0,0.05,-0.1,0,0.05,-1,-0.866025,0.05,-0.5,0,0.05,-0.1,-0.866025,0.05,-0.5,-0.086603,0.05,-0.05,-0.086603,0.05,-0.05,-0.866025,0.05,-0.5,-0.866025,0.05,0.5,-0.086603,0.05,0.05,-0.086603,0.05,-0.05,-0.866025,0.05,0.5,0,0.05,0.1,-0.086603,0.05,0.05,-0.866025,0.05,0.5,0,0.05,1,0,0.05,0.1,-0.866025,0.05,0.5,0.866025,0.05,0.5,0.086603,0.05,0.05,0,0.05,0.1,0.866025,0.05,0.5,0,0.05,0.1,0,0.05,1,0.086603,0.05,-0.05,0.086603,-0.05,-0.05,0.086603,-0.05,0.05,0.086603,0.05,-0.05,0.086603,-0.05,0.05,0.086603,0.05,0.05,0,0.05,-1,0,-0.05,-1,-0.866025,-0.05,-0.5,-0.866025,0.05,-0.5,-0.086603,0.05,0.05,-0.086603,-0.05,0.05,-0.086603,-0.05,-0.05,-0.086603,0.05,0.05,-0.086603,-0.05,-0.05,-0.086603,0.05,-0.05,0.866025,0.05,0.5,0.866025,-0.05,0.5,0.866025,-0.05,-0.5,0.866025,0.05,-0.5,0,0.05,-0.1,0,-0.05,-0.1,0.086603,-0.05,-0.05,0,0.05,-0.1,0.086603,-0.05,-0.05,0.086603,0.05,-0.05,-0.866025,0.05,-0.5,-0.866025,-0.05,-0.5,-0.866025,-0.05,0.5,-0.866025,0.05,-0.5,-0.866025,-0.05,0.5,-0.866025,0.05,0.5,0,0.05,0.1,0,-0.05,0.1,-0.086603,-0.05,0.05,0,0.05,0.1,-0.086603,-0.05,0.05,-0.086603,0.05,0.05,0.866025,0.05,-0.5,0.866025,-0.05,-0.5,0,-0.05,-1,0,0.05,-1,-0.866025,0.05,0.5,-0.866025,-0.05,0.5,0,-0.05,1,0,0.05,1,0.086603,0.05,0.05,0.086603,-0.05,0.05,0,-0.05,0.1,0,0.05,0.1,-0.086603,0.05,-0.05,-0.086603,-0.05,-0.05,0,-0.05,-0.1,-0.086603,0.05,-0.05,0,-0.05,-0.1,0,0.05,-0.1,0,0.05,1,0,-0.05,1,0.866025,-0.05,0.5,0.866025,0.05,0.5],
+				"normalized": false
+			},
+			"normal": {
+				"itemSize": 3,
+				"type": "Float32Array",
+				"array": [0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-0.5,0,-0.866025,-0.5,0,-0.866025,-0.5,0,-0.866025,-0.5,0,-0.866025,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,0.5,0,-0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,0.866025,-0.5,0,-0.866025,-0.5,0,-0.866025,-0.5,0,-0.866025,-0.5,0,-0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025,0.5,0,0.866025],
+				"normalized": false
+			}
+		},
+		"index": {
+			"type": "Uint16Array",
+			"array": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,78,80,81,82,83,84,85,86,87,88,89,90,88,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,110,112,113,114,115,116,114,116,117,118,119,120,118,120,121,122,123,124,125,126,127,128,129,130,128,130,131]
+		},
+		"boundingSphere": {
+			"center": [0,0,0],
+			"radius": 1.32382
+		}
+	}
+}`;
+const mapNullArr = [
+[0,1,2,3,4,5],
+[0,1,2,3,4,5,6],
+[0,1,2,3,4,5,6,7],
+[0,1,2,3,4,5,6,7,8],
+[0,1,2,3,4,5,6,7,8,9],
+[0,1,2,3,4,5,6,7,8,9,10],
+[0,1,2,3,4,5,6,7,8,9],
+[0,1,2,3,4,5,6,7,8],
+[0,1,2,3,4,5,6,7],
+[0,1,2,3,4,5,6],
+[0,1,2,3,4,5],
+];
+
+
+
+const color = 0xFFFFFF;
+const intensity = 2;
+const light = new THREE.DirectionalLight(color, intensity);
+light.position.set(20, 10, 0);
+light.target.position.set(0, 0, 0);
+scene.add(light);
+scene.add(light.target);
+
+
+let loader = new THREE.BufferGeometryLoader();
+let hexagonGeom = loader.parse(JSON.parse(hexagonJson));
+let material1 = new THREE.MeshPhongMaterial({
+  color: 0xFDE74C,
+});
+let material2 = new THREE.MeshPhongMaterial({
+  color: 0xFF5A5F,
+});
+// let hexMesh = new THREE.Mesh(hexagonGeom,material);
+// scene.add(hexMesh);
+
+
+for(let z = 0; z < mapNullArr.length; z++){
+  for(let x = 0; x<mapNullArr[z].length;x++){
+    let hexMesh= new THREE.Mesh(hexagonGeom,material1);
+    hexMesh.scale.set(RADIUS,RADIUS,RADIUS);
+    //строим по оси z
+    if(z % 2){
+      //для нечетных по z
+      hexMesh.position.z = (RADIUS + RADIUS/2) * z;
+    }else{
+      //для четных  по z
+      hexMesh.position.z = (RADIUS + RADIUS/2) * z;
+    }
+    //строим левый край всей карты
+    hexMesh.position.x += 0.86602540378 * RADIUS * Math.abs(z-ROUNDS);
+
+    //выстраиваем их по x
+    hexMesh.position.x += 0.86602540378 * RADIUS*2 * x;
+
+    //центрируем всю карту по x
+    hexMesh.position.x -= 0.86602540378 * RADIUS*2*ROUNDS;
+
+    //центрируем всю карту по z
+    hexMesh.position.z -= (RADIUS + RADIUS/2)*ROUNDS;
+
+    scene.add(hexMesh);
+  };
+};
+let startMesh = new THREE.Mesh(new THREE.BoxBufferGeometry(RADIUS/5,RADIUS/5,RADIUS/5),material2);
+startMesh.scale.set(RADIUS,RADIUS,RADIUS);
+startMesh.position.x = 0;
+startMesh.position.z = 0;
+startMesh.position.y = 0.1;
+scene.add(startMesh);
+
+
+const userSitDistance = RADIUS*(ROUNDS*3);
+const usersSitPosition = {
+  //users count
+  1:{
+    //user index
+    0:{
+      x:0,
+      z:userSitDistance,
+    },
+  },
+  2:{
+    0:{
+      x:0,
+      z:userSitDistance,
+    },
+    1:{
+      x:0,
+      z:-userSitDistance,
+    },
+  },
+  3:{
+    0:{
+      x:0,
+      z:userSitDistance,
+    },
+    1:{
+      x:-userSitDistance*0.86602540378,
+      z:-userSitDistance/2,
+    },
+    2:{
+      x:userSitDistance*0.86602540378,
+      z:-userSitDistance/2,
+    },
+  },
+  4:{
+    0:{
+      x:-Math.sqrt(Math.pow(userSitDistance, 2)/2),
+      z:Math.sqrt(Math.pow(userSitDistance, 2)/2)
+    },
+    1:{
+      x:-Math.sqrt(Math.pow(userSitDistance, 2)/2),
+      z:-Math.sqrt(Math.pow(userSitDistance, 2)/2)
+    },
+    2:{
+      x:Math.sqrt(Math.pow(userSitDistance, 2)/2),
+      z:-Math.sqrt(Math.pow(userSitDistance, 2)/2)
+    },
+    3:{
+      x:Math.sqrt(Math.pow(userSitDistance, 2)/2),
+      z:Math.sqrt(Math.pow(userSitDistance, 2)/2)
+    },
+  },
+};
+const USERS = [1,2,3];
+
+
+
+
+function apllyUsersPositions(){
+  const userColors = [
+    0xE05260,
+    0x77C9E4,
+    0xFFE863,
+    0xC1E85E,
+
+  ]
+  for(let user = 0;user<USERS.length;user++){
+      const mesh = new THREE.Mesh(new THREE.BoxBufferGeometry(RADIUS*2,RADIUS*2,RADIUS*2),new THREE.MeshBasicMaterial({
+        color: userColors[user]
+      }));
+      mesh.position.x = usersSitPosition[USERS.length][user].x;
+      mesh.position.z = usersSitPosition[USERS.length][user].z;
+      scene.add(mesh);
+  };
+};
+
+
+
+
+
+camera.position.set(usersSitPosition[3][0].x,userSitDistance*1.5,usersSitPosition[3][0].z);
+camera.lookAt(0,0,0);
+apllyUsersPositions();
+
+
+
+
+  </script>
+  <script>
+  function render(time){
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+
+  </script>
+</html>

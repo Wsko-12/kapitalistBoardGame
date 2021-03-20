@@ -88,3 +88,41 @@ module.exports.PLAYER_updateFriends = async function FriendsSends(login,updatedF
   }finally{
   };
 };
+module.exports.ROOM_Create = async function(room){
+  try {
+    const result = await DBConnection.db('kapitalistDB').collection('rooms').insertOne(room);
+    return result;
+
+  } catch (err) {} finally {
+    // client.close();
+  };
+};
+
+module.exports.ROOM_Find = async function(roomID){
+  try {
+    const query = {
+      id: roomID
+    };
+    const result = await DBConnection.db('kapitalistDB').collection('rooms').findOne(query);
+    return result;
+
+  } catch (err) {
+    // console.log(err);
+  } finally {
+    // client.close();
+  };
+};
+module.exports.ROOMS_UpdateRoomFULL = async function(roomID,roomUpdated){
+  try {
+    const query = {
+      id: roomID
+    };
+    const result = await DBConnection.db('kapitalistDB').collection('rooms').replaceOne(query,roomUpdated);
+    return result;
+
+  } catch (err) {
+    // console.log(err);
+  } finally {
+    // client.close();
+  };
+};

@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Fjalla+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Graduate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+/*  NOISE
+    https://i.postimg.cc/mrZgs22g/New-Project-2.png --- 5%
+    https://i.postimg.cc/Qtw81QgF/New-Project-3.png --- 10%
+    https://i.postimg.cc/mgjT8fNf/New-Project-4.png --- 15%
+*/
+
+/*
+--light-color: #EEE9C1 rgba(238, 233, 193,0.8);
+--dark-color: #503D2E rgba(80, 61, 46, 0.8);
+\ */
+
+
+.acc_room_container{
+  width: 90%;
+  margin: auto;
+  background-color: #c9c8a0;
+  height: 100%;
+}
+.acc_room_container-header{
+  display: flex;
+  justify-content:space-around;
+  background-color: #dd4402;
+  height: 15%;
+  width: 100%;
+}
+.acc_room_container-body{
+  width: 100%;
+  height: 65%;
+  background-color: #c6e68d;
+}
+.acc_room_container-body_head{
+  width: 100%;
+  height: 20%;
+  display: flex;
+  font-size: 20px;
+  font-family: 'Graduate', sans-serif;
+  justify-content: center;
+}
+.acc_room_container-footer{
+  width: 100%;
+  height: 20%;
+  background-color: #1f3b38;
+
+
+}
+
+.acc_room_title{
+  display: flex;
+
+  color:rgba(80, 61, 46, 0.8);
+  font-size: 20px;
+  font-family: 'Anton', sans-serif;
+}
+.acc_room_postTitle{
+
+  font-family: 'Great Vibes', cursive;
+  font-size: 15px;
+}
+.acc_room-button{
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color:rgba(80, 61, 46, 0.8);
+  font-size: 20px;
+
+}
+
+	@media only screen
+	    and (min-device-width : 320px)
+	    and (max-device-width : 1024px)
+	    and (-webkit-device-pixel-ratio : 2 )
+	    and (orientation : portrait){
+	    	/* mobile and tablets portrait*/
+        .acc_room-button{
+          font-size: 6vw;
+        }
+        .acc_room_title{
+          font-size: 6vw;
+        }
+          .acc_room_postTitle{
+            font-size:4vw;
+          }
+
+
+	    }
+	@media only screen
+	    and (min-device-width : 320px)
+	    and (max-device-width : 1024px)
+	    and (-webkit-device-pixel-ratio : 3 )
+	    and (orientation : portrait){
+	    	/* mobile and tablets portrait iphone 6plus X*/
+        .acc_room-button{
+          font-size: 5vw;
+        }
+        .acc_room_title{
+          font-size: 6vw;
+        }
+          .acc_room_postTitle{
+            font-size:4vw;
+          }
+
+	    }
+	@media only screen
+	    and (min-device-width : 320px)
+	    and (max-device-width : 1024px)
+	    and (-webkit-device-pixel-ratio : 2)
+	    and (orientation : landscape){
+	    	/* mobile and tablets lanscape*/
+        .acc_room-button{
+          font-size: 5vh;
+        }
+        .acc_room_title{
+          font-size: 6vh;
+        }
+          .acc_room_postTitle{
+            font-size:4vh;
+          }
+
+
+	    }

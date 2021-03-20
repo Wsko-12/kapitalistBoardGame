@@ -1,3 +1,16 @@
+//auth 0.0.1
+
+//friends 0.0.2
+
+
+
+//lobby 0.0.1
+// -дописать поиск приватных игр
+// -сделать дизайн
+
+
+
+
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -6,9 +19,12 @@ const DB = require('./modules/db.js');
 const AUTH = require('./modules/auth.js');
 const FRIENDS = require('./modules/friends.js');
 const ROOMS = require('./modules/rooms.js');
+const GAME = require('./modules/GAME/game.js');
+
 global.SOCKET_LIST = {};
 global.PLAYERS_ONLINE = {};
 global.ROOMS_WAITING = {};
+global.GAMES = {};
 
 
 DB.connectToDB().then(function() {
@@ -106,6 +122,13 @@ io.on('connection', function(socket) {
 
 
 
+  socket.on('GAME_starting',function(roomID){
+    GAME.Start(socket,roomID);
+  });
+  socket.on('GAME_starting_EnterGame',function(EnterGamePack){
+    GAME.EnterGame(EnterGamePack);
+  });
+
 
 
   socket.on('disconnect', function() {
@@ -139,8 +162,11 @@ io.on('connection', function(socket) {
 
       //если был в комнате, то выкидываем
       if(PLAYERS_ONLINE[disconLogin].joined != null){
-        delete ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].players[disconLogin]
-        ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[disconLogin].joined)
+        if(ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined]){
+          delete ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].players[disconLogin]
+          ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[disconLogin].joined)
+        };
+
       };
 
 

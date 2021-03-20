@@ -204,7 +204,6 @@ function EnterRoom(roomID){
 
 function EnterRoom_True(room){
   viewedRoom = room;
-  console.log(room);
   const roomDOM = `
   <div id="ACC_ROOM_${room.id}-container">
     <button id="ACC_ROOM_RefreshButton">Refresh</button>
@@ -278,7 +277,6 @@ function EnterRoom_True(room){
 
 
 function startGame(roomID){
-  console.log('start game ',roomID)
 };
 
 

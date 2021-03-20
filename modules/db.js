@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://wsko:59912121@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority`;
 
 
 let DBConnection;
@@ -13,10 +13,6 @@ module.exports.connectToDB = async function connectToDB() {
     useUnifiedTopology: true,
     useNewUrlParser: true
   });
-  // DBConnection.db('kapitalistDB').collection('users').remove();
-  // DBConnection.db('kapitalistDB').collection('players').remove();
-  // DBConnection.db('kapitalistDB').collection('rooms').remove();
-
   return;
 };;
 

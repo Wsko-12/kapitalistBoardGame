@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title>Account</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="../styles/style.css">
 </head>
 
 <body>
@@ -29,30 +29,28 @@
           </div>
         </div>
         <div class="acc_container-footer-bottom" id="ACC_Content">
-          <div>
-            <div id="ACC_ROOM_id">id</div>
-            <div id="ACC_ROOM_status">wait players</div>
-            <div 2>
-              <div 3>
-                <div>
-                  Wait:
-                </div>
-                <div id="ACC_ROOM_waitCount">
-                  2
-                </div>
-              </div 3>
-              <button id="ACC_ROOM_JoinButton">JOIN</button>
-              <div 4>
-                <ul id="ACC_ROOM_list">
-                  <li id="ACC_ROOM_list-item">
-                    Login
-                  <li>
+          <div class="games-container">
+            <div>FIND GAME LINE</div>
+            <div class="games-buttonsContainer" style="display:flex">
+              <div style="margin-left:10px" id="ACC_GAME_button_World">
+                world
+              </div>
+              <div style="margin-left:10px" id="ACC_GAME_PrivateButton">
+                private
+              </div>
+            </div>
+            <div class="games-container-contant"id="ACC_GAME_Contant">
+              <div>
+                <ul id="ACC_GAME_WorldList">
+                  <li style="display:flex" id="ACC_GAME_WorldList_Item">
+                    <div id="ACC_GAME_gameID" style="margin-left:10px;">id</div>
+                    <div id="ACC_GAME_status" style="margin-left:10px;">status</div>
+                    <div id="ACC_GAME_viev" style="margin-left:10px;" id="ACC_GAME_WorldList_Item_VievButton">view</div>
+                  </li>
                 </ul>
-              </div 4>
-
-            </div 2>
-            <button id="ACC_ROOM_StartGameButton">Start Game</button>
-          </div 1>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

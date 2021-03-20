@@ -10,8 +10,16 @@ function hashPass(password) {
 };
 // bcrypt.compareSync("B4c0/\/", hash);
 
-
-
+function PlayerEmit(message,date){
+  SOCKET_LIST[this.socket].emit(message,date);
+};
+function PlayerEmitFriends(message,date){
+  this.friends.all.all.forEach((friend) => {
+    if(!!PLAYERS_ONLINE[friend]){
+      PLAYERS_ONLINE[friend].emit(message,date);
+    };
+  });
+};
 
 async function createAndSaveNewPlayer(login, socket) {
   const newPlayer = PLAYER.New(login);
@@ -30,7 +38,14 @@ function finishAutentification(socket, player) {
   SOCKET_LIST[socket.id].login = player.login;
   PLAYERS_ONLINE[player.login] = player;
   PLAYERS_ONLINE[player.login].socket = socket.id;
+  PLAYERS_ONLINE[player.login].emit = PlayerEmit;
+  PLAYERS_ONLINE[player.login].emitFriends = PlayerEmitFriends;
+  PLAYERS_ONLINE[player.login].joined = null;
   socket.emit('AUTH__True', player);
+
+
+  //высылаем уведомлениее друзьям, чтоо зашел в онлайн
+  PLAYERS_ONLINE[player.login].emitFriends('ACC_UpdateOnlineList_Connected',player.login);
 };
 
 

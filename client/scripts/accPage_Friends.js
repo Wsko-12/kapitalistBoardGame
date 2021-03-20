@@ -382,6 +382,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   //С сервера пришло уведомление что друг покинул
   socket.on('ACC_UpdateOnlineList_Disconnect',function(friendDisconnected){
+    console.log('ACC_UpdateOnlineList_Disconnect')
     const disconIndex = PLAYER.friends.all.online.indexOf(friendDisconnected);
     if(disconIndex > -1){
       PLAYER.friends.all.online.splice(friendDisconnected, 1);
@@ -391,8 +392,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
   //С сервера пришло уведомление что друг зашел в игру
   socket.on('ACC_UpdateOnlineList_Connected',function(friendConnected){
-    const cconnectedIndex = PLAYER.friends.all.online.indexOf(friendConnected);
-    if(cconnectedIndex === -1){
+    const connectedIndex = PLAYER.friends.all.online.indexOf(friendConnected);
+    if(connectedIndex === -1){
       PLAYER.friends.all.online.push(friendConnected, 1);
     };
     sendNotification('friendOnline',friendConnected,true);

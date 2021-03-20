@@ -11,7 +11,8 @@ module.exports.CheckOnlineFriends = function(socket,login){
     player.friends.all.all.forEach((friend, i) => {
       if (!PLAYERS_ONLINE[friend]) {
         //если у нас такого в онлайне нет
-        friendsObj.offline.push(friend)
+        friendsObj.offline.push(friend);
+        friendsObj.all.push(friend);
       } else {
         //если у друга такого нет в онлайне, то добавляем
         //на всякий проверяем его
@@ -19,13 +20,19 @@ module.exports.CheckOnlineFriends = function(socket,login){
           if (PLAYERS_ONLINE[friend].friends.all.online.indexOf(SOCKET_LIST[socket.id].login) === -1) {
             PLAYERS_ONLINE[friend].friends.all.online.push(SOCKET_LIST[socket.id].login);
 
+
+            //то что далее в комменте высылается при аутентификации пользователя через метод friendsEmit()
             //и высылаем уведомление ему
             //на всякий проверяем
-            if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
-              SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Connected', SOCKET_LIST[socket.id].login);
-            };
+            // if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
+            //   SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Connected', SOCKET_LIST[socket.id].login);
+            // };
+
+
+
           };
         };
+        friendsObj.all.push(friend);
         friendsObj.online.push(friend);
       };
     });
@@ -47,8 +54,8 @@ module.exports.FindFriend = function(socket,findFriendRequest){
   //ищем пользователя
   DB.PLAYER_find(findFriendRequest.from).then(userPlayer => {
     //переписываем его
-    PLAYERS_ONLINE[findFriendRequest.from] = userPlayer;
-    PLAYERS_ONLINE[findFriendRequest.from].socket = socket.id;
+    // PLAYERS_ONLINE[findFriendRequest.from] = userPlayer;
+    // PLAYERS_ONLINE[findFriendRequest.from].socket = socket.id;
     //если ищет сам себя, то отправляем no results
     if (findFriendRequest.search === findFriendRequest.from) {
       socket.emit('ACC_FindFriend_False');

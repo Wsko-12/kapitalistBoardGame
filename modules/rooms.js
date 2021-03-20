@@ -15,13 +15,27 @@ function ROOMNULL(newRoomPack){
   return room;
 };
 
+function RoomEmit(message,data){
+  for(let player in this.players){
+    if(PLAYERS_ONLINE[player]){
+      PLAYERS_ONLINE[player].emit(message,data)
+    };
+  };
+};
+
+function RoomInit(room){
+  ROOMS_WAITING[room.id] = room;
+  ROOMS_WAITING[room.id].inWait = Date.now();
+  ROOMS_WAITING[room.id].emit = RoomEmit;
+};
+
+
 
 module.exports.Create = function(socket,newRoomPack){
   const room = ROOMNULL(newRoomPack);
   DB.ROOM_Create(room).then(result=>{
     socket.emit('ACC_NROOM_Create_True',result.ops[0]);
-    ROOMS_WAITING[result.ops[0].id] = result.ops[0];
-    ROOMS_WAITING[result.ops[0].id].inWait = Date.now();
+    RoomInit(result.ops[0])
   });
 };
 module.exports.Enter = function(socket,roomID){
@@ -29,8 +43,7 @@ module.exports.Enter = function(socket,roomID){
       socket.emit('ACC_ROOM_Enter_True',ROOMS_WAITING[roomID]);
   }else{
     DB.ROOM_Find(roomID).then(result =>{
-      ROOMS_WAITING[result.id] = result;
-      ROOMS_WAITING[result.id].inWait = Date.now();
+      RoomInit(result);
       socket.emit('ACC_ROOM_Enter_True',result);
     });
   };
@@ -38,36 +51,49 @@ module.exports.Enter = function(socket,roomID){
 module.exports.Join = function(socket,JoinRoomPack){
   const roomID = JoinRoomPack.roomID;
   const player = JoinRoomPack.login;
+  const joined = JoinRoomPack.joined;
   //на всякий случай проверяем есть ли у нас
   if(ROOMS_WAITING[roomID]){
     //проверяем не присоединился ли уже
     if(!ROOMS_WAITING[roomID].players[player]){
-      attachPlayer();
-    }
+      //проверяем есть ли места
+      if(ROOMS_WAITING[roomID].playersMax - Object.keys(ROOMS_WAITING[roomID].players).length > 0){
+        attachPlayer();
+      }else{
+        socket.emit('ACC_ROOM_Join_False',roomID)
+      };
+    };
   }else{
     //если нет
     DB.ROOM_Find(roomID).then(result =>{
-      ROOMS_WAITING[result.id] = result;
-      ROOMS_WAITING[result.id].inWait = Date.now();
+      RoomInit(result);
       if(!ROOMS_WAITING[roomID].players[player]){
-        attachPlayer();
+        //проверяем есть ли места
+        if(ROOMS_WAITING[roomID].playersMax - Object.keys(ROOMS_WAITING[roomID].players).length > 0){
+          attachPlayer();
+        }else{
+          socket.emit('ACC_ROOM_Join_False',roomID)
+        };
       };
     });
   };
   function attachPlayer(){
     ROOMS_WAITING[roomID].players[player] = player;
-    console.log(`${player} attached in ${roomID}`);
+    //выкидываем из другой игры
+    if(PLAYERS_ONLINE[player].joined === null){
+      PLAYERS_ONLINE[player].joined = roomID;
+    }else{
+      if(ROOMS_WAITING[PLAYERS_ONLINE[player].joined].players[player]){
+        delete ROOMS_WAITING[PLAYERS_ONLINE[player].joined].players[player];
+      }
+      ROOMS_WAITING[PLAYERS_ONLINE[player].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[player].joined);
+      PLAYERS_ONLINE[player].joined = roomID;
+    }
     socket.emit('ACC_ROOM_Join_True',roomID);
+    
     //автоматически обновляем страницу у всех кто присоединен к комнате
-    for(let playerJoined in ROOMS_WAITING[roomID].players){
-      //у присоединенного не обновляем
-      if(playerJoined != player){
-        //ищем в онлайне ли
-        if(PLAYERS_ONLINE[playerJoined]){
-          SOCKET_LIST[PLAYERS_ONLINE[playerJoined].socket].emit('ACC_ROOM_automaticlyUpdate',roomID);
-        };
-      };
-    };
+    //по новому методу
+    ROOMS_WAITING[roomID].emit('ACC_ROOM_automaticlyUpdate',roomID);
   };
 };
 module.exports.Leave = function(socket,LeaveRoomPack){
@@ -90,14 +116,23 @@ module.exports.Leave = function(socket,LeaveRoomPack){
   };
   function detachPlayer(){
     delete ROOMS_WAITING[roomID].players[player];
-    console.log(`${player} detached from ${roomID}`);
     socket.emit('ACC_ROOM_Leave_True',roomID);
+    PLAYERS_ONLINE[player].joined = null;
+    ROOMS_WAITING[roomID].emit('ACC_ROOM_automaticlyUpdate',roomID);
+  };
+};
 
-    for(let playerJoined in ROOMS_WAITING[roomID].players){
-      //ищем в онлайне ли
-      if(PLAYERS_ONLINE[playerJoined]){
-        SOCKET_LIST[PLAYERS_ONLINE[playerJoined].socket].emit('ACC_ROOM_automaticlyUpdate',roomID);
+
+module.exports.BuildList = function(socket){
+  const gamesArr = [];
+  for(let room in ROOMS_WAITING){
+    if(!ROOMS_WAITING[room].private || ROOMS_WAITING[room].owner === SOCKET_LIST[socket.id].login ){
+      if(ROOMS_WAITING[room].playersMax - Object.keys(ROOMS_WAITING[room].players).length >0
+      || ROOMS_WAITING[room].owner === SOCKET_LIST[socket.id].login
+      || ROOMS_WAITING[room].players[SOCKET_LIST[socket.id].login]){
+        gamesArr.push(ROOMS_WAITING[room]);
       };
     };
   };
+  socket.emit('ACC_GAMES_BuildList_True',gamesArr);
 };

@@ -6,6 +6,7 @@ import {sendNotification} from "/scripts/notifications.js";
 import * as FRIENDS from "/scripts/accPage_Friends.js";
 import * as ROOMS from "/scripts/accPage_Room.js";
 let PLAYER;
+
 const ACC_page = `
 <section class="acc_section">
   <div class="acc_container">
@@ -45,6 +46,7 @@ const ACC_page = `
 //билд контейнера "Друзья"
 function ACC_buildPage(player) {
   PLAYER = player;
+  PLAYER.joinedRoom = null;
   document.querySelector('#body').innerHTML = '';
   document.querySelector('#body').innerHTML = ACC_page;
 
@@ -61,9 +63,7 @@ function clearButtons(){
   document.querySelector('#ACC_button_Friends').classList.remove('acc_button-checked');
   document.querySelector('#ACC_button_Games').classList.remove('acc_button-checked');
   document.querySelector('#ACC_button_NewGame').classList.remove('acc_button-checked');
-}
-
-
+};
 
 
 

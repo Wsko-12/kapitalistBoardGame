@@ -22,7 +22,7 @@ http.listen(PORT, '0.0.0.0', () => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/client/games.html');
+  res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/', express.static(__dirname + '/client'));
 
@@ -100,6 +100,9 @@ io.on('connection', function(socket) {
   });
 
 
+  socket.on('ACC_GAMES_BuildList',function() {
+    ROOMS.BuildList(socket);
+  });
 
 
 
@@ -111,7 +114,6 @@ io.on('connection', function(socket) {
       //Если да, то удаляем из онлайна у его друзей
       const disconLogin = SOCKET_LIST[socket.id].login
 
-
       //проходимся по всем его друзьям в онлайне
       PLAYERS_ONLINE[disconLogin].friends.all.online.forEach((friend) => {
 
@@ -121,14 +123,27 @@ io.on('connection', function(socket) {
           if (disconIndex > -1) {
 
             PLAYERS_ONLINE[friend].friends.all.online.splice(disconIndex, 1);
-            //и высылаем ему апдейт
+            //то что далее высылается новым способом
+            //и высылаем ему сообщение
             //на всякий проверяем
-            if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
-              SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Disconnect', disconLogin);
-            };
+            // if (SOCKET_LIST[PLAYERS_ONLINE[friend].socket]) {
+            //   SOCKET_LIST[PLAYERS_ONLINE[friend].socket].emit('ACC_UpdateOnlineList_Disconnect', disconLogin);
+            // };
           };
         };
       });
+      //высылаем уведомление друзьям
+      PLAYERS_ONLINE[disconLogin].emitFriends('ACC_UpdateOnlineList_Disconnect', disconLogin);
+
+
+
+      //если был в комнате, то выкидываем
+      if(PLAYERS_ONLINE[disconLogin].joined != null){
+        delete ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].players[disconLogin]
+        ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[disconLogin].joined)
+      };
+
+
 
       //удаляем из онлайна
       delete PLAYERS_ONLINE[disconLogin];

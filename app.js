@@ -17,7 +17,7 @@ DB.connectToDB().then(function() {
 
 
 
-http.listen(PORT, '0.0.0.0', () => {
+http.listen(PORT, () => {
 
 });
 

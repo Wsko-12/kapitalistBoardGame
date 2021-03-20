@@ -1,7 +1,6 @@
 import {
   socket
 } from "/scripts/socketInit.js";
-
 import {sendNotification} from "/scripts/notifications.js";
 import * as FRIENDS from "/scripts/accPage_Friends.js";
 import * as ROOMS from "/scripts/accPage_Room.js";
@@ -49,7 +48,6 @@ function ACC_buildPage(player) {
   PLAYER.joinedRoom = null;
   document.querySelector('#body').innerHTML = '';
   document.querySelector('#body').innerHTML = ACC_page;
-
   document.querySelector('#ACC_account_Login').innerHTML = player.login;
 
   document.querySelector('#ACC_button_Friends').onclick = FRIENDS.buildFriendsContainer;
@@ -58,7 +56,6 @@ function ACC_buildPage(player) {
   //запускаем сразу, чтобы пришло всем друзьям уведомление
   FRIENDS.buildFriendsContainer();
 };
-//снять цвет с кнопок Friends, Games, New Game
 function clearButtons(){
   document.querySelector('#ACC_button_Friends').classList.remove('acc_button-checked');
   document.querySelector('#ACC_button_Games').classList.remove('acc_button-checked');

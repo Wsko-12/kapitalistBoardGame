@@ -1,13 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://wsko:${process.env.MONGO}@cluster0.4k9xp.mongodb.net/kapitalistDB?retryWrites=true&w=majority`;
-
-
 let DBConnection;
-
-
-
-
-
 module.exports.connectToDB = async function connectToDB() {
   DBConnection = await MongoClient.connect(uri, {
     useUnifiedTopology: true,
@@ -22,26 +15,20 @@ module.exports.AUTH_findLogin = async function findOne(login) {
       login: login
     };
     const result = await DBConnection.db('kapitalistDB').collection('users').findOne(query);
-
     return result;
-
   } catch (err) {
     console.log(err);
   } finally {
     // client.close();
   };
 };
-
 module.exports.AUTH_registerOne = async function registerOne(userRegPack) {
   try {
     return await DBConnection.db('kapitalistDB').collection('users').insertOne(userRegPack);
-
   } catch (err) {
     // console.log(err);
   };
 };
-
-
 module.exports.PLAYER_new = async function saveNewPlayer(player) {
   try {
     const result = await DBConnection.db('kapitalistDB').collection('players').insertOne(player);
@@ -65,8 +52,6 @@ module.exports.PLAYER_find = async function findOne(login) {
     // client.close();
   };
 };
-
-
 module.exports.PLAYER_updateFriendsRequests = async function FriendsRequests(login,updatedRequestsArr){
   try {
     const query = {
@@ -77,10 +62,8 @@ module.exports.PLAYER_updateFriendsRequests = async function FriendsRequests(log
   } catch (err) {
     // console.log(err);
   }finally{
-
   };
 };
-
 module.exports.PLAYER_updateFriendsSends = async function FriendsSends(login,updatedSendsArr){
   try {
     const query = {
@@ -91,7 +74,6 @@ module.exports.PLAYER_updateFriendsSends = async function FriendsSends(login,upd
   } catch (err) {
     // console.log(err);
   }finally{
-
   };
 };
 module.exports.PLAYER_updateFriends = async function FriendsSends(login,updatedFriendsArr){
@@ -104,7 +86,6 @@ module.exports.PLAYER_updateFriends = async function FriendsSends(login,updatedF
   } catch (err) {
     // console.log(err);
   }finally{
-
   };
 };
 module.exports.ROOM_Create = async function(room){

@@ -12,13 +12,11 @@ global.ROOMS_WAITING = {};
 
 
 DB.connectToDB().then(function() {
-
 });
 
 
 
 http.listen(PORT, () => {
-
 });
 
 app.get('/', (req, res) => {
@@ -109,9 +107,7 @@ io.on('connection', function(socket) {
 
 
   socket.on('disconnect', function() {
-    //Проверяем залогинился ли уже
     if (SOCKET_LIST[socket.id].login) {
-      //Если да, то удаляем из онлайна у его друзей
       const disconLogin = SOCKET_LIST[socket.id].login
 
 

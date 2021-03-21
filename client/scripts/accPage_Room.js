@@ -11,8 +11,8 @@ import {
 } from "/scripts/accPage.js";
 
 import{
-  GAME_start
-} from "/scripts/game/GAME_start.js";
+  GAME_START
+} from "/scripts/game/GAME.js";
 function generateId(type,x){
     let letters = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz';
 
@@ -281,7 +281,7 @@ function EnterRoom_True(room){
 
 
 function startGame(roomID){
-  GAME_start(roomID);
+  GAME_START(roomID);
 };
 
 

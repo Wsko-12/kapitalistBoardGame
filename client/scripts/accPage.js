@@ -47,7 +47,7 @@ const ACC_page = `
 function ACC_buildPage(player) {
   // DEV
   PLAYER = player;
-  console.log(PLAYER);
+  // console.log(PLAYER);
 };
 //снять цвет с кнопок Friends, Games, New Game
 function clearButtons(){

@@ -140,6 +140,18 @@ io.on('connection', function(socket) {
   });
 
 
+  socket.on('GAME_generating_Turns',function(pack){
+      GAME.GenerationTurns(pack);
+  });
+  socket.on('GAME_generating_MapLine_Generated',function(pack){
+      GAME.GenerationMapLine(pack);
+  });
+
+
+
+
+
+
 
 
   socket.on('DEV_newUser',function(){
@@ -150,10 +162,21 @@ io.on('connection', function(socket) {
         break;
       };
     };
-    console.log(GAMES);
     socket.emit('GAME_starting_True',GAMES.DEV_GAME);
   });
 
+  // socket.on('GAME_seatings_Generated',function(pack){
+  //   // const pack = {
+  //   //   game: GAME.id,
+  //   //   sits:GAME.playersInGame,
+  //   // }
+  //   GAMES[pack.game].emit('GAME_seatings_Generated_True',pack.sits);
+  // });
+  //
+  // socket.on('GAME_GENERATED',function(gameID){
+  //   GAMES[gameID].generated = true;
+  //   GAMES[gameID].emit('GAME_GENERATED_True');
+  // });
 
 
 
@@ -161,6 +184,7 @@ io.on('connection', function(socket) {
   socket.on('disconnect', function() {
     //Проверяем залогинился ли уже
     if (SOCKET_LIST[socket.id].login) {
+      let inGame = null;
       //Если да, то удаляем из онлайна у его друзей
       const disconLogin = SOCKET_LIST[socket.id].login
 
@@ -193,13 +217,23 @@ io.on('connection', function(socket) {
           delete ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].players[disconLogin]
           ROOMS_WAITING[PLAYERS_ONLINE[disconLogin].joined].emit('ACC_ROOM_automaticlyUpdate',PLAYERS_ONLINE[disconLogin].joined)
         };
+      };
+
+      //если был в игре, то выкидываем
+      if(PLAYERS_ONLINE[disconLogin].inGame != null){
+        inGame = PLAYERS_ONLINE[disconLogin].inGame;
+        delete GAMES[PLAYERS_ONLINE[disconLogin].inGame].playersInGame[disconLogin]
 
       };
 
 
-
+      console.log(inGame)
       //удаляем из онлайна
       delete PLAYERS_ONLINE[disconLogin];
+      if(!!inGame){
+        GAMES[inGame].emit('GAME_inGame_Disconected',disconLogin);
+        GAMES[inGame].emitOwner('GAME_seatings_Regenerate');
+      }
     };
     //удаляем сокет
     delete SOCKET_LIST[socket.id];

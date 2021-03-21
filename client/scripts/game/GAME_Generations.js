@@ -10,8 +10,9 @@ import {
   clearButtons
 } from "/scripts/accPage.js";
 import {GAME}from "/scripts/game/GAME.js"
+import {GAME_Scene_Init}from "/scripts/game/GAME_Scene.js"
 import * as MAP_SETTINGS from "/scripts/gameSettings/map.js"
-import * as GLOBAL_GAME_SETTINGS from "/scripts/gameSettings/GLOBAL_GAME_SETTINGS.js"
+
 
 
 
@@ -22,9 +23,6 @@ import * as GLOBAL_GAME_SETTINGS from "/scripts/gameSettings/GLOBAL_GAME_SETTING
 
 function GAME_GENERATION(){
     Generation_Turns();
-   // buildTurns();
-   // generateMap();
-   // generateSeating();
 };
 
 function Generation_Turns(){
@@ -117,14 +115,14 @@ function MakeMapFlagsArr(mapNamesArr){
          case 'sea':
                flag = 2;
            break;
-         case 'MetallPlant':
-         case 'ChemicalPlant' :
-         case 'PaperPlant' :
-         case 'GlassPlant' :
-         case 'BuildingPlant' :
-         case 'FurniturePlant':
-               flag = 4;
-           break;
+         // case 'MetallPlant':
+         // case 'ChemicalPlant' :
+         // case 'PaperPlant' :
+         // case 'GlassPlant' :
+         // case 'BuildingPlant' :
+         // case 'FurniturePlant':
+         //       flag = 4;
+         //   break;
 
        };
        mapFlagsArr[z].push(flag);
@@ -148,64 +146,12 @@ function MakeCitiesDesignate(mapNamesArr){
       };
     };
   };
-
-  makeMapBuildings();
+  const pack = {
+    login:PLAYER.login,
+    game:GAME.id,
+  }
+  socket.emit('GAME_generating_Finished',pack)
 };
-function makeMapBuildings(){
-  const buildingsArr = []
-  for(let z = 0;z<MAP_SETTINGS.MAP_NULL_ARR.length;z++){
-    buildingsArr.push([]);
-    for(let x=0;x<MAP_SETTINGS.MAP_NULL_ARR[z].length;x++){
-      buildingsArr.push(0);
-    };
-  };
-
-
-
-  for(let z = 0; z < mapNamesArr.length;z++){
-    for(let x = 0; x < mapNamesArr[z].length;x++){
-      if(mapNamesArr[z][x] === 'MetallPlant'){
-        buildProcessingFactory('MetallPlant',z,x);
-      };
-      if(mapNamesArr[z][x] === 'ChemicalPlant'){
-        buildProcessingFactory('ChemicalPlant',z,x);
-      };
-      if(mapNamesArr[z][x] === 'PaperPlant'){
-        buildProcessingFactory('PaperPlant',z,x);
-      };
-      if(mapNamesArr[z][x] === 'GlassPlant'){
-        buildProcessingFactory('GlassPlant',z,x);
-      };
-      if(mapNamesArr[z][x] === 'BuildingPlant'){
-        buildProcessingFactory('BuildingPlant',z,x);
-      };
-      if(mapNamesArr[z][x] === 'FurniturePlant'){
-        buildProcessingFactory('FurniturePlant',z,x);
-      };
-    };
-  };
-
-
-  function buildProcessingFactory(type,z,x){
-
-
-
-
-
-
-  };
-
-
-
-
-
-
-
-};
-
-
-
-
 
 
 
@@ -236,102 +182,6 @@ function makeMapBuildings(){
 //   }
 // };
 
-
-function buildTurns(){
-  const usersTurns = {
-    line:[],
-    tern:0,
-  };
-  for(let player in GAME.playersJoined){
-    usersTurns.line.push(player);
-  };
-  let pack = {
-    game:GAME.id,
-    turns:usersTurns,
-  }
-  socket.emit('GAME_turns_Buildet',pack);
-};
-function generateMap(){
-  const mapArrNames = [];
-  for(let cell in MAP_SETTINGS.MAP_CELL_AMOUNT){
-    for(let count = 0; count < MAP_SETTINGS.MAP_CELL_AMOUNT[cell];count++){
-			mapArrNames.push(cell)
-		};
-  };
-  function makeRandomArr(a, b) {
-  		return Math.random() - 0.5;
-	}
-  mapArrNames.sort(makeRandomArr);
-
-
-  const MAP_ARR = [];
-  let mapArrNames_index = 0;
-  for(let zIndex = 0; zIndex < MAP_SETTINGS.MAP_NULL_ARR.length;zIndex++){
-    MAP_ARR.push([]);
-    for(let xIndex = 0; xIndex < MAP_SETTINGS.MAP_NULL_ARR[zIndex].length;xIndex++){
-      MAP_ARR[zIndex].push(mapArrNames[mapArrNames_index]);
-      mapArrNames_index++;
-    };
-  };
-
-  let generatedMapPack = {
-    game:GAME.id,
-    map:MAP_ARR,
-  };
-  socket.emit('GAME_map_Generated',generatedMapPack);
-};
-
-function buildMapFlagsArr(MapArr){
-  const MAP_FLAGS_ARR = [];
-  for(let zIndex = 0; zIndex < MapArr.length;zIndex++){
-    MAP_FLAGS_ARR.push([]);
-    for(let xIndex = 0; xIndex < MapArr[zIndex].length;xIndex++){
-      let flag;
-      switch (MapArr[zIndex][xIndex]) {
-        case 'sand_block' :
-        case 'mountain_block' :
-        case 'swamps_block':
-        case 'sea_block':
-          flag = 1;
-          break;
-        case 'city':
-            flag = 0;
-            break;
-        case 'meadow':
-        case 'sand' :
-        case 'forest' :
-        case 'mountain' :
-        case 'swamps' :
-        case 'sea':
-              flag = 2;
-        break;
-      };
-      MAP_FLAGS_ARR[zIndex].push(flag);
-    };
-  };
-
-
-  GAME.map.flags = MAP_FLAGS_ARR;
-
-};
-function disignateCities(){
-  let cityCounter = 0;
-  for(let zIndex = 0; zIndex < GAME.map.names.length;zIndex++){
-    for(let xIndex = 0; xIndex < GAME.map.names[zIndex].length;xIndex++){
-      if(GAME.map.names[zIndex][xIndex] === 'city'){
-        GAME.map.cities[MAP_SETTINGS.MAP_CITIES[cityCounter]][0] = zIndex;
-        GAME.map.cities[MAP_SETTINGS.MAP_CITIES[cityCounter]][1] = xIndex;
-        cityCounter++
-      };
-    };
-  };
-  let pack = {
-    game: GAME.id,
-    citiesObj: GAME.map.cities
-  };
-  socket.emit('GAME_starting_designateСities_True',pack)
-};
-
 document.addEventListener("DOMContentLoaded", function(){
 
   socket.on('GAME_generating_Turns_True',function(pack){
@@ -347,32 +197,10 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 
 
+  socket.on('GAME_scene_Start',function(){
+    GAME_Scene_Init();
+  });
 
-
-
-  // socket.on('GAME_map_Generated_True',function(MapArr){
-  //     GAME.map.names = MapArr;
-  //     buildMapFlagsArr(MapArr);
-  // });
-  // socket.on('GAME_starting_designateСities',function(){
-  //   disignateCities();
-  // });
-  //
-  // socket.on('GAME_starting_designateСities_True_True',function(citiesObj){
-  //   GAME.map.cities = citiesObj;
-  // });
-  //
-  // socket.on('GAME_seatings_Generated_True',function(playerSits){
-  //   GAME.playersInGame = playerSits;
-  //   console.log(GAME);
-  // });
-  // socket.on('GAME_seatings_Regenerate',function(){
-  //   generateSeating();
-  // });
-  //
-  // socket.on('GAME_GENERATED_True',function(){
-  //   GAME.generated = true;
-  // });
 
 
 

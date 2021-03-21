@@ -64,6 +64,26 @@ function GameStart_End(){
   waitingScreen(false);
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function(){
 
   socket.on('GAME_starting_True',function(gameClient){

@@ -99,7 +99,6 @@ function GameEmitSecondOwner(message, data) {
   for (let player of this.owners) {
     if (PLAYERS_ONLINE[player] && this.playersInGame[player]) {
       ownerIndex = this.owners.indexOf(player);
-      console.log(player);
       PLAYERS_ONLINE[player].emit(message, data);
       break;
     };
@@ -133,7 +132,6 @@ module.exports.StartDevGame = function() {
     test4: 'test4',
   };
   gameServer.playersJoined = makePlayersObj(temp);
-  console.log(gameServer.playersJoined)
   gameServer.owner = 'test1';
   const gameClient = {};
 
@@ -208,4 +206,14 @@ module.exports.GenerationTurns = function(pack){
 module.exports.GenerationMapLine = function(pack){
   GAMES[pack.game].map.mapLine = pack.MapLineArr;
   GAMES[pack.game].emit('GAME_generating_MapLine_True',pack.MapLineArr);
+};
+
+module.exports.FinishGeneration = function(pack){
+  GAMES[pack.game].playersInGame[pack.login].generatedStatus = true;
+  for(let player in GAMES[pack.game].playersInGame){
+    if(!GAMES[pack.game].playersInGame[player].generatedStatus){
+      return;
+    };
+  };
+  GAMES[pack.game].emit('GAME_scene_Start');
 };

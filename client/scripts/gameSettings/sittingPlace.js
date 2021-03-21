@@ -1,4 +1,4 @@
-import * from "/scripts/gameSettings/map.js"
+import {RADIUS,ROUNDS} from "/scripts/gameSettings/map.js"
 
 const USER_SIT_DISTANCE = RADIUS*(ROUNDS*3);
 const USER_SIT_POSITIONS = {

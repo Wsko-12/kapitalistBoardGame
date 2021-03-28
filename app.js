@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 const DB = require('./modules/db.js');
 const AUTH = require('./modules/auth.js');
 const FRIENDS = require('./modules/friends.js');
-const ROOMS = require('./modules/rooms.js');
+
 const GAME = require('./modules/GAME/game.js');
 
 
@@ -33,7 +33,8 @@ global.SOCKET_LIST = {};
 global.PLAYERS_ONLINE = {};
 global.ROOMS_WAITING = {};
 global.GAMES = {};
-const GAME_TEST = GAME.StartDevGame();
+
+const ROOMS = require('./modules/rooms.js');
 
 
 
@@ -139,6 +140,13 @@ io.on('connection', function(socket) {
     GAME.EnterGame(EnterGamePack);
   });
 
+  socket.on('GAME_return',function(pack){
+    GAME.ReturnToGame(pack);
+  });
+  socket.on('GAME_return_GetInfo_True',function(pack){
+    GAME.ReturnPlayerToGameFirstStep(pack);
+  });
+
 
   socket.on('GAME_generating_Turns',function(pack){
       GAME.GenerationTurns(pack);
@@ -149,6 +157,12 @@ io.on('connection', function(socket) {
   socket.on('GAME_generating_Finished',function(pack){
       GAME.FinishGeneration(pack);
   });
+
+  socket.on('GAME_REgenerating_Finished',function(pack){
+    GAME.FinishREGeneration(pack);
+  });
+
+
 
 
 
@@ -165,21 +179,16 @@ io.on('connection', function(socket) {
         break;
       };
     };
-    socket.emit('GAME_starting_True',GAMES.DEV_GAME);
-  });
 
-  // socket.on('GAME_seatings_Generated',function(pack){
-  //   // const pack = {
-  //   //   game: GAME.id,
-  //   //   sits:GAME.playersInGame,
-  //   // }
-  //   GAMES[pack.game].emit('GAME_seatings_Generated_True',pack.sits);
-  // });
-  //
-  // socket.on('GAME_GENERATED',function(gameID){
-  //   GAMES[gameID].generated = true;
-  //   GAMES[gameID].emit('GAME_GENERATED_True');
-  // });
+    if(Object.keys(PLAYERS_ONLINE).length === 4 && !GAMES.DEV_GAME){
+      PLAYERS_ONLINE.test1.emit("DEV__StartGameFromRoom");
+    };
+
+    if(GAMES.DEV_GAME){
+      socket.emit("DEV__ReturnToGameFromRoom");
+    };
+
+  });
 
 
 
@@ -226,17 +235,15 @@ io.on('connection', function(socket) {
       if(PLAYERS_ONLINE[disconLogin].inGame != null){
         inGame = PLAYERS_ONLINE[disconLogin].inGame;
         delete GAMES[PLAYERS_ONLINE[disconLogin].inGame].playersInGame[disconLogin]
-
       };
 
 
-      console.log(inGame)
       //удаляем из онлайна
       delete PLAYERS_ONLINE[disconLogin];
       if(!!inGame){
         GAMES[inGame].emit('GAME_inGame_Disconected',disconLogin);
         GAMES[inGame].emitOwner('GAME_seatings_Regenerate');
-      }
+      };
     };
     //удаляем сокет
     delete SOCKET_LIST[socket.id];

@@ -185,5 +185,6 @@ function buildModels(){
 
 
 export{
-  GAME_Scene_Init
+  GAME_Scene_Init,
+  takeSitPlace,
 }

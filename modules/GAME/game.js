@@ -121,37 +121,6 @@ function sendOwnerStartGenerateGame(EnterGamePack) {
 };
 
 
-
-module.exports.StartDevGame = function() {
-  const gameServer = gameNULL();
-  gameServer.id = 'DEV_GAME';
-  const temp = {
-    test1: 'test1',
-    test2: 'test2',
-    test3: 'test3',
-    test4: 'test4',
-  };
-  gameServer.playersJoined = makePlayersObj(temp);
-  gameServer.owner = 'test1';
-  const gameClient = {};
-
-
-  for (let player in gameServer.playersJoined) {
-    gameServer.owners.push(player);
-  }
-
-  for (let key in gameServer) {
-    gameClient[key] = gameServer[key];
-  }
-  delete gameClient.emit, gameClient.emitOwner, gameClient.emitSecondOwner;
-
-
-  global.GAMES[gameServer.id] = gameServer;
-
-  // ROOMS_WAITING[roomID].emit('GAME_starting_True',gameClient);
-  // delete ROOMS_WAITING[roomID]
-}
-
 module.exports.Start = function(socket, roomID) {
   const gameServer = gameNULL();
   gameServer.id = roomID;
@@ -161,7 +130,7 @@ module.exports.Start = function(socket, roomID) {
   const gameClient = {};
 
   for (let player in gameServer.playersJoined) {
-    ameServer.owners.push(player);
+    gameServer.owners.push(player);
   }
 
   for (let key in gameServer) {
@@ -215,5 +184,63 @@ module.exports.FinishGeneration = function(pack){
       return;
     };
   };
+  GAMES[pack.game].generated = true;
   GAMES[pack.game].emit('GAME_scene_Start');
+
+};
+
+
+
+
+
+module.exports.ReturnToGame = function(pack){
+  GAMES[pack.game].emitOwner('GAME_return_GetInfo',pack);
+};
+
+module.exports.ReturnPlayerToGameFirstStep = function(pack){
+  if(PLAYERS_ONLINE[pack.login]){
+    const returnGamePack = gameNULL();
+    delete returnGamePack.emit, returnGamePack.emitOwner, returnGamePack.emitSecondOwner;
+
+    returnGamePack.id = pack.game;
+
+    returnGamePack.generated = GAMES[pack.game].generated;
+    returnGamePack.started = GAMES[pack.game].started;
+
+    returnGamePack.owner = GAMES[pack.game].owner;
+    returnGamePack.owners = GAMES[pack.game].owners;
+    returnGamePack.ownerIndex = GAMES[pack.game].ownerIndex;
+    returnGamePack.turns = GAMES[pack.game].turns;
+    returnGamePack.map.mapLine = GAMES[pack.game].map.mapLine;
+
+
+    returnGamePack.playersJoined = pack.gameInfo.playersJoined;
+    returnGamePack.playersInGame = pack.gameInfo.playersInGame;
+
+    PLAYERS_ONLINE[pack.login].emit('GAME_return_firstStep',returnGamePack);
+  };
+};
+
+module.exports.FinishREGeneration = function(pack){
+  GAMES[pack.game].emit('GAME_inGame_Conected', pack.login);
+
+
+
+
+
+  GAMES[pack.game].playersInGame[pack.login] = {
+    login: pack.login,
+    generatedStatus: true,
+  };
+
+
+  if(PLAYERS_ONLINE[pack.login]){
+    PLAYERS_ONLINE[pack.login].emit('GAME_starting_UserEntered',GAMES[pack.game].playersInGame);
+    PLAYERS_ONLINE[pack.login].emit('GAME_scene_RegenerateStart');
+  };
+
+
+
+
+
 };

@@ -10,7 +10,7 @@ import {
   clearButtons
 } from "/scripts/accPage.js";
 import {GAME}from "/scripts/game/GAME.js"
-import {GAME_Scene_Init}from "/scripts/game/GAME_Scene.js"
+import * as SCENE from "/scripts/game/GAME_Scene.js"
 import * as MAP_SETTINGS from "/scripts/gameSettings/map.js"
 
 
@@ -41,7 +41,7 @@ function Generation_Turns(){
 
 
 
-function ApplyTurnsPack(pack,){
+function ApplyTurnsPack(pack){
   GAME.turns = pack;
 };
 
@@ -66,13 +66,13 @@ function Generation_MapLineArr(){
   socket.emit('GAME_generating_MapLine_Generated',pack);
 };
 
-function ApplyMapLineArr(MapLineArr){
+function ApplyMapLineArr(MapLineArr,Regenerate){
   GAME.map.mapLine = MapLineArr;
-  MakeMapNamesArr(MapLineArr);
+  MakeMapNamesArr(MapLineArr,Regenerate);
 };
 
 
-function MakeMapNamesArr(MapLineArr){
+function MakeMapNamesArr(MapLineArr,Regenerate){
   let mapNamesArr = [];
   for(let z = 0;z<MAP_SETTINGS.MAP_NULL_ARR.length;z++){
     mapNamesArr.push([]);
@@ -88,10 +88,10 @@ function MakeMapNamesArr(MapLineArr){
       };
   };
   GAME.map.mapNamesArr = mapNamesArr;
-  MakeMapFlagsArr(mapNamesArr);
+  MakeMapFlagsArr(mapNamesArr,Regenerate);
 };
 
-function MakeMapFlagsArr(mapNamesArr){
+function MakeMapFlagsArr(mapNamesArr,Regenerate){
   const mapFlagsArr = [];
   for(let z=0;z<mapNamesArr.length;z++){
     mapFlagsArr.push([]);
@@ -129,13 +129,13 @@ function MakeMapFlagsArr(mapNamesArr){
     };
   };
   GAME.map.mapFlagsArr = mapFlagsArr;
-  MakeCitiesDesignate(mapNamesArr);
+  MakeCitiesDesignate(mapNamesArr,Regenerate);
 };
 
 
 
 
-function MakeCitiesDesignate(mapNamesArr){
+function MakeCitiesDesignate(mapNamesArr,Regenerate){
   let cityCounter = 0;
   for(let z = 0; z <mapNamesArr.length;z++){
     for(let x = 0; x < mapNamesArr[z].length;x++){
@@ -150,37 +150,16 @@ function MakeCitiesDesignate(mapNamesArr){
     login:PLAYER.login,
     game:GAME.id,
   }
-  socket.emit('GAME_generating_Finished',pack)
+  GAME.generated = true;
+
+
+  if(Regenerate){
+    socket.emit('GAME_REgenerating_Finished',pack);
+  }else{
+    socket.emit('GAME_generating_Finished',pack)
+  };
 };
 
-
-
-
-
-
-
-
-// function generateSeating(){
-//   let count = Object.keys(GAME.playersInGame).length;
-//   let index = 0;
-//   for(let player in GAME.playersInGame){
-//     GAME.playersInGame[player] = {};
-//     GAME.playersInGame[player].position = {};
-//     GAME.playersInGame[player].position.x = MAP_SETTINGS.USER_SIT_POSITIONS[count][index].x;
-//     GAME.playersInGame[player].position.z = MAP_SETTINGS.USER_SIT_POSITIONS[count][index].z;
-//     index++;
-//   };
-//
-//   const pack = {
-//     game: GAME.id,
-//     sits:GAME.playersInGame,
-//   }
-//   socket.emit('GAME_seatings_Generated',pack);
-//
-//   if(!GAME.generated){
-//     socket.emit('GAME_GENERATED',GAME.id);
-//   }
-// };
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -193,18 +172,22 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 
   socket.on('GAME_generating_MapLine_True',function(MapLineArr){
-    ApplyMapLineArr(MapLineArr);
+    ApplyMapLineArr(MapLineArr,false);
   });
 
 
   socket.on('GAME_scene_Start',function(){
-    GAME_Scene_Init();
+    SCENE.GAME_Scene_Init();
   });
 
+  socket.on('GAME_scene_RegenerateStart',function(){
+    SCENE.GAME_Scene_Init();
+  });
 
 
 
 });
 export{
   GAME_GENERATION,
+  ApplyMapLineArr,
 };

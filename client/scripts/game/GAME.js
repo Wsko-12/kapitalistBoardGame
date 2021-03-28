@@ -7,11 +7,13 @@ import {
 import {
   GAME_GENERATION
 }from "/scripts/game/GAME_Generations.js";
+import * as SENDING from "/scripts/game/GAME_Sendings.js";
 import {
   PLAYER,
   ACC_buildPage,
   clearButtons
 } from "/scripts/accPage.js";
+import * as SCENE from "/scripts/game/GAME_Scene.js"
 
 let GAME = {};
 
@@ -23,28 +25,7 @@ function GAME_START(roomID){
   socket.emit('GAME_starting',roomID);
 };
 
-function waitingScreen(on){
-  const screen = `
-  <div id="waitingGameScreen">
-    <div id="waitingGameScreen_Titile">Waiting Players:</div>
-    <div id="waitingGameScreen_Players"></div>
-  </div>`
-  if(on){
-    document.querySelector('#body').innerHTML = screen;
-    for(let player in GAME.playersJoined){
-      if(GAME.playersInGame[player] === undefined){
-        document.querySelector('#waitingGameScreen_Players').innerHTML += player + ', ';
-      };
-    };
-
-  }else{
-    document.querySelector('#body').innerHTML = '';
-  };
-};
-
-
 function GameStart_Start(gameClient){
-  waitingScreen(true);
   GAME = gameClient;
   const EnterGamePack = {
     login:PLAYER.login,
@@ -55,16 +36,26 @@ function GameStart_Start(gameClient){
 
 function GameStart_EnterPlayer(playersInGame){
   GAME.playersInGame = playersInGame;
-  waitingScreen(true);
+
+  for(let player in GAME.playersInGame){
+    delete GAME.playersInGame[player].generatedStatus;
+  };
 };
 
 
 function GameStart_End(){
   GAME.started = true;
-  waitingScreen(false);
 };
 
 
+
+function GAME_RETURN(gameID){
+  const pack = {
+    game:gameID,
+    login:PLAYER.login,
+  }
+  socket.emit('GAME_return',pack);
+};
 
 
 
@@ -101,12 +92,37 @@ document.addEventListener("DOMContentLoaded", function(){
     GAME_GENERATION();
   });
 
+
+
+
+
+
+  socket.on('GAME_return_GetInfo',function(pack){
+    SENDING.SEND_ALL(pack);
+  });
+
+  socket.on('GAME_return_firstStep',function(returnGamePack){
+    SENDING.APPLY_ALL(returnGamePack);
+  });
+
+
+
+
+
+
+
   socket.on('GAME_inGame_Disconected',function(disconLogin){
     delete GAME.playersInGame[disconLogin];
+    SCENE.takeSitPlace();
   });
+  socket.on('GAME_inGame_Conected',function(conLogin){
+    GAME.playersInGame[conLogin] = conLogin;
+    SCENE.takeSitPlace();
+  });
+
 
 });
 
 export{
-  GAME_START,GAME
+  GAME_START,GAME,GAME_RETURN,
 };

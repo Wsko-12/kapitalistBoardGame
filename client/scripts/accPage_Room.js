@@ -11,7 +11,8 @@ import {
 } from "/scripts/accPage.js";
 
 import{
-  GAME_START
+  GAME_START,
+  GAME_RETURN,
 } from "/scripts/game/GAME.js";
 function generateId(type,x){
     let letters = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz';
@@ -284,6 +285,15 @@ function startGame(roomID){
   GAME_START(roomID);
 };
 
+function returnToGame(roomID){
+  GAME_RETURN(roomID);
+};
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", function(){
   socket.on('ACC_NROOM_Create_True',function(room){
@@ -329,5 +339,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 export {
   buildNewGameContainer,
-  buildGameContainer
+  buildGameContainer,
+  startGame,
+  returnToGame,
 };

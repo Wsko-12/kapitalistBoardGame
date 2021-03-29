@@ -49,7 +49,7 @@ http.listen(PORT, '0.0.0.0', () => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/client/DEVindex.html');
+  res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/', express.static(__dirname + '/client'));
 

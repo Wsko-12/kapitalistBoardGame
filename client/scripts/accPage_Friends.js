@@ -382,7 +382,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
   //С сервера пришло уведомление что друг покинул
   socket.on('ACC_UpdateOnlineList_Disconnect',function(friendDisconnected){
-    console.log('ACC_UpdateOnlineList_Disconnect')
     const disconIndex = PLAYER.friends.all.online.indexOf(friendDisconnected);
     if(disconIndex > -1){
       PLAYER.friends.all.online.splice(friendDisconnected, 1);

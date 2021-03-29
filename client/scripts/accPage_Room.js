@@ -9,7 +9,6 @@ import {
   ACC_buildPage,
   clearButtons
 } from "/scripts/accPage.js";
-
 import{
   buildGameStart,
   rebuildGame,
@@ -285,15 +284,6 @@ function startGame(roomID){
   buildGameStart(roomID);
 };
 
-function returnToGame(roomID){
-  rebuildGame(roomID);
-};
-
-
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", function(){
   socket.on('ACC_NROOM_Create_True',function(room){
@@ -339,7 +329,5 @@ document.addEventListener("DOMContentLoaded", function(){
 
 export {
   buildNewGameContainer,
-  buildGameContainer,
-  startGame,
-  returnToGame,
+  buildGameContainer
 };

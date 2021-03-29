@@ -51,6 +51,7 @@ function initializeScene(){
 
   RENDER_SETTINGS.initRenderSettingsMenu();
   RENDERER = new THREE.WebGLRenderer();
+  document.querySelector('#body').innerHTML = '';
   document.querySelector('#body').appendChild(RENDERER.domElement);
   CAMERA = new THREE.PerspectiveCamera(45, 2, 0.5, 100);
   CAMERA.position.set(0,15,15)

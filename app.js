@@ -133,34 +133,39 @@ io.on('connection', function(socket) {
 
 
 
-  socket.on('GAME_starting',function(roomID){
-    GAME.Start(socket,roomID);
+  socket.on('GAME_buildGame',function(roomID){
+    GAME.Build(socket,roomID);
   });
-  socket.on('GAME_starting_EnterGame',function(EnterGamePack){
-    GAME.EnterGame(EnterGamePack);
-  });
-
-  socket.on('GAME_return',function(pack){
-    GAME.ReturnToGame(pack);
-  });
-  socket.on('GAME_return_GetInfo_True',function(pack){
-    GAME.ReturnPlayerToGameFirstStep(pack);
+  socket.on('GAME_buildGame_EnteringGame',function(EnterGamePack){
+    GAME.EnteringGame(EnterGamePack);
   });
 
 
-  socket.on('GAME_generating_Turns',function(pack){
+  socket.on('GAME_generating_turns',function(pack){
       GAME.GenerationTurns(pack);
   });
-  socket.on('GAME_generating_MapLine_Generated',function(pack){
+  socket.on('GAME_generating_mapLineGenerated',function(pack){
       GAME.GenerationMapLine(pack);
   });
-  socket.on('GAME_generating_Finished',function(pack){
+  socket.on('GAME_generating_finished',function(pack){
       GAME.FinishGeneration(pack);
   });
 
-  socket.on('GAME_REgenerating_Finished',function(pack){
-    GAME.FinishREGeneration(pack);
+
+  socket.on('GAME_rebuild',function(pack){
+    GAME.ReturnToGame(pack);
   });
+  socket.on('GAME_rebuild_sendInfo',function(pack){
+    GAME.ReturnPlayerToGame(pack);
+  });
+  socket.on('GAME_rebuild_finished',function(pack){
+    GAME.FinishRebuild(pack);
+  });
+
+
+
+
+
 
 
 

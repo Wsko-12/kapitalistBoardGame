@@ -111,20 +111,12 @@ function GameEmitSecondOwner(message, data) {
 
 
 
-function sendPlayersGameStartingEnd(EnterGamePack) {
-  GAMES[EnterGamePack.game].started = true;
-  GAMES[EnterGamePack.game].emit('GAME_starting_End');
-};
-
-function sendOwnerStartGenerateGame(EnterGamePack) {
-  GAMES[EnterGamePack.game].emitOwner('GAME_generating_Start');
-};
 
 
-module.exports.Start = function(socket, roomID) {
+module.exports.Build = function(socket, roomID) {
   const gameServer = gameNULL();
   gameServer.id = roomID;
-  gameServer.playersJoined =makePlayersObj(ROOMS_WAITING[roomID].players);
+  gameServer.playersJoined = makePlayersObj(ROOMS_WAITING[roomID].players);
   gameServer.owner = ROOMS_WAITING[roomID].owner;
 
   const gameClient = {};
@@ -142,11 +134,11 @@ module.exports.Start = function(socket, roomID) {
 
   GAMES[gameServer.id] = gameServer;
 
-  ROOMS_WAITING[roomID].emit('GAME_starting_True', gameClient);
+  ROOMS_WAITING[roomID].emit('GAME_buildGame_Continue', gameClient);
   delete ROOMS_WAITING[roomID]
 };
 
-module.exports.EnterGame = function(EnterGamePack) {
+module.exports.EnteringGame = function(EnterGamePack) {
 
   PLAYERS_ONLINE[EnterGamePack.login].inGame = EnterGamePack.game;
 
@@ -155,7 +147,7 @@ module.exports.EnterGame = function(EnterGamePack) {
     generatedStatus:false,
   };
 
-  GAMES[EnterGamePack.game].emit('GAME_starting_UserEntered', GAMES[EnterGamePack.game].playersInGame);
+  GAMES[EnterGamePack.game].emit('GAME_buildGame_UserEntered', GAMES[EnterGamePack.game].playersInGame);
 
   //если все игроки в игре
   if (Object.keys(GAMES[EnterGamePack.game].playersJoined).length === Object.keys(GAMES[EnterGamePack.game].playersInGame).length) {
@@ -164,17 +156,27 @@ module.exports.EnterGame = function(EnterGamePack) {
   };
 };
 
+function sendPlayersGameStartingEnd(EnterGamePack) {
+  GAMES[EnterGamePack.game].started = true;
+  GAMES[EnterGamePack.game].emit('GAME_buildGame_Finish');
+};
+
+function sendOwnerStartGenerateGame(EnterGamePack) {
+  GAMES[EnterGamePack.game].emitOwner('GAME_generating_Start');
+};
+
+
 
 
 module.exports.GenerationTurns = function(pack){
   GAMES[pack.game].turns = pack.turns
-  GAMES[pack.game].emit('GAME_generating_Turns_True',pack.turns);
-  GAMES[pack.game].emitOwner('GAME_generating_MapLine');
+  GAMES[pack.game].emit('GAME_generating_applyTurns',pack.turns);
+  GAMES[pack.game].emitOwner('GAME_generating_generateMapLine');
 };
 
 module.exports.GenerationMapLine = function(pack){
   GAMES[pack.game].map.mapLine = pack.MapLineArr;
-  GAMES[pack.game].emit('GAME_generating_MapLine_True',pack.MapLineArr);
+  GAMES[pack.game].emit('GAME_generating_applyMapLine',pack.MapLineArr);
 };
 
 module.exports.FinishGeneration = function(pack){
@@ -194,10 +196,10 @@ module.exports.FinishGeneration = function(pack){
 
 
 module.exports.ReturnToGame = function(pack){
-  GAMES[pack.game].emitOwner('GAME_return_GetInfo',pack);
+  GAMES[pack.game].emitOwner('GAME_rebuild_getInfo',pack);
 };
 
-module.exports.ReturnPlayerToGameFirstStep = function(pack){
+module.exports.ReturnPlayerToGame = function(pack){
   if(PLAYERS_ONLINE[pack.login]){
     const returnGamePack = gameNULL();
     delete returnGamePack.emit, returnGamePack.emitOwner, returnGamePack.emitSecondOwner;
@@ -217,15 +219,13 @@ module.exports.ReturnPlayerToGameFirstStep = function(pack){
     returnGamePack.playersJoined = pack.gameInfo.playersJoined;
     returnGamePack.playersInGame = pack.gameInfo.playersInGame;
 
-    PLAYERS_ONLINE[pack.login].emit('GAME_return_firstStep',returnGamePack);
+    PLAYERS_ONLINE[pack.login].inGame = pack.game;
+    PLAYERS_ONLINE[pack.login].emit('GAME_rebuild_finish',returnGamePack);
   };
 };
 
-module.exports.FinishREGeneration = function(pack){
+module.exports.FinishRebuild = function(pack){
   GAMES[pack.game].emit('GAME_inGame_Conected', pack.login);
-
-
-
 
 
   GAMES[pack.game].playersInGame[pack.login] = {
@@ -235,12 +235,8 @@ module.exports.FinishREGeneration = function(pack){
 
 
   if(PLAYERS_ONLINE[pack.login]){
-    PLAYERS_ONLINE[pack.login].emit('GAME_starting_UserEntered',GAMES[pack.game].playersInGame);
+    PLAYERS_ONLINE[pack.login].emit('GAME_buildGame_UserEntered',GAMES[pack.game].playersInGame);
     PLAYERS_ONLINE[pack.login].emit('GAME_scene_RegenerateStart');
   };
-
-
-
-
 
 };

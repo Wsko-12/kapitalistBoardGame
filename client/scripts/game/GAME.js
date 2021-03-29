@@ -2,18 +2,22 @@ import {
   socket
 } from "/scripts/socketInit.js";
 import {
-  sendNotification
-} from "/scripts/notifications.js";
-import {
-  GAME_GENERATION
-}from "/scripts/game/GAME_Generations.js";
-import * as SENDING from "/scripts/game/GAME_Sendings.js";
-import {
   PLAYER,
-  ACC_buildPage,
-  clearButtons
 } from "/scripts/accPage.js";
-import * as SCENE from "/scripts/game/GAME_Scene.js"
+
+
+
+
+
+import * as BUILD from './modules/build.js';
+import * as SENDING from './modules/sendings.js';
+import * as GENERATION from './modules/generation.js'
+import * as SCENE from "./modules/scene.js";
+
+
+
+
+
 
 let GAME = {};
 
@@ -21,40 +25,18 @@ let GAME = {};
 
 
 
-function GAME_START(roomID){
-  socket.emit('GAME_starting',roomID);
-};
-
-function GameStart_Start(gameClient){
-  GAME = gameClient;
-  const EnterGamePack = {
-    login:PLAYER.login,
-    game:GAME.id,
-  };
-  socket.emit('GAME_starting_EnterGame',EnterGamePack)
-};
-
-function GameStart_EnterPlayer(playersInGame){
-  GAME.playersInGame = playersInGame;
-
-  for(let player in GAME.playersInGame){
-    delete GAME.playersInGame[player].generatedStatus;
-  };
+function buildGameStart(roomID){
+  GAME = {};
+  socket.emit('GAME_buildGame',roomID);
 };
 
 
-function GameStart_End(){
-  GAME.started = true;
-};
-
-
-
-function GAME_RETURN(gameID){
+function rebuildGame(gameID){
   const pack = {
     game:gameID,
     login:PLAYER.login,
   }
-  socket.emit('GAME_return',pack);
+  socket.emit('GAME_rebuild',pack);
 };
 
 
@@ -77,19 +59,19 @@ function GAME_RETURN(gameID){
 
 document.addEventListener("DOMContentLoaded", function(){
 
-  socket.on('GAME_starting_True',function(gameClient){
-    GameStart_Start(gameClient);
+  socket.on('GAME_buildGame_Continue',function(gameClient){
+    BUILD.continueBuild(gameClient);
   });
 
-  socket.on('GAME_starting_UserEntered',function(playersInGame){
-    GameStart_EnterPlayer(playersInGame);
+  socket.on('GAME_buildGame_UserEntered',function(playersInGame){
+    BUILD.userEntered(playersInGame);
   });
-  socket.on('GAME_starting_End',function(){
-    GameStart_End();
+  socket.on('GAME_buildGame_Finish',function(){
+    BUILD.finish();
   });
 
   socket.on('GAME_generating_Start',function(){
-    GAME_GENERATION();
+    GENERATION.start();
   });
 
 
@@ -97,11 +79,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-  socket.on('GAME_return_GetInfo',function(pack){
+  socket.on('GAME_rebuild_getInfo',function(pack){
     SENDING.SEND_ALL(pack);
   });
 
-  socket.on('GAME_return_firstStep',function(returnGamePack){
+  socket.on('GAME_rebuild_finish',function(returnGamePack){
     SENDING.APPLY_ALL(returnGamePack);
   });
 
@@ -124,5 +106,5 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 export{
-  GAME_START,GAME,GAME_RETURN,
+  buildGameStart,rebuildGame,GAME,
 };

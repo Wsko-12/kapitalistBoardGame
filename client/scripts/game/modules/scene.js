@@ -4,14 +4,12 @@ import {
 
 import {
   PLAYER,
-  ACC_buildPage,
-  clearButtons
 } from "/scripts/accPage.js";
 import {GAME}from "/scripts/game/GAME.js"
 
 
-import * as THREE from '../ThreeJsLib/build/three.module.js';
-import * as RENDER_SETTINGS from '../gameSettings/RENDER.js';
+import * as THREE from '/scripts/ThreeJsLib/build/three.module.js';
+import * as RENDER_SETTINGS from '/scripts/gameSettings/RENDER.js';
 import * as MODELS from '/scripts/models/models.js';
 import * as MAP_SETTINGS from "/scripts/gameSettings/map.js";
 import * as SIT_PLACES from "/scripts/gameSettings/sittingPlace.js";
@@ -20,40 +18,36 @@ import * as SIT_PLACES from "/scripts/gameSettings/sittingPlace.js";
 
 import {
   EffectComposer
-} from '../ThreeJsLib/examples/jsm/postprocessing/EffectComposer.js';
+} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/EffectComposer.js';
 import {
   RenderPass
-} from '../ThreeJsLib/examples/jsm/postprocessing/RenderPass.js';
+} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/RenderPass.js';
 import {
   ShaderPass
-} from '../ThreeJsLib/examples/jsm/postprocessing/ShaderPass.js';
+} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/ShaderPass.js';
 import {
   UnrealBloomPass
-} from '../ThreeJsLib/examples/jsm/postprocessing/UnrealBloomPass.js';
+} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import {
   BokehPass
-} from '../ThreeJsLib/examples/jsm/postprocessing/BokehPass.js';
+} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/BokehPass.js';
 
 import {
   OrbitControls
-} from '../ThreeJsLib/examples/jsm/controls/OrbitControls.js';
+} from '/scripts/ThreeJsLib/examples/jsm/controls/OrbitControls.js';
 
 import {
   NodePass
-} from '../ThreeJsLib/examples/jsm/nodes/postprocessing/NodePass.js';
-import * as Nodes from '../ThreeJsLib/examples/jsm/nodes/Nodes.js';
-
-
-
-
+} from '/scripts/ThreeJsLib/examples/jsm/nodes/postprocessing/NodePass.js';
+import * as Nodes from '/scripts/ThreeJsLib/examples/jsm/nodes/Nodes.js';
 
 
 let RENDERER, CAMERA, SCENE, COMPOSER;
 // let COMPOSER, bloomPass, bokehPass;
 
 
-function GAME_Scene_Init(){
+function initializeScene(){
 
   RENDER_SETTINGS.initRenderSettingsMenu();
   RENDERER = new THREE.WebGLRenderer();
@@ -70,11 +64,8 @@ function GAME_Scene_Init(){
   window.addEventListener("resize",setSizes);
   setSizes();
   RENDER();
-
-
   takeSitPlace();
   buildModels();
-
 };
 
 function setSizes() {
@@ -116,7 +107,6 @@ function RENDER(){
 function takeSitPlace(){
   const userCount = Object.keys(GAME.playersInGame).length
   const userInex = Object.keys(GAME.playersInGame).indexOf(PLAYER.login);
-
   CAMERA.position.set(SIT_PLACES.USER_SIT_POSITIONS[userCount][userInex].x,SIT_PLACES.USER_SIT_DISTANCE*1.5,SIT_PLACES.USER_SIT_POSITIONS[userCount][userInex].z);
   CAMERA.lookAt(0,0,0);
 };
@@ -126,11 +116,6 @@ function buildModels(){
   const hexagonGeom = loader.parse(JSON.parse(MODELS.hexagonJson));
   const RADIUS = MAP_SETTINGS.RADIUS;
   const ROUNDS = MAP_SETTINGS.ROUNDS;
-
-
-
-
-
 
 
   for(let z = 0; z<GAME.map.mapNamesArr.length;z++){
@@ -169,13 +154,6 @@ function buildModels(){
     };
   };
 
-
-
-
-
-
-
-
 };
 
 
@@ -185,6 +163,6 @@ function buildModels(){
 
 
 export{
-  GAME_Scene_Init,
+  initializeScene,
   takeSitPlace,
 }

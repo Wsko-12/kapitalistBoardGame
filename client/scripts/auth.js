@@ -9,54 +9,55 @@ document.addEventListener("DOMContentLoaded", function(blaa) {
 
 
 
-
-  AUTH_LogInForm.onsubmit = function(e){
-    e.preventDefault();
-    const login = document.querySelector('#AUTH_LogInForm_Login').value;
-    const password = document.querySelector('#AUTH_LogInForm_Password').value
-    const pack = {
-      login:login,
-      password:password,
-    };
-    if(login.length<=3){
-      AUTH_ShowError('Login is too short');
-      return;
-    };
-    if(password.length<=3){
-      AUTH_ShowError('Password is too short');
-      return;
-    };
-    LOADING_Screen(true);
-    socket.emit('AUTH_LogIn',pack);
-  };
-
-
-
+  //
+  // AUTH_LogInForm.onsubmit = function(e){
+  //   e.preventDefault();
+  //   const login = document.querySelector('#AUTH_LogInForm_Login').value;
+  //   const password = document.querySelector('#AUTH_LogInForm_Password').value
+  //   const pack = {
+  //     login:login,
+  //     password:password,
+  //   };
+  //   if(login.length<=3){
+  //     AUTH_ShowError('Login is too short');
+  //     return;
+  //   };
+  //   if(password.length<=3){
+  //     AUTH_ShowError('Password is too short');
+  //     return;
+  //   };
+  //   LOADING_Screen(true);
+  //   socket.emit('AUTH_LogIn',pack);
+  // };
+  //
 
 
-  AUTH_RegistrationForm.onsubmit = function(e){
-    e.preventDefault();
-    const login = document.querySelector('#AUTH_RegistrationForm_Login').value;
-    const password = document.querySelector('#AUTH_RegistrationForm_Password').value;
-    const pack = {
-      login:login,
-      password:password,
-    };
-    if(login.length<=3){
-      AUTH_ShowError('Login is too short');
-      return;
-    };
-    if(password.length<=3){
-      AUTH_ShowError('Password is too short');
-      return;
-    };
-    LOADING_Screen(true);
-    socket.emit('AUTH_Registration',pack);
 
-  };
 
+  // AUTH_RegistrationForm.onsubmit = function(e){
+  //   e.preventDefault();
+  //   const login = document.querySelector('#AUTH_RegistrationForm_Login').value;
+  //   const password = document.querySelector('#AUTH_RegistrationForm_Password').value;
+  //   const pack = {
+  //     login:login,
+  //     password:password,
+  //   };
+  //   if(login.length<=3){
+  //     AUTH_ShowError('Login is too short');
+  //     return;
+  //   };
+  //   if(password.length<=3){
+  //     AUTH_ShowError('Password is too short');
+  //     return;
+  //   };
+  //   LOADING_Screen(true);
+  //   socket.emit('AUTH_Registration',pack);
+  //
+  // };
+  //
   function finishAuth(player){
     ACC_buildPage(player);
+    document.title = player.login;
   };
 
 
@@ -67,5 +68,5 @@ document.addEventListener("DOMContentLoaded", function(blaa) {
 
 
   socket.on('AUTH__False',function(){LOADING_Screen(false);AUTH_ShowError('Something went wrong :c')});
-  socket.on('AUTH__True',function(player){LOADING_Screen(false);finishAuth(player)});
+  socket.on('AUTH__True',function(player){finishAuth(player)});
 });

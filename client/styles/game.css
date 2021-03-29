@@ -1,0 +1,11 @@
+#waitingGameScreen{
+  width:100vw;
+  height:100vw;
+  background-color:rgba(45, 45, 45,0.5);
+}
+#waitingGameScreen_Titile{
+  text-align: center;
+}
+#waitingGameScreen_Players{
+  text-align: center;
+}

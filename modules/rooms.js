@@ -1,6 +1,9 @@
 const DB = require('./db.js');
 
 
+
+
+
 function ROOMNULL(newRoomPack){
   const room = {
     id:newRoomPack.id,
@@ -90,7 +93,7 @@ module.exports.Join = function(socket,JoinRoomPack){
       PLAYERS_ONLINE[player].joined = roomID;
     }
     socket.emit('ACC_ROOM_Join_True',roomID);
-    
+
     //автоматически обновляем страницу у всех кто присоединен к комнате
     //по новому методу
     ROOMS_WAITING[roomID].emit('ACC_ROOM_automaticlyUpdate',roomID);
@@ -136,3 +139,17 @@ module.exports.BuildList = function(socket){
   };
   socket.emit('ACC_GAMES_BuildList_True',gamesArr);
 };
+
+
+
+const DEV_ROOM = {
+  id:'DEV_GAME',
+  status:"Waiting",
+  owner:'test1',
+  players:{test1:'test1',test2:'test2',test3:'test3',test4:'test4'},
+  private:false,
+  playersMax:4,
+  creationDate:Date.now(),
+  inWait:0,
+};
+RoomInit(DEV_ROOM);

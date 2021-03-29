@@ -56,6 +56,7 @@ function finishAutentification(socket, login) {
   PLAYERS_ONLINE[player.login].emit = PlayerEmit;
   PLAYERS_ONLINE[player.login].emitFriends = PlayerEmitFriends;
   PLAYERS_ONLINE[player.login].joined = null;
+  PLAYERS_ONLINE[player.login].inGame = null;
   socket.emit('AUTH__True', player);
 
   //высылаем уведомлениее друзьям, чтоо зашел в онлайн

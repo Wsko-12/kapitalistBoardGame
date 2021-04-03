@@ -19,13 +19,13 @@ function SEND_ALL(pack){
 
   socket.emit('GAME_rebuild_sendInfo',pack);
 
-
 };
 
 function APPLY_ALL(returnGamePack){
   for(let key in returnGamePack){
     GAME[key] = returnGamePack[key];
   };
+  GAME.playersInGame[PLAYER.login] = {login:PLAYER.login};
   applyMapLineArr(returnGamePack.map.mapLine,true);
 };
 

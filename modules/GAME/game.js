@@ -54,6 +54,7 @@ function gameNULL(){
 function playerNULL(login){
   const playerNULLOBJ = {
     login:login,
+    colorIndex:null,
     balance:0,
     factories:{
       processing:{},
@@ -191,7 +192,9 @@ module.exports.FinishGeneration = function(pack){
 
 };
 
-
+module.exports.GenerationColors = function(pack){
+  GAMES[pack.game].emit('GAME_generating_applyColors',pack.colors);
+};
 
 
 

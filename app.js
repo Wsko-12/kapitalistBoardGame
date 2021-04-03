@@ -144,6 +144,9 @@ io.on('connection', function(socket) {
   socket.on('GAME_generating_turns',function(pack){
       GAME.GenerationTurns(pack);
   });
+  socket.on('GAME_generating_colors',function(pack){
+    GAME.GenerationColors(pack);
+  });
   socket.on('GAME_generating_mapLineGenerated',function(pack){
       GAME.GenerationMapLine(pack);
   });

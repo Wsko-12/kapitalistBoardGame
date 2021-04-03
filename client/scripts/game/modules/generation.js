@@ -10,6 +10,7 @@ import {
 
 import * as MAP_SETTINGS from '/scripts/gameSettings/map.js';
 
+import * as SIT_PLACES from "/scripts/gameSettings/sittingPlace.js";
 import * as SCENE from "./scene.js"
 
 
@@ -29,7 +30,28 @@ function generateTurns() {
     pack.turns.line.push(player);
   };
   socket.emit('GAME_generating_turns', pack);
+  generatePlayerColors();
 };
+
+
+function generatePlayerColors(){
+  let index = 0;
+  const pack = {
+    game: GAME.id,
+    colors:{},
+  };
+  for (let player in GAME.playersJoined) {
+    pack.colors[player] = index;
+    index++;
+  };
+  socket.emit('GAME_generating_colors', pack);
+};
+function applyPlayerColors(colorsObj){
+  for(let player in GAME.playersJoined){
+    GAME.playersJoined[player].colorIndex = colorsObj[player];
+  };
+};
+
 
 function generateMapLineArr() {
   const MapLineArr = [];
@@ -164,11 +186,15 @@ document.addEventListener("DOMContentLoaded", function() {
   socket.on('GAME_generating_applyTurns', function(pack) {
     applyTurns(pack);
   });
+  socket.on('GAME_generating_applyColors',function(colorsObj){
+    applyPlayerColors(colorsObj);
+  });
 
 
   socket.on('GAME_generating_applyMapLine', function(MapLineArr) {
     applyMapLineArr(MapLineArr, false);
   });
+
 
 
   socket.on('GAME_scene_Start', function() {

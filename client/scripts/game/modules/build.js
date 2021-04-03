@@ -20,7 +20,7 @@ function continueBuild(gameClient) {
     login: PLAYER.login,
     game: GAME.id,
   };
-  socket.emit('GAME_buildGame_EnteringGame', EnterGamePack)
+  socket.emit('GAME_buildGame_EnteringGame', EnterGamePack);
 };
 
 function userEntered(playersInGame){

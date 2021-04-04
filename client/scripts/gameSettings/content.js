@@ -206,18 +206,24 @@ const PRODUCTS = {
     prodaction: 'waterFactory',
     ingridients: [null],
     profit:400,
+    demand:4,
+    price:100,
 
   },
   sand: {
     ingridients: [null],
     prodaction: 'sandFactory',
     profit:400,
+    demand:4,
+    price:100,
 
   },
   wood: {
     ingridients: [null],
     prodaction: 'woodFactory',
     profit:400,
+    demand:4,
+    price:100,
 
   },
   // ironOre: {
@@ -320,23 +326,23 @@ const PRODUCTS = {
 
 
 
-function getCoast(product){
-  let coast = 0;
-  // PRODUCTS[product]
-  if(PRODUCTS[product].ingridients[0] === null){
-    coast += FACTORIES[PRODUCTS[product].prodaction].process * FACTORIES[PRODUCTS[product].prodaction].salary + PRODUCTS[product].profit;
-  }else{
-    for(let i = 0; i < PRODUCTS[product].ingridients.length;i++){
-      coast += getCoast(PRODUCTS[product].ingridients[i]);
-    }
-    coast += FACTORIES[PRODUCTS[product].prodaction].process * FACTORIES[PRODUCTS[product].prodaction].salary + PRODUCTS[product].profit;
-  }
-  return coast;
-};
-
-for(let key in PRODUCTS){
-  console.log(key + ': ' + getCoast(key));
-}
+// function getCoast(product){
+//   let coast = 0;
+//   // PRODUCTS[product]
+//   if(PRODUCTS[product].ingridients[0] === null){
+//     coast += FACTORIES[PRODUCTS[product].prodaction].process * FACTORIES[PRODUCTS[product].prodaction].salary + PRODUCTS[product].profit;
+//   }else{
+//     for(let i = 0; i < PRODUCTS[product].ingridients.length;i++){
+//       coast += getCoast(PRODUCTS[product].ingridients[i]);
+//     }
+//     coast += FACTORIES[PRODUCTS[product].prodaction].process * FACTORIES[PRODUCTS[product].prodaction].salary + PRODUCTS[product].profit;
+//   }
+//   return coast;
+// };
+//
+// for(let key in PRODUCTS){
+//   console.log(key + ': ' + getCoast(key));
+// }
 
 
 

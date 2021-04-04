@@ -1,0 +1,96 @@
+.nonSelectText{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  -khtml-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+
+
+
+
+.stockSection{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  pointer-events:none;
+  display: flex;
+  top:0px;
+  left: 0px;
+  z-index: 100;
+}
+.stockCard{
+  width: 50vw;
+  max-height: 90vh;
+  background-color: #dd5e60;
+  margin: auto;
+  display: none;
+
+}
+.stockCard_title{
+  text-align: center;
+}
+.stockCard_content{
+  width: 90%;
+  margin: auto;
+  display: flex;
+}
+.stockCart_list{
+  width: 100%;
+  overflow-y: scroll;
+}
+.stockCart_list-item{
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5%;
+}
+.stockCart_list-item-title{
+  padding-top: 1.5vw;
+}
+.stockCart_list-item-content{
+  display: flex;
+}
+.stockCart_list-item-productCeil{
+  width:5vw;
+  height: 5vw;
+  border-radius: 1vw;
+  background-color: white;
+  margin-left: 2vw;
+  border:1px solid black;
+  text-align: center;
+  padding-top: 1vw;
+}
+.stockCart_list-item-end{
+border-radius: 10vw;
+text-align: center;
+}
+
+
+
+
+
+#playersNamesSection{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  pointer-events: none;
+  text-shadow:0 0 2px black;
+  font-size:2vw;
+
+}
+
+
+#cityNamesSection{
+  position:fixed;pointer-events:none;width:100vw;height:100vh;
+  color:white;text-shadow:0 0 2px black;font-size:1vw;
+}
+
+.cityNameDiv{
+    position:absolute;pointer-events:painted;
+
+
+}
+.cityNameDiv:hover{
+  color:#d21717;
+}

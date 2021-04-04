@@ -11,7 +11,8 @@ import {
 import * as MAP_SETTINGS from '/scripts/gameSettings/map.js';
 
 import * as SIT_PLACES from "/scripts/gameSettings/sittingPlace.js";
-import * as SCENE from "./scene.js"
+import * as SCENE from "./scene.js";
+import * as GAME_CONTENT from "/scripts/gameSettings/content.js"
 
 
 function start() {
@@ -164,7 +165,13 @@ function buildCitiesDesignate(mapNamesArr,Regenerate){
     login:PLAYER.login,
     game:GAME.id,
   }
+  buildCityStocks();
+
+
+
+
   GAME.generated = true;
+
 
 
   if(Regenerate){
@@ -177,8 +184,48 @@ function buildCitiesDesignate(mapNamesArr,Regenerate){
 
 function buildCityStocks(){
   for(let city in GAME.map.cities){
-    
+    GAME.map.cities[city].updateAllStocks = updateAllStocks;
+    for(let product in GAME_CONTENT.PRODUCTS){
+      GAME.map.cities[city].stocks[product] = {};
+      GAME.map.cities[city].stocks[product].stock = [];
+      for(let i = 0;i<GAME_CONTENT.PRODUCTS[product].demand;i++){
+        GAME.map.cities[city].stocks[product].stock.push(0);
+      };
+      GAME.map.cities[city].stocks[product].price = buildPrice(product);
+    };
   };
+
+
+  function buildPrice(product){
+    const priceArr = [];
+
+    for(let i = 0;i<GAME_CONTENT.PRODUCTS[product].demand;i++){
+      priceArr.push(0);
+    };
+    for(let i = 0;i<priceArr.length;i++){
+      //[x-75,x-50,x-25,x,x+25]
+      const price = GAME_CONTENT.PRODUCTS[product].price
+      priceArr[i] = price + (0.25*price*(i-(priceArr.length-2)));
+    };
+
+
+
+
+
+
+    return priceArr;
+  };
+
+
+  function updateAllStocks(){
+    for(let product in this.stocks){
+      this.stocks[product].stock.unshift(0);
+      this.stocks[product].stock.pop();
+    };
+  };
+
+
+
 };
 
 

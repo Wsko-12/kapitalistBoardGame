@@ -1,5 +1,5 @@
 let FPS = 0;
-let EFFECTS = false;
+let EFFECTS = true;
 
 function fullScreen(element) {
   if(element.requestFullscreen) {
@@ -79,4 +79,5 @@ function initRenderSettingsMenu(){
 export{
   initRenderSettingsMenu,
   FPS,
+  EFFECTS,
 };

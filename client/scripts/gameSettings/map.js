@@ -44,17 +44,17 @@ const MAP_CELL_AMOUNT = {
 
 const MAP_CELL_COLOR = {
     meadow : 0x315C2B,
-    sand : 0xFFD639,
+    sand : 0xFFD639,//0xFFD639,
     forest: 0x5C4742,
     mountain : 0x2d2d2d,
-    swamps : 0xA690A4,
+    swamps : 0xA690A4,//0xA690A4,
     sea : 0x048BA8,
     city : 0xC83E4D,
     meadow_block: 0x315C2B,
-    sand_block : 0xFFD639,
+    sand_block : 0xFFD639,//0xFFD639,
     forest_block: 0x5C4742,
     mountain_block : 0x2d2d2d,
-    swamps_block: 0xA690A4,
+    swamps_block: 0xA690A4,//0xA690A4,
     sea_block: 0x048BA8,
 
 

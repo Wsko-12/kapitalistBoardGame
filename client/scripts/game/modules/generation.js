@@ -175,7 +175,11 @@ function buildCitiesDesignate(mapNamesArr,Regenerate){
 };
 
 
-
+function buildCityStocks(){
+  for(let city in GAME.map.cities){
+    
+  };
+};
 
 
 document.addEventListener("DOMContentLoaded", function() {

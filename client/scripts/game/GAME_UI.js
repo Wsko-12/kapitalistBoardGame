@@ -58,9 +58,8 @@ function rebuildPlayersNamesDives(){
       `
       const playerDiv = `<div style="${style}" id="playerNameDiv_${player}">${player}</div>`;
       document.querySelector('#playersNamesDiv').insertAdjacentHTML('beforeEnd',playerDiv);
-    }
+    };
   };
-
 };
 
 
@@ -75,7 +74,15 @@ function addCityNamesDiv(){
       `
       const cityDiv = `<div style="${style}" id="cityNameDiv_${city}">${city}</div>`;
       document.querySelector('#cityNamesDiv').insertAdjacentHTML('beforeEnd',cityDiv);
+      document.querySelector(`#cityNameDiv_${city}`).onclick = function(){
+        showCityInfo(`${city}`);
+      };
     };
+
+};
+
+function showCityInfo(city){
+  
 };
 
 

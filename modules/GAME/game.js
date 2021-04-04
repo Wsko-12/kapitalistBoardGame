@@ -34,14 +34,20 @@ function gameNULL(){
         Westown:{
           z:0,
           x:0,
+          mesh:null,
+          stock:null,
         },
         Northfield:{
           z:0,
           x:0,
+          mesh:null,
+          stock:null,
         },
         Southcity:{
           z:0,
           x:0,
+          mesh:null,
+          stock:null,
         },
       },
       buildings:[],//generate client

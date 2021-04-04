@@ -25,6 +25,7 @@ function APPLY_ALL(returnGamePack){
   for(let key in returnGamePack){
     GAME[key] = returnGamePack[key];
   };
+  console.log(GAME)
   GAME.playersInGame[PLAYER.login] = {login:PLAYER.login};
   applyMapLineArr(returnGamePack.map.mapLine,true);
 };

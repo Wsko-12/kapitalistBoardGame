@@ -48,8 +48,9 @@ import {
 import * as Nodes from '/scripts/ThreeJsLib/examples/jsm/nodes/Nodes.js';
 
 
-let RENDERER, CAMERA, SCENE, COMPOSER,BUILD_PLAYERS_MESH;
-// let COMPOSER, bloomPass, bokehPass;
+let RENDERER, CAMERA, SCENE, BUILD_PLAYERS_MESH;
+let POSTPROCESSOR;
+
 
 
 function initializeScene() {
@@ -62,15 +63,24 @@ function initializeScene() {
   CAMERA.position.set(0, 15, 15)
   CAMERA.lookAt(0, 0, 0);
   SCENE = new THREE.Scene();
-  SCENE.background = new THREE.Color(0x34445b);
+  // const loader = new THREE.TextureLoader();
+  // const backgroundTexture = loader.load( 'https://i.imgur.com/upWSJlY.jpg' );
+  // SCENE.background = backgroundTexture;
 
-  // COMPOSER = new EffectComposer( RENDERER );
-  // bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight),2 )
+
+  RENDERER.shadowMap.enabled = true;
+
+
+
+  POSTPROCESSOR = applyPostprocessors();
+
+
 
   window.addEventListener("resize", setSizes);
   setSizes();
 
   takeSitPlace();
+  addSky();
   buildMapCeils();
 
   UI.buildGameUI();
@@ -78,9 +88,90 @@ function initializeScene() {
   BUILD_PLAYERS_MESH.build();
 
 
+
   RENDER();
 
 };
+
+function applyPostprocessors(){
+
+  const RENDERER_SCENNE = new RenderPass(SCENE, CAMERA);
+  const COMPOSER = new EffectComposer(RENDERER);
+  COMPOSER.addPass(RENDERER_SCENNE);
+
+
+  // const BLOOM_PASS = new UnrealBloomPass(
+  // new THREE.Vector2(window.innerWidth, window.innerHeight),0.5,0.5,0.9);
+  // COMPOSER.addPass(BLOOM_PASS);
+
+  const NODE_PASS = new NodePass();
+
+  const screen = new Nodes.ScreenNode();
+
+  const hue = new Nodes.FloatNode(0);
+  const sataturation = new Nodes.FloatNode(1);
+  const vibrance = new Nodes.FloatNode(0.8);
+  const brightness = new Nodes.FloatNode(0);
+  const contrast = new Nodes.FloatNode(1);
+
+  const hueNode = new Nodes.ColorAdjustmentNode(screen, hue, Nodes.ColorAdjustmentNode.HUE);
+  const satNode = new Nodes.ColorAdjustmentNode(hueNode, sataturation, Nodes.ColorAdjustmentNode.SATURATION);
+  const vibranceNode = new Nodes.ColorAdjustmentNode(satNode, vibrance, Nodes.ColorAdjustmentNode.VIBRANCE);
+  const brightnessNode = new Nodes.ColorAdjustmentNode(vibranceNode, brightness, Nodes.ColorAdjustmentNode.BRIGHTNESS);
+  const contrastNode = new Nodes.ColorAdjustmentNode(brightnessNode, contrast, Nodes.ColorAdjustmentNode.CONTRAST);
+  NODE_PASS.input = contrastNode;
+  COMPOSER.addPass(NODE_PASS);
+
+
+
+
+
+
+  const NODEPASS_FADE = new NodePass();
+   const fade = new Nodes.MathNode(
+     new Nodes.ScreenNode(),
+     new Nodes.ColorNode(0xffffff),
+     new Nodes.FloatNode(0.1),
+     Nodes.MathNode.MIX
+   );
+   NODEPASS_FADE.input = fade;
+   COMPOSER.addPass(NODEPASS_FADE);
+
+
+
+
+   // const BOKEH_PASS = new BokehPass(SCENE, CAMERA, {
+   //     focus: 0,
+   //     aperture: 0.001,
+   //     maxblur: 0.01,
+   //
+   //     width: window.innerWidth,
+   //     height: window.innerHeight,
+   //   });
+   //   COMPOSER.addPass(BOKEH_PASS);
+
+
+
+  function render(){
+    COMPOSER.render();
+  }
+  function resize(){
+    COMPOSER.setSize(window.innerWidth, window.innerHeight);
+  };
+
+
+  return {
+    render:render,
+    resize:resize,
+  };
+};
+
+
+
+
+
+
+
 
 function setSizes() {
   const windowWidth = window.innerWidth;
@@ -96,6 +187,8 @@ function setSizes() {
   RENDERER.domElement.style.width = windowWidth;
   RENDERER.domElement.style.height = windowHeight;
 
+
+  POSTPROCESSOR.resize();
   CAMERA.aspect = windowWidth / windowHeight;
   CAMERA.updateProjectionMatrix();
 };
@@ -122,7 +215,29 @@ function takeSitCoord(login) {
   };
 };
 
+function addSky(){
+  const skyLight = new THREE.HemisphereLight(0x394373, 0x616161, 0.7);
+  const skyObjLight = new THREE.DirectionalLight(0xfffcfe, 1);
 
+
+
+  const skySphereGeometry = new THREE.SphereGeometry( MAP_SETTINGS.RADIUS*25, 32, 32 );
+  const skySphereMaterial = new THREE.MeshPhongMaterial({color:0xa6e0d8,shininess:0,});//0xa6e0d8
+  skySphereMaterial.side = THREE.BackSide;
+
+  const skySphere = new THREE.Mesh(skySphereGeometry,skySphereMaterial)
+
+  SCENE.add(skySphere);
+  skyObjLight.castShadow = true;
+  skyObjLight.position.set(0, 10, 0);
+  skyObjLight.target.position.set(0, 0, 0);
+  skyObjLight.shadow.camera.zoom = 0.1;
+
+  SCENE.add(skyLight);
+  SCENE.add(skyObjLight);
+  SCENE.add(skyObjLight.target);
+
+};
 function buildMapCeils() {
   const loader = new THREE.BufferGeometryLoader();
   const hexagonGeom = loader.parse(JSON.parse(MODELS.hexagonWithHoleJson));
@@ -135,9 +250,7 @@ function buildMapCeils() {
       const RADIUS = MAP_SETTINGS.RADIUS;
       const ROUNDS = MAP_SETTINGS.ROUNDS;
       const colorHEX = MAP_SETTINGS.MAP_CELL_COLOR[GAME.map.mapNamesArr[z][x]];
-      const material = new THREE.MeshBasicMaterial({
-        color: colorHEX
-      });
+      const material = new THREE.MeshPhongMaterial({color:colorHEX,});
 
       const ceilGroup = new THREE.Group();
       const hexMesh = new THREE.Mesh(hexagonGeom, material);
@@ -145,16 +258,16 @@ function buildMapCeils() {
 
 
       if (GAME.map.mapFlagsArr[z][x] === 1) {
-        // const litleHexBlockMeshMaterial =  new THREE.MeshBasicMaterial({ color:0xff2400 });
+        const litleHexBlockMeshMaterial =  new THREE.MeshBasicMaterial({ color:0xff2400 });
 
-        const litleHexBlockMeshMaterial = material; //ceil color
+        // const litleHexBlockMeshMaterial = material; //ceil color
         const litleHexBlockMesh = new THREE.Mesh(new THREE.CircleGeometry(MAP_SETTINGS.RADIUS / 10, 6), litleHexBlockMeshMaterial);
         litleHexBlockMesh.rotation.x = -Math.PI / 2;
         litleHexBlockMesh.rotation.z = -Math.PI / 2;
         ceilGroup.add(litleHexBlockMesh);
       };
 
-      ceilGroup.indexses = [z,x];
+      ceilGroup.indexses = [z, x];
       ceilGroup.anim = ANIMATION.animation(ceilGroup);
       hexMesh.anim = ANIMATION.animation(hexMesh);
       hexMesh.scale.set(RADIUS, RADIUS, RADIUS);
@@ -162,9 +275,9 @@ function buildMapCeils() {
 
       //для красивой анимации
       ceilGroup.anim.getRandomPositionXYZ_Ypositive();
-      if(GAME.map.mapNamesArr[z][x] === 'city'){
-        for(let city in GAME.map.cities){
-          if(GAME.map.cities[city].z === z && GAME.map.cities[city].x === x){
+      if (GAME.map.mapNamesArr[z][x] === 'city') {
+        for (let city in GAME.map.cities) {
+          if (GAME.map.cities[city].z === z && GAME.map.cities[city].x === x) {
             GAME.map.cities[city].mesh = hexMesh;
           };
         };
@@ -193,23 +306,25 @@ function buildMapCeils() {
 
 function buildOtherPlayers() {
   let GROUP;
-  function checkBuild(){
-    if(GROUP === undefined){
+
+  function checkBuild() {
+    if (GROUP === undefined) {
       build();
-    }else{
+    } else {
       SCENE.remove(GROUP);
       build();
     }
   };
-  function build(){
+
+  function build() {
     GROUP = new THREE.Group();
-    for(let player in GAME.playersInGame){
-      if(player != PLAYER.login){
-        const boxGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS*2,MAP_SETTINGS.RADIUS*2,MAP_SETTINGS.RADIUS*2);
+    for (let player in GAME.playersInGame) {
+      if (player != PLAYER.login) {
+        const boxGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS * 2, MAP_SETTINGS.RADIUS * 2, MAP_SETTINGS.RADIUS * 2);
         const material = new THREE.MeshBasicMaterial({
           color: SIT_PLACES.USER_COLORS.three[GAME.playersJoined[player].colorIndex],
         });
-        const userMesh = new THREE.Mesh(boxGeom,material);
+        const userMesh = new THREE.Mesh(boxGeom, material);
         userMesh.login = player;
         GROUP.add(userMesh);
         let coord = takeSitCoord(player);
@@ -222,28 +337,29 @@ function buildOtherPlayers() {
 
 
   };
-  function positionNameSign(){
+
+  function positionNameSign() {
 
 
-    GROUP.children.forEach((mesh, ndx)=>{
-      if(mesh.login != PLAYER.login){
+    GROUP.children.forEach((mesh, ndx) => {
+      if (mesh.login != PLAYER.login) {
         const tempV = new THREE.Vector3();
         mesh.getWorldPosition(tempV);
         tempV.project(CAMERA);
 
-        const x = (tempV.x *  .5 + .5) * RENDERER.domElement.clientWidth;
+        const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
         const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
 
-        const div =  document.querySelector(`#playerNameDiv_${mesh.login}`);
+        const div = document.querySelector(`#playerNameDiv_${mesh.login}`);
         div.style.left = `${x}px`;
         div.style.top = `${y}px`;
       }
     });
   };
 
-  return{
-    build:checkBuild,
-    positionNameSign:positionNameSign,
+  return {
+    build: checkBuild,
+    positionNameSign: positionNameSign,
   }
 
 
@@ -256,39 +372,37 @@ function buildModels() {
 
 };
 
-function changeUICityNamesDivPosition(){
-  for(let city in GAME.map.cities){
-      const tempV = new THREE.Vector3();
-      const mesh = GAME.map.cities[city].mesh
-      mesh.getWorldPosition(tempV);
-      tempV.project(CAMERA);
+function changeUICityNamesDivPosition() {
+  for (let city in GAME.map.cities) {
+    const tempV = new THREE.Vector3();
+    const mesh = GAME.map.cities[city].mesh
+    mesh.getWorldPosition(tempV);
+    tempV.project(CAMERA);
 
-      const x = (tempV.x *  .5 + .5) * RENDERER.domElement.clientWidth;
-      const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
+    const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
+    const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
 
-      const div =  document.querySelector(`#cityNameDiv_${city}`);
+    const div = document.querySelector(`#cityNameDiv_${city}`);
 
-      div.style.left = `${x - div.clientWidth/2}px`;
-      div.style.top = `${y - div.clientHeight/2}px`;
-    }
+    div.style.left = `${x - div.clientWidth/2}px`;
+    div.style.top = `${y - div.clientHeight/2}px`;
+  }
 };
 
 
 
-function changeUIElementsPosition(){
+function changeUIElementsPosition() {
   BUILD_PLAYERS_MESH.positionNameSign();
   changeUICityNamesDivPosition();
 };
 
 
 function RENDER() {
-  // if(RENDER_SETTINGS.EFFECTS){
-  //   COMPOSER.render();
-  // }else{
-  //   RENDERER.render(SCENE, CAMERA);
-  // }
-
-  RENDERER.render(SCENE, CAMERA);
+  if(RENDER_SETTINGS.EFFECTS){
+    POSTPROCESSOR.render();
+  }else{
+    RENDERER.render(SCENE, CAMERA);
+  };
   if (RENDER_SETTINGS.FPS === 0) {
     requestAnimationFrame(RENDER);
   } else {

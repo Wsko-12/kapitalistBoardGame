@@ -21,31 +21,7 @@ import * as UI from '../GAME_UI.js';
 
 
 
-import {
-  EffectComposer
-} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/EffectComposer.js';
-import {
-  RenderPass
-} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/RenderPass.js';
-import {
-  ShaderPass
-} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/ShaderPass.js';
-import {
-  UnrealBloomPass
-} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-import {
-  BokehPass
-} from '/scripts/ThreeJsLib/examples/jsm/postprocessing/BokehPass.js';
-
-import {
-  OrbitControls
-} from '/scripts/ThreeJsLib/examples/jsm/controls/OrbitControls.js';
-
-import {
-  NodePass
-} from '/scripts/ThreeJsLib/examples/jsm/nodes/postprocessing/NodePass.js';
-import * as Nodes from '/scripts/ThreeJsLib/examples/jsm/nodes/Nodes.js';
 
 
 let RENDERER, CAMERA, SCENE, BUILD_PLAYERS_MESH;
@@ -72,7 +48,7 @@ function initializeScene() {
 
 
 
-  POSTPROCESSOR = applyPostprocessors();
+  POSTPROCESSOR = RENDER_SETTINGS.applyPostprocessors();
 
 
 
@@ -93,79 +69,6 @@ function initializeScene() {
 
 };
 
-function applyPostprocessors(){
-
-  const RENDERER_SCENNE = new RenderPass(SCENE, CAMERA);
-  const COMPOSER = new EffectComposer(RENDERER);
-  COMPOSER.addPass(RENDERER_SCENNE);
-
-
-  // const BLOOM_PASS = new UnrealBloomPass(
-  // new THREE.Vector2(window.innerWidth, window.innerHeight),0.5,0.5,0.9);
-  // COMPOSER.addPass(BLOOM_PASS);
-
-  const NODE_PASS = new NodePass();
-
-  const screen = new Nodes.ScreenNode();
-
-  const hue = new Nodes.FloatNode(0);
-  const sataturation = new Nodes.FloatNode(1);
-  const vibrance = new Nodes.FloatNode(0.8);
-  const brightness = new Nodes.FloatNode(0);
-  const contrast = new Nodes.FloatNode(1);
-
-  const hueNode = new Nodes.ColorAdjustmentNode(screen, hue, Nodes.ColorAdjustmentNode.HUE);
-  const satNode = new Nodes.ColorAdjustmentNode(hueNode, sataturation, Nodes.ColorAdjustmentNode.SATURATION);
-  const vibranceNode = new Nodes.ColorAdjustmentNode(satNode, vibrance, Nodes.ColorAdjustmentNode.VIBRANCE);
-  const brightnessNode = new Nodes.ColorAdjustmentNode(vibranceNode, brightness, Nodes.ColorAdjustmentNode.BRIGHTNESS);
-  const contrastNode = new Nodes.ColorAdjustmentNode(brightnessNode, contrast, Nodes.ColorAdjustmentNode.CONTRAST);
-  NODE_PASS.input = contrastNode;
-  COMPOSER.addPass(NODE_PASS);
-
-
-
-
-
-
-  const NODEPASS_FADE = new NodePass();
-   const fade = new Nodes.MathNode(
-     new Nodes.ScreenNode(),
-     new Nodes.ColorNode(0xffffff),
-     new Nodes.FloatNode(0.1),
-     Nodes.MathNode.MIX
-   );
-   NODEPASS_FADE.input = fade;
-   COMPOSER.addPass(NODEPASS_FADE);
-
-
-
-
-   // const BOKEH_PASS = new BokehPass(SCENE, CAMERA, {
-   //     focus: 0,
-   //     aperture: 0.001,
-   //     maxblur: 0.01,
-   //
-   //     width: window.innerWidth,
-   //     height: window.innerHeight,
-   //   });
-   //   COMPOSER.addPass(BOKEH_PASS);
-
-
-
-  function render(){
-    COMPOSER.render();
-  }
-  function resize(){
-    COMPOSER.setSize(window.innerWidth, window.innerHeight);
-  };
-
-
-  return {
-    render:render,
-    resize:resize,
-  };
-};
-
 
 
 
@@ -180,9 +83,6 @@ function setSizes() {
 
 
 
-
-
-  // RENDERER.setPixelRatio(window.devicePixelRatio);
   RENDERER.setSize(windowWidth, windowHeight, false);
   RENDERER.domElement.style.width = windowWidth;
   RENDERER.domElement.style.height = windowHeight;
@@ -216,6 +116,8 @@ function takeSitCoord(login) {
 };
 
 function addSky(){
+  const skyGroup = new THREE.Group();
+  skyGroup.userData.type = 'skyGroup';
   const skyLight = new THREE.HemisphereLight(0x394373, 0x616161, 0.7);
   const skyObjLight = new THREE.DirectionalLight(0xfffcfe, 1);
 
@@ -227,15 +129,17 @@ function addSky(){
 
   const skySphere = new THREE.Mesh(skySphereGeometry,skySphereMaterial)
 
-  SCENE.add(skySphere);
+  skyGroup.add(skySphere);
   skyObjLight.castShadow = true;
   skyObjLight.position.set(0, 10, 0);
   skyObjLight.target.position.set(0, 0, 0);
   skyObjLight.shadow.camera.zoom = 0.1;
 
-  SCENE.add(skyLight);
-  SCENE.add(skyObjLight);
-  SCENE.add(skyObjLight.target);
+  skyGroup.add(skyLight);
+  skyGroup.add(skyObjLight);
+  skyGroup.add(skyObjLight.target);
+
+  SCENE.add(skyGroup);
 
 };
 function buildMapCeils() {
@@ -243,6 +147,9 @@ function buildMapCeils() {
   const hexagonGeom = loader.parse(JSON.parse(MODELS.hexagonWithHoleJson));
   const RADIUS = MAP_SETTINGS.RADIUS;
   const ROUNDS = MAP_SETTINGS.ROUNDS;
+
+  const mapGroup = new THREE.Group();
+  mapGroup.userData.type = 'mapGroup';
   for (let z = 0; z < GAME.map.mapNamesArr.length; z++) {
     for (let x = 0; x < GAME.map.mapNamesArr[z].length; x++) {
 
@@ -253,7 +160,10 @@ function buildMapCeils() {
       const material = new THREE.MeshPhongMaterial({color:colorHEX,});
 
       const ceilGroup = new THREE.Group();
+      ceilGroup.userData.type = 'mapCeilGroup';
+      ceilGroup.userData.index = {z,x};
       const hexMesh = new THREE.Mesh(hexagonGeom, material);
+      hexMesh.userData.type = 'mapCeil';
 
 
 
@@ -287,17 +197,19 @@ function buildMapCeils() {
         x: 0,
         y: 0,
         z: 0,
-      }; {
+      };
+      {
         let position = GAME_SCRIPT.getPositionByIndex(z, x);
         gamePositions.x = position.x;
         gamePositions.z = position.z;
-      }
+      };
 
       ceilGroup.add(hexMesh);
-      SCENE.add(ceilGroup);
+      mapGroup.add(ceilGroup);
       ceilGroup.anim.animateTo(gamePositions.x, gamePositions.y, gamePositions.z);
     };
   };
+  SCENE.add(mapGroup);
 
 };
 
@@ -313,11 +225,12 @@ function buildOtherPlayers() {
     } else {
       SCENE.remove(GROUP);
       build();
-    }
+    };
   };
 
   function build() {
     GROUP = new THREE.Group();
+    GROUP.userData.type = 'usersGroup';
     for (let player in GAME.playersInGame) {
       if (player != PLAYER.login) {
         const boxGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS * 2, MAP_SETTINGS.RADIUS * 2, MAP_SETTINGS.RADIUS * 2);
@@ -335,36 +248,43 @@ function buildOtherPlayers() {
     };
     SCENE.add(GROUP);
 
-
   };
 
+
   function positionNameSign() {
-
-
     GROUP.children.forEach((mesh, ndx) => {
-      if (mesh.login != PLAYER.login) {
-        const tempV = new THREE.Vector3();
-        mesh.getWorldPosition(tempV);
-        tempV.project(CAMERA);
-
-        const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
-        const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
-
-        const div = document.querySelector(`#playerNameDiv_${mesh.login}`);
-        div.style.left = `${x}px`;
-        div.style.top = `${y}px`;
-      }
+      changeDOMElementPositionByMesh(`#playerNameDiv_${mesh.login}`,mesh);
     });
   };
 
   return {
     build: checkBuild,
     positionNameSign: positionNameSign,
-  }
-
-
+  };
 };
 
+function getDOMCordByMesh(mesh){
+  const tempV = new THREE.Vector3();
+  mesh.getWorldPosition(tempV);
+  tempV.project(CAMERA);
+  const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
+  const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
+
+  return {x,y};
+};
+
+function changeDOMElementPositionByMesh(DOMid,mesh,xShift = 0,yShift = 0){
+  const tempV = new THREE.Vector3();
+  mesh.getWorldPosition(tempV);
+  tempV.project(CAMERA);
+
+  const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
+  const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
+
+  const div = document.querySelector(DOMid);
+  div.style.left = `${x + xShift}px`;
+  div.style.top = `${y + yShift}px`;
+};
 
 
 function buildModels() {
@@ -374,19 +294,10 @@ function buildModels() {
 
 function changeUICityNamesDivPosition() {
   for (let city in GAME.map.cities) {
-    const tempV = new THREE.Vector3();
-    const mesh = GAME.map.cities[city].mesh
-    mesh.getWorldPosition(tempV);
-    tempV.project(CAMERA);
-
-    const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
-    const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
-
+    const mesh = GAME.map.cities[city].mesh;
     const div = document.querySelector(`#cityNameDiv_${city}`);
-
-    div.style.left = `${x - div.clientWidth/2}px`;
-    div.style.top = `${y - div.clientHeight/2}px`;
-  }
+    changeDOMElementPositionByMesh(`#cityNameDiv_${city}`,mesh,div.clientWidth/2*(-1),div.clientHeight/2*(-1));
+  };
 };
 
 
@@ -395,6 +306,120 @@ function changeUIElementsPosition() {
   BUILD_PLAYERS_MESH.positionNameSign();
   changeUICityNamesDivPosition();
 };
+
+
+
+
+function temporaryMesh(){
+  let mesh;
+  let parentMesh;
+
+
+  function create(type){
+    switch (type) {
+      case 'road':
+        let geom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS/2,MAP_SETTINGS.RADIUS/5,MAP_SETTINGS.RADIUS/1.5);
+        let mat = new THREE.MeshBasicMaterial({color:0x454545});
+        mesh = new THREE.Mesh(geom,mat);
+        SCENE.add(mesh);
+        break;
+      default:
+
+    }
+
+  }
+  function remove(){
+    SCENE.remove(mesh);
+  };
+
+
+
+  function moveMeshToMesh(coordObj,sceneGroupType){
+    const mouseX = coordObj.x;
+    const mouseY = coordObj.y;
+    let x,y,z;
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    mouse.x = ( mouseX / window.innerWidth ) * 2 - 1;
+	  mouse.y = - ( mouseY / window.innerHeight ) * 2 + 1;
+
+    raycaster.setFromCamera( mouse, CAMERA );
+
+    const intersects = raycaster.intersectObjects( sceneGroup(sceneGroupType).children,true );
+  	for ( let i = 0; i < intersects.length; i ++ ) {
+      parentMesh = intersects[ i ].object.parent;
+      mesh.position.x = parentMesh.position.x;
+      mesh.position.y = parentMesh.position.y;
+      mesh.position.z = parentMesh.position.z;
+  	};
+
+  };
+
+
+
+
+
+
+  function sceneGroup(type){
+    function searchGroup(element, index, array){
+      if(element.userData.type === type){
+        return element;
+      };
+    };
+
+    return SCENE.children.find(searchGroup);
+  };
+  function getDOMCord(){
+    return getDOMCordByMesh(mesh);
+  };
+
+  return {
+    create:create,
+    remove:remove,
+    moveMeshToMesh:moveMeshToMesh,
+    returnParentMesh: function(){return parentMesh},
+    getDOMCord:getDOMCord,
+  };
+};
+
+
+
+
+
+
+const buildGameObject = {
+  findCeilGroupByIndeses:function(indexses){
+    function searchMapGroup(element, index, array){
+      if(element.userData.type === 'mapGroup'){
+        return element;
+      };
+    };
+    const mapGroup = SCENE.children.find(searchMapGroup);
+
+    function searchCeilGroup(element, index, array){
+      if(element.userData.index.z === indexses[0] && element.userData.index.x === indexses[1]){
+        return element;
+      };
+    };
+    return mapGroup.children.find(searchCeilGroup);
+
+
+  },
+  road:function(pack){
+    const ceilGroup = buildGameObject.findCeilGroupByIndeses(pack.indexses);
+    const roadGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS/2,MAP_SETTINGS.RADIUS/5,MAP_SETTINGS.RADIUS/1.5);
+    const roadMaterial = new THREE.MeshPhongMaterial({color:0x454545});
+    const roadMesh = new THREE.Mesh(roadGeom,roadMaterial);
+    roadMesh.userData.id = pack.id;
+    ceilGroup.add(roadMesh);
+  },
+};
+
+
+
+
+
 
 
 function RENDER() {
@@ -418,5 +443,9 @@ export {
   takeSitPlace,
   takeSitCoord,
   CAMERA,
+  SCENE,
+  RENDERER,
   BUILD_PLAYERS_MESH,
-}
+  temporaryMesh,
+  buildGameObject,
+};

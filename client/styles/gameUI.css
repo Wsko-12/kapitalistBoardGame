@@ -7,9 +7,20 @@
   user-select:none;
 }
 
-
-
-
+#messagesSection{
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  display: flex;
+  position: fixed;
+  font-size: 1vw;
+}
+.messagesSection-message{
+  color:#c90909;
+  margin: auto;
+  text-shadow: white 0 0 0.2vw;
+  position: absolute;
+}
 .stockSection{
   width: 100vw;
   height: 100vh;
@@ -30,6 +41,9 @@
 }
 .stockCard_title{
   text-align: center;
+  font-size: 2.5vw;
+  color: white;
+  text-shadow: 0 0 0.1vw black;
 }
 .stockCard_content{
   width: 90%;
@@ -60,6 +74,11 @@
   border:1px solid black;
   text-align: center;
   padding-top: 1vw;
+  font-size: 2vw;
+  color:#9f9f9f;
+}
+.stockCart_list-item-productCeil-full{
+  color:black;
 }
 .stockCart_list-item-end{
 border-radius: 10vw;
@@ -93,4 +112,42 @@ text-align: center;
 }
 .cityNameDiv:hover{
   color:#d21717;
+}
+
+
+
+#turnInterfaceSection{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  pointer-events: none;
+  z-index: 10;
+  align-items: center;
+  flex-direction: column;
+}
+#turnInterfaceSection_mouseEventsCeaper{
+  width:100%;height:100%;
+  pointer-events:auto;
+  position: absolute;
+}
+#endTurnButton{
+  pointer-events: auto;
+  position: relative;
+}
+#buildRoadBtn{
+  pointer-events: auto;
+  position: relative;
+
+}
+#acceptBuildRoadBtn{
+  pointer-events: auto;
+}
+#cancelBuildRoadBtn{
+  pointer-events: auto;
+  position: relative;
+}
+
+#changeCameraPositionBtn{
+  position:fixed;top:0px;right:0px;
+  z-index: 200;
 }

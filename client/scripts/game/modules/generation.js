@@ -24,7 +24,7 @@ function generateTurns() {
     game: GAME.id,
     turns: {
       line: [],
-      index: 0,
+      index: -1,
     },
   };
   for (let player in GAME.playersJoined) {
@@ -254,6 +254,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   socket.on('GAME_scene_RegenerateStart', function() {
     SCENE.initializeScene();
+    GAME.map.stativeObjects.forEach((item) => {
+      if(item.type === 'road'){
+        SCENE.buildGameObject.road(item);
+      };
+    });
+
+    
   });
 
 

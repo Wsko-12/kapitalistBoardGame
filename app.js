@@ -166,6 +166,15 @@ io.on('connection', function(socket) {
   });
 
 
+  socket.on('GAME_turns_end',function(gameID){
+    GAME.sendTurn(gameID);
+  });
+
+
+  socket.on('GAME_gamePlay_roadBuild',function(sendPack){
+    GAME.gamePlaySends.buildingRoad(sendPack);
+  });
+
 
 
 
@@ -251,6 +260,12 @@ io.on('connection', function(socket) {
       if(!!inGame){
         GAMES[inGame].emit('GAME_inGame_Disconected',disconLogin);
         GAMES[inGame].emitOwner('GAME_seatings_Regenerate');
+
+
+        //если был его ход, то пересылаем другому ход
+        if(GAMES[inGame].turns.line[GAMES[inGame].turns.index] === disconLogin){
+          GAME.sendTurn(inGame);
+        };
       };
     };
     //удаляем сокет

@@ -21,11 +21,6 @@ function gameNULL(){
 
 
     generated: false,
-
-    turns: {//GenerationTurns
-      line: [],
-      index: 0,
-    },
     map:{
       mapLine:[],//GenerationMapLine
       mapNamesArr:[],//generate client
@@ -53,7 +48,19 @@ function gameNULL(){
           title:'Southcity',
         },
       },
-      buildings:[],//generate client
+      stativeObjects:[],//generate client in game play
+      dynamicObjects:{},//generate client in game play
+    },
+
+
+
+
+
+    startPlay:false,
+    turns: {//GenerationTurns
+      line: [],
+      index: -1,
+      round:0,
     },
   };
   return gameNULLOBJ;
@@ -64,7 +71,7 @@ function playerNULL(login){
   const playerNULLOBJ = {
     login:login,
     colorIndex:null,
-    balance:0,
+    balance:null,
     factories:{
       processing:{},
       production:{},
@@ -175,7 +182,28 @@ function sendOwnerStartGenerateGame(EnterGamePack) {
   GAMES[EnterGamePack.game].emitOwner('GAME_generating_Start');
 };
 
+function sendTurn(gameID){
+  if(GAMES[gameID]){
+    GAMES[gameID].turns.index++;
+    if(GAMES[gameID].turns.index === GAMES[gameID].turns.line.length){
+      GAMES[gameID].turns.index = 0;
+      GAMES[gameID].turns.round++;
+    };
+    const player = GAMES[gameID].turns.line[GAMES[gameID].turns.index];
+    if(PLAYERS_ONLINE[player]){
+      if(PLAYERS_ONLINE[player].inGame === gameID){
+        PLAYERS_ONLINE[player].emit('GAME_turns_start');
+        return;
+      };
 
+    };
+    setTimeout(function(){
+      sendTurn(gameID);
+    },100);
+  };
+};
+
+module.exports.sendTurn = sendTurn;
 
 
 module.exports.GenerationTurns = function(pack){
@@ -198,7 +226,8 @@ module.exports.FinishGeneration = function(pack){
   };
   GAMES[pack.game].generated = true;
   GAMES[pack.game].emit('GAME_scene_Start');
-
+  GAMES[pack.game].startPlay = true;
+  sendTurn(pack.game);
 };
 
 module.exports.GenerationColors = function(pack){
@@ -228,6 +257,7 @@ module.exports.ReturnPlayerToGame = function(pack){
     returnGamePack.map.mapLine = GAMES[pack.game].map.mapLine;
 
 
+    returnGamePack.map.stativeObjects = pack.gameInfo.mapStativeObjects;
     returnGamePack.playersJoined = pack.gameInfo.playersJoined;
     returnGamePack.playersInGame = pack.gameInfo.playersInGame;
 
@@ -251,4 +281,25 @@ module.exports.FinishRebuild = function(pack){
     PLAYERS_ONLINE[pack.login].emit('GAME_scene_RegenerateStart');
   };
 
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports.gamePlaySends = {
+  buildingRoad:function(sendPack){
+    GAMES[sendPack.gameID].emit('GAME_gamePlay_buildRoad',sendPack.pack);
+  },
 };

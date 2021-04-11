@@ -1,3 +1,6 @@
+
+const PLAYER_BALANCE = 1000;
+const ROAD_COAST = 100;
 const FACTORIES = {
   waterFactory: {
     parent: false,
@@ -347,5 +350,5 @@ const PRODUCTS = {
 
 
 export{
-  FACTORIES,PRODUCTS
+  FACTORIES,PRODUCTS,PLAYER_BALANCE,ROAD_COAST
 }

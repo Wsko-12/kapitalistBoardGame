@@ -11,10 +11,13 @@ import {
 
 import * as BUILD from './modules/build.js';
 import * as SENDING from './modules/sendings.js';
-import * as GENERATION from './modules/generation.js'
+import * as GENERATION from './modules/generation.js';
+import * as APPLY_BUILD from './modules/applyBuild.js';
+import * as TURNS from './modules/turns.js';
 import * as SCENE from "./modules/scene.js";
 import * as UI from './GAME_UI.js';
 import * as MAP_SETTINGS from "/scripts/gameSettings/map.js";
+
 
 
 
@@ -121,7 +124,15 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
+  socket.on('GAME_turns_start',function() {
+    TURNS.start();
+  });
 
+
+
+  socket.on('GAME_gamePlay_buildRoad',function(pack){
+    APPLY_BUILD.buildRoad(pack);
+  });
 
 
 

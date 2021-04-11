@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
     `
     document.querySelector('body').insertAdjacentHTML('beforeEnd',button);
       document.querySelector('#returnGameButton').onclick = function(){
+        document.querySelector('#returnGameButton').remove();
         returnToGame('DEV_GAME');
       };
   });

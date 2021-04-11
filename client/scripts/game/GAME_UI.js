@@ -309,6 +309,7 @@ function rebuildTurnInterfaceSection() {
 
   const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper"></div>';
   section.insertAdjacentHTML('beforeEnd',mouseEventsCeaper);
+  document.querySelector('#turnInterfaceSection_mouseEventsCeaper').style.pointerEvents = 'none';
 
   const endTurnBtn = '<button id="endTurnButton">END TURN</button>';
   section.insertAdjacentHTML('beforeEnd',endTurnBtn);
@@ -335,6 +336,7 @@ function showTurnInterface_buildingRoad(){
   const buildingRoadAPI = TURNS.buildingRoad();
 
   const section = document.querySelector('#turnInterfaceSection');
+
   const bodySection = document.querySelector('#body');
   bodySection.style.pointerEvents = 'auto';
   section.innerHTML = '';
@@ -342,6 +344,7 @@ function showTurnInterface_buildingRoad(){
   const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper"></div>';
   section.insertAdjacentHTML('beforeEnd',mouseEventsCeaper);
   const mouseCeaper = document.querySelector('#turnInterfaceSection_mouseEventsCeaper');
+    mouseCeaper.style.pointerEvents = 'auto';
 
 
   const cancelBtn = '<button id="cancelBuildRoadBtn">cancel</button>';

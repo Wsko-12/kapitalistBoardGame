@@ -34,6 +34,7 @@ function initializeScene() {
 
   RENDERER = new THREE.WebGLRenderer();
   document.querySelector('#body').appendChild(RENDERER.domElement);
+  RENDERER.domElement.style.position = 'fixed'
   CAMERA = new THREE.PerspectiveCamera(45, 2, 0.5, 100);
   CAMERA.anim = ANIMATION.animateCamera(CAMERA);
   CAMERA.position.set(0, 15, 15)

@@ -34,7 +34,7 @@ function initializeScene() {
 
   RENDERER = new THREE.WebGLRenderer();
   document.querySelector('#body').appendChild(RENDERER.domElement);
-  RENDERER.domElement.style.position = 'fixed'
+  RENDERER.domElement.style.position = 'fixed';
   CAMERA = new THREE.PerspectiveCamera(45, 2, 0.5, 100);
   CAMERA.anim = ANIMATION.animateCamera(CAMERA);
   CAMERA.position.set(0, 15, 15)
@@ -78,20 +78,39 @@ function initializeScene() {
 
 
 function setSizes() {
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
+
+  const windowWidth = document.body.clientWidth;
+  const windowHeight = document.body.clientHeight;
+
   const pixelRatio = window.devicePixelRatio;
 
 
+  if(windowWidth>windowHeight){
+    if(RENDER_SETTINGS.RESOLUTION === 0){
+      RENDERER.setSize(windowWidth/1.5, windowHeight/1.5, true);
+    }
+    if(RENDER_SETTINGS.RESOLUTION === 1){
+      RENDERER.setSize(windowWidth*pixelRatio/2, windowHeight*pixelRatio/2, true);
+    }
+    if(RENDER_SETTINGS.RESOLUTION === 2){
+      RENDERER.setSize(windowWidth*pixelRatio, windowHeight*pixelRatio, true);
+    }
 
-  RENDERER.setSize(windowWidth, windowHeight, false);
-  RENDERER.domElement.style.width = windowWidth;
-  RENDERER.domElement.style.height = windowHeight;
 
 
-  POSTPROCESSOR.resize();
-  CAMERA.aspect = windowWidth / windowHeight;
-  CAMERA.updateProjectionMatrix();
+
+
+    RENDERER.domElement.style.width = windowWidth+'px';
+    RENDERER.domElement.style.height = windowHeight+'px';
+    POSTPROCESSOR.resize();
+    CAMERA.aspect = windowWidth / windowHeight;
+    CAMERA.updateProjectionMatrix();
+  }else{
+
+  }
+
+
+
 };
 
 
@@ -320,8 +339,9 @@ function temporaryMesh(){
     switch (type) {
       case 'road':
         let geom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS/2,MAP_SETTINGS.RADIUS/5,MAP_SETTINGS.RADIUS/1.5);
-        let mat = new THREE.MeshBasicMaterial({color:0x454545});
+        let mat = new THREE.MeshPhongMaterial({color:0x454545});
         mesh = new THREE.Mesh(geom,mat);
+        mesh.position.set(0,MAP_SETTINGS.RADIUS*2,0);
         SCENE.add(mesh);
         break;
       default:
@@ -449,4 +469,5 @@ export {
   BUILD_PLAYERS_MESH,
   temporaryMesh,
   buildGameObject,
+  setSizes,
 };

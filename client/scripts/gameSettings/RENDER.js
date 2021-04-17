@@ -1,5 +1,6 @@
 let FPS = 0;
 let EFFECTS = true;
+let RESOLUTION = 1;
 
 
 
@@ -31,7 +32,7 @@ import {
 import * as Nodes from '/scripts/ThreeJsLib/examples/jsm/nodes/Nodes.js';
 
 
-import {SCENE,CAMERA,RENDERER} from '/scripts/game/modules/scene.js';
+import {SCENE,CAMERA,RENDERER,setSizes} from '/scripts/game/modules/scene.js';
 
 
 
@@ -97,7 +98,22 @@ function applyPostprocessors(){
     COMPOSER.render();
   };
   function resize(){
-    COMPOSER.setSize(window.innerWidth, window.innerHeight);
+    const windowWidth = document.body.clientWidth;
+    const windowHeight = document.body.clientHeight;
+
+    const pixelRatio = window.devicePixelRatio;
+
+
+    if(RESOLUTION === 0){
+      COMPOSER.setSize(windowWidth/1.5, windowHeight/1.5, true);
+    }
+    if(RESOLUTION === 1){
+      COMPOSER.setSize(windowWidth*pixelRatio/2, windowHeight*pixelRatio/2, true);
+    }
+    if(RESOLUTION === 2){
+      COMPOSER.setSize(windowWidth*pixelRatio, windowHeight*pixelRatio, true);
+    }
+
   };
 
 
@@ -139,6 +155,10 @@ function initRenderSettingsMenu(){
     <div id="renderSettingsSection" style="display:none">
       <input type="range" id="FPS_RANGE" name="RANGE_FPS" min="0" max="40" step="5" value="0">
       <label for="RANGE_FPS">FPS: auto</label>
+      </br>
+      <input type="range" id="RANGE_RESOLUTION" name="RANGE_RESOLUTION" min="0" max="2" step="1" value="1">
+      <label for="RANGE_RESOLUTION">RESOLUTION: Standart</label>
+      </br>
       <button id="EFFECTS_BTN">EFFECTS:on</button>
 
       <div id="fullScreenButton">Full screen</div>
@@ -200,6 +220,25 @@ function initRenderSettingsMenu(){
     document.querySelector(`[for="${this.name}"]`).innerHTML = 'FPS: '+label;
   };
 
+  document.querySelector('#RANGE_RESOLUTION').onchange = function(){
+    const resolNum = Number.parseInt(this.value);
+    let label = resolNum;
+    if(resolNum === 0){
+      label = 'RESOLUTION: Min';
+      RESOLUTION = 0;
+    }
+    if(resolNum === 1){
+      label = 'RESOLUTION: Standart';
+      RESOLUTION = 1;
+    }
+    if(resolNum === 2){
+      label = 'RESOLUTION: Max';
+      RESOLUTION = 2;
+    }
+    setSizes();
+    document.querySelector(`[for="${this.name}"]`).innerHTML = label;
+  };
+
 };
 
 
@@ -212,4 +251,5 @@ export{
   FPS,
   EFFECTS,
   applyPostprocessors,
+  RESOLUTION,
 };

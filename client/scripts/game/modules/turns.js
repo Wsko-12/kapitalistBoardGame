@@ -79,20 +79,23 @@ function buildingRoad(){
 
   function checkMapIndex(){
     const parentMesh = meshFunctions.returnParentMesh();
-    zIndex = parentMesh.indexses[0];
-    xIndex = parentMesh.indexses[1];
-    if(GAME.map.mapFlagsArr[zIndex][xIndex] === 2){
-      if(GAME.playersJoined[PLAYER.login].balance > GAME_CONTENT.ROAD_COAST){
-        return true
-      }else{
-        UI.showMessage.NotEnoughMoney(meshFunctions.getDOMCord());
-        return false
-      }
+    if(parentMesh){
+      zIndex = parentMesh.indexses[0];
+      xIndex = parentMesh.indexses[1];
+      if(GAME.map.mapFlagsArr[zIndex][xIndex] === 2){
+        if(GAME.playersJoined[PLAYER.login].balance > GAME_CONTENT.ROAD_COAST){
+          return true
+        }else{
+          UI.messagesSection.showMessage.NotEnoughMoney(meshFunctions.getDOMCord());
+          return false
+        }
 
-    }else{
-      UI.showMessage.CantBuildHere(meshFunctions.getDOMCord());
-      return false
+      }else{
+        UI.messagesSection.showMessage.CantBuildHere(meshFunctions.getDOMCord());
+        return false
+      };
     };
+
   };
 
   function acceptBuild(){
@@ -122,7 +125,8 @@ function buildingRoad(){
 
 
 function start() {
-  UI.showTurnInterfaceSection(true);
+
+  UI.turnInterfaceSection.showSection(true);
 
 };
 
@@ -135,7 +139,7 @@ function start() {
 
 
 function end() {
-  UI.showTurnInterfaceSection(false);
+  UI.turnInterfaceSection.showSection(false);
   const gameID = GAME.id;
   socket.emit('GAME_turns_end',gameID);
 };

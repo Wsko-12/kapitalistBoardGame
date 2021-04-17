@@ -140,14 +140,14 @@ document.addEventListener("DOMContentLoaded", function(){
     delete GAME.playersInGame[disconLogin];
     SCENE.takeSitPlace();
     SCENE.BUILD_PLAYERS_MESH.build();
-    UI.rebuildPlayersNamesDives();
+    UI.playersNamesSection.rebuildDives();
 
   });
   socket.on('GAME_inGame_Conected',function(conLogin){
     GAME.playersInGame[conLogin] = conLogin;
     SCENE.takeSitPlace();
     SCENE.BUILD_PLAYERS_MESH.build();
-    UI.rebuildPlayersNamesDives();
+    UI.playersNamesSection.rebuildDives();
 
 
 

@@ -22,6 +22,7 @@ const MAP_NULL_ARR = [
 [0,0,0,0,0,0,0],
 [0,0,0,0,0,0],
 ];
+
 const MAP_CELL_AMOUNT = {
   meadow : 30,
   sand : 9,
@@ -56,6 +57,21 @@ const MAP_CELL_COLOR = {
     mountain_block : 0x2d2d2d,
     swamps_block: 0xA690A4,//0xA690A4,
     sea_block: 0x048BA8,
+};
+const MAP_CELL_COLOR_CSS = {
+    meadow :'#315C2B',
+    sand : '#FFD639',//0xFFD639,
+    forest: '#5C4742',
+    mountain : '#2d2d2d',
+    swamps : '#A690A4',//0xA690A4,
+    sea : '#048BA8',
+    city : '#C83E4D',
+    meadow_block: '#315C2B',
+    sand_block : '#FFD639',//0xFFD639,
+    forest_block: '#5C4742',
+    mountain_block : '#2d2d2d',
+    swamps_block: '#A690A4',//0xA690A4,
+    sea_block: '#048BA8',
 
 
 };
@@ -68,6 +84,6 @@ const MAP_CITIES = [
 
 
 export {
-  RADIUS,ROUNDS,MAP_NULL_ARR,MAP_CELL_AMOUNT,MAP_CELL_COLOR,MAP_CITIES,
+  RADIUS,ROUNDS,MAP_NULL_ARR,MAP_CELL_AMOUNT,MAP_CELL_COLOR,MAP_CITIES,MAP_CELL_COLOR_CSS,
 
 }

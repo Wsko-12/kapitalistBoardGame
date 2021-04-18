@@ -85,22 +85,22 @@ function setSizes() {
   const pixelRatio = window.devicePixelRatio;
 
 
-  if(windowWidth>windowHeight){
-    if(RENDER_SETTINGS.RESOLUTION === 0){
-      RENDERER.setSize(windowWidth/1.5, windowHeight/1.5, true);
+  if (windowWidth > windowHeight) {
+    if (RENDER_SETTINGS.RESOLUTION === 0) {
+      RENDERER.setSize(windowWidth / 1.5, windowHeight / 1.5, true);
     }
-    if(RENDER_SETTINGS.RESOLUTION === 1){
+    if (RENDER_SETTINGS.RESOLUTION === 1) {
       RENDERER.setSize(windowWidth, windowHeight, true);
     }
-    if(RENDER_SETTINGS.RESOLUTION === 2){
-      RENDERER.setSize(windowWidth*pixelRatio, windowHeight*pixelRatio, true);
+    if (RENDER_SETTINGS.RESOLUTION === 2) {
+      RENDERER.setSize(windowWidth * pixelRatio, windowHeight * pixelRatio, true);
     }
 
 
 
 
-    RENDERER.domElement.style.width = windowWidth+'px';
-    RENDERER.domElement.style.height = windowHeight+'px';
+    RENDERER.domElement.style.width = windowWidth + 'px';
+    RENDERER.domElement.style.height = windowHeight + 'px';
     POSTPROCESSOR.resize();
     CAMERA.aspect = windowWidth / windowHeight;
     CAMERA.updateProjectionMatrix();
@@ -131,7 +131,7 @@ function takeSitCoord(login) {
   };
 };
 
-function addSky(){
+function addSky() {
   const skyGroup = new THREE.Group();
   skyGroup.userData.type = 'skyGroup';
   const skyLight = new THREE.HemisphereLight(0x394373, 0x616161, 0.7);
@@ -139,11 +139,14 @@ function addSky(){
 
 
 
-  const skySphereGeometry = new THREE.SphereGeometry( MAP_SETTINGS.RADIUS*25, 32, 32 );
-  const skySphereMaterial = new THREE.MeshPhongMaterial({color:0xa6e0d8,shininess:0,});//0xa6e0d8
+  const skySphereGeometry = new THREE.SphereGeometry(MAP_SETTINGS.RADIUS * 25, 32, 32);
+  const skySphereMaterial = new THREE.MeshPhongMaterial({
+    color: 0xa6e0d8,
+    shininess: 0,
+  }); //0xa6e0d8
   skySphereMaterial.side = THREE.BackSide;
 
-  const skySphere = new THREE.Mesh(skySphereGeometry,skySphereMaterial)
+  const skySphere = new THREE.Mesh(skySphereGeometry, skySphereMaterial)
 
   skyGroup.add(skySphere);
   skyObjLight.castShadow = true;
@@ -158,6 +161,7 @@ function addSky(){
   SCENE.add(skyGroup);
 
 };
+
 function buildMapCeils() {
   const loader = new THREE.BufferGeometryLoader();
   const hexagonGeom = loader.parse(JSON.parse(MODELS.hexagonWithHoleJson));
@@ -173,18 +177,26 @@ function buildMapCeils() {
       const RADIUS = MAP_SETTINGS.RADIUS;
       const ROUNDS = MAP_SETTINGS.ROUNDS;
       const colorHEX = MAP_SETTINGS.MAP_CELL_COLOR[GAME.map.mapNamesArr[z][x]];
-      const material = new THREE.MeshPhongMaterial({color:colorHEX,});
+      const material = new THREE.MeshPhongMaterial({
+        color: colorHEX,
+      });
 
       const ceilGroup = new THREE.Group();
       ceilGroup.userData.type = 'mapCeilGroup';
-      ceilGroup.userData.index = {z,x};
+      ceilGroup.userData.index = {
+        z,
+        x
+      };
       const hexMesh = new THREE.Mesh(hexagonGeom, material);
       hexMesh.userData.type = 'mapCeil';
+      hexMesh.userData.surface = GAME.map.mapNamesArr[z][x];
 
 
 
       if (GAME.map.mapFlagsArr[z][x] === 1) {
-        const litleHexBlockMeshMaterial =  new THREE.MeshBasicMaterial({ color:0xff2400 });
+        const litleHexBlockMeshMaterial = new THREE.MeshBasicMaterial({
+          color: 0xff2400
+        });
 
         // const litleHexBlockMeshMaterial = material; //ceil color
         const litleHexBlockMesh = new THREE.Mesh(new THREE.CircleGeometry(MAP_SETTINGS.RADIUS / 10, 6), litleHexBlockMeshMaterial);
@@ -213,8 +225,7 @@ function buildMapCeils() {
         x: 0,
         y: 0,
         z: 0,
-      };
-      {
+      }; {
         let position = GAME_SCRIPT.getPositionByIndex(z, x);
         gamePositions.x = position.x;
         gamePositions.z = position.z;
@@ -269,7 +280,7 @@ function buildOtherPlayers() {
 
   function positionNameSign() {
     GROUP.children.forEach((mesh, ndx) => {
-      changeDOMElementPositionByMesh(`#playerNameDiv_${mesh.login}`,mesh);
+      changeDOMElementPositionByMesh(`#playerNameDiv_${mesh.login}`, mesh);
     });
   };
 
@@ -279,17 +290,20 @@ function buildOtherPlayers() {
   };
 };
 
-function getDOMCordByMesh(mesh){
+function getDOMCordByMesh(mesh) {
   const tempV = new THREE.Vector3();
   mesh.getWorldPosition(tempV);
   tempV.project(CAMERA);
   const x = (tempV.x * .5 + .5) * RENDERER.domElement.clientWidth;
   const y = (tempV.y * -.5 + .5) * RENDERER.domElement.clientHeight;
 
-  return {x,y};
+  return {
+    x,
+    y
+  };
 };
 
-function changeDOMElementPositionByMesh(DOMid,mesh,xShift = 0,yShift = 0){
+function changeDOMElementPositionByMesh(DOMid, mesh, xShift = 0, yShift = 0) {
   const tempV = new THREE.Vector3();
   mesh.getWorldPosition(tempV);
   tempV.project(CAMERA);
@@ -312,7 +326,7 @@ function changeUICityNamesDivPosition() {
   for (let city in GAME.map.cities) {
     const mesh = GAME.map.cities[city].mesh;
     const div = document.querySelector(`#cityNameDiv_${city}`);
-    changeDOMElementPositionByMesh(`#cityNameDiv_${city}`,mesh,div.clientWidth/2*(-1),div.clientHeight/2*(-1));
+    changeDOMElementPositionByMesh(`#cityNameDiv_${city}`, mesh, div.clientWidth / 2 * (-1), div.clientHeight / 2 * (-1));
   };
 };
 
@@ -326,18 +340,20 @@ function changeUIElementsPosition() {
 
 
 
-function temporaryMesh(){
+function temporaryMesh() {
   let mesh;
   let parentMesh;
 
 
-  function create(type){
+  function create(type) {
     switch (type) {
       case 'road':
-        let geom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS/2,MAP_SETTINGS.RADIUS/5,MAP_SETTINGS.RADIUS/1.5);
-        let mat = new THREE.MeshPhongMaterial({color:0x454545});
-        mesh = new THREE.Mesh(geom,mat);
-        mesh.position.set(0,MAP_SETTINGS.RADIUS*2,0);
+        let geom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS / 2, MAP_SETTINGS.RADIUS / 5, MAP_SETTINGS.RADIUS / 1.5);
+        let mat = new THREE.MeshPhongMaterial({
+          color: 0x454545
+        });
+        mesh = new THREE.Mesh(geom, mat);
+        mesh.position.set(0, MAP_SETTINGS.RADIUS * 2, 0);
         SCENE.add(mesh);
         break;
       default:
@@ -345,31 +361,32 @@ function temporaryMesh(){
     }
 
   }
-  function remove(){
+
+  function remove() {
     SCENE.remove(mesh);
   };
 
 
 
-  function moveMeshToMesh(coordObj,sceneGroupType){
+  function moveMeshToMesh(coordObj, sceneGroupType) {
     const mouseX = coordObj.x;
     const mouseY = coordObj.y;
-    let x,y,z;
+    let x, y, z;
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    mouse.x = ( mouseX / window.innerWidth ) * 2 - 1;
-	  mouse.y = - ( mouseY / window.innerHeight ) * 2 + 1;
+    mouse.x = (mouseX / window.innerWidth) * 2 - 1;
+    mouse.y = -(mouseY / window.innerHeight) * 2 + 1;
 
-    raycaster.setFromCamera( mouse, CAMERA );
+    raycaster.setFromCamera(mouse, CAMERA);
 
-    const intersects = raycaster.intersectObjects( sceneGroup(sceneGroupType).children,true );
-  	for ( let i = 0; i < intersects.length; i ++ ) {
-      parentMesh = intersects[ i ].object.parent;
+    const intersects = raycaster.intersectObjects(sceneGroup(sceneGroupType).children, true);
+    for (let i = 0; i < intersects.length; i++) {
+      parentMesh = intersects[i].object.parent;
       mesh.position.x = parentMesh.position.x;
       mesh.position.y = parentMesh.position.y;
       mesh.position.z = parentMesh.position.z;
-  	};
+    };
 
   };
 
@@ -378,25 +395,28 @@ function temporaryMesh(){
 
 
 
-  function sceneGroup(type){
-    function searchGroup(element, index, array){
-      if(element.userData.type === type){
+  function sceneGroup(type) {
+    function searchGroup(element, index, array) {
+      if (element.userData.type === type) {
         return element;
       };
     };
 
     return SCENE.children.find(searchGroup);
   };
-  function getDOMCord(){
+
+  function getDOMCord() {
     return getDOMCordByMesh(mesh);
   };
 
   return {
-    create:create,
-    remove:remove,
-    moveMeshToMesh:moveMeshToMesh,
-    returnParentMesh: function(){return parentMesh},
-    getDOMCord:getDOMCord,
+    create: create,
+    remove: remove,
+    moveMeshToMesh: moveMeshToMesh,
+    returnParentMesh: function() {
+      return parentMesh
+    },
+    getDOMCord: getDOMCord,
   };
 };
 
@@ -406,16 +426,16 @@ function temporaryMesh(){
 
 
 const buildGameObject = {
-  findCeilGroupByIndeses:function(indexses){
-    function searchMapGroup(element, index, array){
-      if(element.userData.type === 'mapGroup'){
+  findCeilGroupByIndeses: function(indexses) {
+    function searchMapGroup(element, index, array) {
+      if (element.userData.type === 'mapGroup') {
         return element;
       };
     };
     const mapGroup = SCENE.children.find(searchMapGroup);
 
-    function searchCeilGroup(element, index, array){
-      if(element.userData.index.z === indexses[0] && element.userData.index.x === indexses[1]){
+    function searchCeilGroup(element, index, array) {
+      if (element.userData.index.z === indexses[0] && element.userData.index.x === indexses[1]) {
         return element;
       };
     };
@@ -423,11 +443,13 @@ const buildGameObject = {
 
 
   },
-  road:function(pack){
+  road: function(pack) {
     const ceilGroup = buildGameObject.findCeilGroupByIndeses(pack.indexses);
-    const roadGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS/2,MAP_SETTINGS.RADIUS/5,MAP_SETTINGS.RADIUS/1.5);
-    const roadMaterial = new THREE.MeshPhongMaterial({color:0x454545});
-    const roadMesh = new THREE.Mesh(roadGeom,roadMaterial);
+    const roadGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS / 2, MAP_SETTINGS.RADIUS / 5, MAP_SETTINGS.RADIUS / 1.5);
+    const roadMaterial = new THREE.MeshPhongMaterial({
+      color: 0x454545
+    });
+    const roadMesh = new THREE.Mesh(roadGeom, roadMaterial);
     roadMesh.userData.id = pack.id;
     ceilGroup.add(roadMesh);
   },
@@ -440,9 +462,9 @@ const buildGameObject = {
 
 
 function RENDER() {
-  if(RENDER_SETTINGS.EFFECTS){
+  if (RENDER_SETTINGS.EFFECTS) {
     POSTPROCESSOR.render();
-  }else{
+  } else {
     RENDERER.render(SCENE, CAMERA);
   };
   if (RENDER_SETTINGS.FPS === 0) {

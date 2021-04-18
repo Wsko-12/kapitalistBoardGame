@@ -51,6 +51,9 @@ function gameNULL(){
       stativeObjects:[],//generate client in game play
       dynamicObjects:{},//generate client in game play
     },
+    gameBank:{
+      factories:{},
+    },
 
 
 
@@ -260,6 +263,8 @@ module.exports.ReturnPlayerToGame = function(pack){
     returnGamePack.map.stativeObjects = pack.gameInfo.mapStativeObjects;
     returnGamePack.playersJoined = pack.gameInfo.playersJoined;
     returnGamePack.playersInGame = pack.gameInfo.playersInGame;
+
+    returnGamePack.gameBank = pack.gameInfo.gameBank;
 
     PLAYERS_ONLINE[pack.login].inGame = pack.game;
     PLAYERS_ONLINE[pack.login].emit('GAME_rebuild_finish',returnGamePack);

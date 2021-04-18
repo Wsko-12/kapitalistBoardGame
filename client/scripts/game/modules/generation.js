@@ -35,11 +35,11 @@ function generateTurns() {
 };
 
 
-function generatePlayerColors(){
+function generatePlayerColors() {
   let index = 0;
   const pack = {
     game: GAME.id,
-    colors:{},
+    colors: {},
   };
   for (let player in GAME.playersJoined) {
     pack.colors[player] = index;
@@ -47,8 +47,9 @@ function generatePlayerColors(){
   };
   socket.emit('GAME_generating_colors', pack);
 };
-function applyPlayerColors(colorsObj){
-  for(let player in GAME.playersJoined){
+
+function applyPlayerColors(colorsObj) {
+  for (let player in GAME.playersJoined) {
     GAME.playersJoined[player].colorIndex = colorsObj[player];
   };
 };
@@ -103,58 +104,58 @@ function buildMapNamesArr(MapLineArr, Regenerate) {
     };
   };
   GAME.map.mapNamesArr = mapNamesArr;
-  buildMapFlagsArr(mapNamesArr,Regenerate);
+  buildMapFlagsArr(mapNamesArr, Regenerate);
 };
 
-function buildMapFlagsArr(mapNamesArr,Regenerate){
+function buildMapFlagsArr(mapNamesArr, Regenerate) {
   const mapFlagsArr = [];
-  for(let z=0;z<mapNamesArr.length;z++){
+  for (let z = 0; z < mapNamesArr.length; z++) {
     mapFlagsArr.push([]);
-    for(let x=0;x<mapNamesArr[z].length;x++){
+    for (let x = 0; x < mapNamesArr[z].length; x++) {
       let flag;
-       switch (mapNamesArr[z][x]) {
-         case 'city':
-               flag = 0;
-           break;
-         case 'sand_block' :
-         case 'mountain_block' :
-         case 'swamps_block':
-         case 'sea_block':
-              flag = 1;
-           break;
-         case 'meadow':
-         case 'sand' :
-         case 'forest' :
-         case 'mountain' :
-         case 'swamps' :
-         case 'sea':
-               flag = 2;
-           break;
-         // case 'MetallPlant':
-         // case 'ChemicalPlant' :
-         // case 'PaperPlant' :
-         // case 'GlassPlant' :
-         // case 'BuildingPlant' :
-         // case 'FurniturePlant':
-         //       flag = 4;
-         //   break;
+      switch (mapNamesArr[z][x]) {
+        case 'city':
+          flag = 0;
+          break;
+        case 'sand_block':
+        case 'mountain_block':
+        case 'swamps_block':
+        case 'sea_block':
+          flag = 1;
+          break;
+        case 'meadow':
+        case 'sand':
+        case 'forest':
+        case 'mountain':
+        case 'swamps':
+        case 'sea':
+          flag = 2;
+          break;
+          // case 'MetallPlant':
+          // case 'ChemicalPlant' :
+          // case 'PaperPlant' :
+          // case 'GlassPlant' :
+          // case 'BuildingPlant' :
+          // case 'FurniturePlant':
+          //       flag = 4;
+          //   break;
 
-       };
-       mapFlagsArr[z].push(flag);
+      };
+      mapFlagsArr[z].push(flag);
     };
   };
   GAME.map.mapFlagsArr = mapFlagsArr;
-  buildCitiesDesignate(mapNamesArr,Regenerate);
+  buildCitiesDesignate(mapNamesArr, Regenerate);
 };
 
 
 
 
-function buildCitiesDesignate(mapNamesArr,Regenerate){
+function buildCitiesDesignate(mapNamesArr, Regenerate) {
   let cityCounter = 0;
-  for(let z = 0; z <mapNamesArr.length;z++){
-    for(let x = 0; x < mapNamesArr[z].length;x++){
-      if(mapNamesArr[z][x] === 'city'){
+  for (let z = 0; z < mapNamesArr.length; z++) {
+    for (let x = 0; x < mapNamesArr[z].length; x++) {
+      if (mapNamesArr[z][x] === 'city') {
         GAME.map.cities[MAP_SETTINGS.MAP_CITIES[cityCounter]].z = z;
         GAME.map.cities[MAP_SETTINGS.MAP_CITIES[cityCounter]].x = x;
         cityCounter++
@@ -162,8 +163,8 @@ function buildCitiesDesignate(mapNamesArr,Regenerate){
     };
   };
   const pack = {
-    login:PLAYER.login,
-    game:GAME.id,
+    login: PLAYER.login,
+    game: GAME.id,
   }
   buildCityStocks();
 
@@ -174,21 +175,21 @@ function buildCitiesDesignate(mapNamesArr,Regenerate){
 
 
 
-  if(Regenerate){
-    socket.emit('GAME_rebuild_finished',pack);
-  }else{
-    socket.emit('GAME_generating_finished',pack)
+  if (Regenerate) {
+    socket.emit('GAME_rebuild_finished', pack);
+  } else {
+    socket.emit('GAME_generating_finished', pack)
   };
 };
 
 
-function buildCityStocks(){
-  for(let city in GAME.map.cities){
+function buildCityStocks() {
+  for (let city in GAME.map.cities) {
     GAME.map.cities[city].updateAllStocks = updateAllStocks;
-    for(let product in GAME_CONTENT.PRODUCTS){
+    for (let product in GAME_CONTENT.PRODUCTS) {
       GAME.map.cities[city].stocks[product] = {};
       GAME.map.cities[city].stocks[product].stock = [];
-      for(let i = 0;i<GAME_CONTENT.PRODUCTS[product].demand;i++){
+      for (let i = 0; i < GAME_CONTENT.PRODUCTS[product].demand; i++) {
         GAME.map.cities[city].stocks[product].stock.push(0);
       };
       GAME.map.cities[city].stocks[product].price = buildPrice(product);
@@ -196,16 +197,16 @@ function buildCityStocks(){
   };
 
 
-  function buildPrice(product){
+  function buildPrice(product) {
     const priceArr = [];
 
-    for(let i = 0;i<GAME_CONTENT.PRODUCTS[product].demand;i++){
+    for (let i = 0; i < GAME_CONTENT.PRODUCTS[product].demand; i++) {
       priceArr.push(0);
     };
-    for(let i = 0;i<priceArr.length;i++){
+    for (let i = 0; i < priceArr.length; i++) {
       //[x-75,x-50,x-25,x,x+25]
       const price = GAME_CONTENT.PRODUCTS[product].price
-      priceArr[i] = price + (0.25*price*(i-(priceArr.length-2)));
+      priceArr[i] = price + (0.25 * price * (i - (priceArr.length - 2)));
     };
 
 
@@ -217,15 +218,42 @@ function buildCityStocks(){
   };
 
 
-  function updateAllStocks(){
-    for(let product in this.stocks){
+  function updateAllStocks() {
+    for (let product in this.stocks) {
       this.stocks[product].stock.unshift(0);
       this.stocks[product].stock.pop();
     };
   };
 
+  buildFactories();
 
+};
 
+function buildFactories() {
+  if (Object.keys(GAME.gameBank.factories).length === 0) {
+    for (let factoryType in GAME_CONTENT.FACTORIES) {
+      const thisFactory = GAME_CONTENT.FACTORIES[factoryType];
+
+      for (let i = 1; i <= thisFactory.count; i++) {
+
+        const factoryObj = {
+          id: factoryType + '_' + i,
+          parent: thisFactory.parent,
+          product: thisFactory.product,
+          storage: thisFactory.storage,
+          process: thisFactory.process,
+          coast: thisFactory.coast,
+          salary: thisFactory.salary,
+          type: thisFactory.type,
+          title: thisFactory.title,
+          factoryType: factoryType,
+          index: i,
+          ceil: thisFactory.ceil,
+        }
+        GAME.gameBank.factories[factoryType + '_' + i] = factoryObj;
+      };
+    };
+  }
 };
 
 
@@ -237,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function() {
   socket.on('GAME_generating_applyTurns', function(pack) {
     applyTurns(pack);
   });
-  socket.on('GAME_generating_applyColors',function(colorsObj){
+  socket.on('GAME_generating_applyColors', function(colorsObj) {
     applyPlayerColors(colorsObj);
   });
 
@@ -255,12 +283,12 @@ document.addEventListener("DOMContentLoaded", function() {
   socket.on('GAME_scene_RegenerateStart', function() {
     SCENE.initializeScene();
     GAME.map.stativeObjects.forEach((item) => {
-      if(item.type === 'road'){
+      if (item.type === 'road') {
         SCENE.buildGameObject.road(item);
       };
     });
 
-    
+
   });
 
 

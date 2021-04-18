@@ -10,8 +10,10 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // modernization: 'fishFactory',
-    count: 2,
+    count: 5,
     type:'factory',
+    title:'Water Factory',
+    ceil:'sea',
   },
 
   sandFactory: {
@@ -22,8 +24,10 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // child: 'cementFactory',
-    count: 2,
+    count: 5,
     type:'factory',
+    title:'Sand Factory',
+    ceil:'sand',
   },
 
   woodFactory: {
@@ -34,9 +38,24 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // child: 'coalFactory',
-    count: 2,
+    count: 4,
     type:'factory',
+    title:'Wood Factory',
+    ceil:'forest',
   },
+  // ironOreFactory: {
+  //   parent: false,
+  //   product: 'ironOre',
+  //   storage: 4,
+  //   process: 1,
+  //   coast: 2000,
+  //   salary: 1000,
+  //     // child: 'steelFactory',
+  //   count: 3,
+  //   type:'factory',
+  //   title:'Iron Factory',
+  //   ceil:'mountain',
+  // },
 
 
   // ironOreFactory: {
@@ -233,7 +252,8 @@ const PRODUCTS = {
   //   ingridients: [null],
   //   prodaction: 'ironOreFactory',
   //   profit:400,
-  //
+  //   demand:5,
+  //   price:100,
   // },
   // oil: {
   //   ingridients: [null],

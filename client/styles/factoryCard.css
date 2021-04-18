@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Graduate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap');
+
+.factoryCard {
+  width: 18vw;
+  height: 25vw;
+  background-color: #FFD639;
+  transform: scale();
+  display: block;
+  border: 0.1vw solid #383838;
+  border-radius: 1vw;
+  position: absolute;
+}
+
+.factoryCard-header {
+  width: 100%;
+  height: 20%;
+}
+
+.factoryCard-salaryBox {
+  padding: 0;
+  margin: 0;
+  font-size: 1vw;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  font-family: 'Graduate', cursive;
+  color: white;
+}
+
+.factoryCard-salaryContainer {
+  background-color: red;
+}
+
+.factoryCard-processBox {
+  display: flex;
+  align-items: center;
+}
+
+.factoryCard-processContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: start;
+  padding-top: 0.2vw;
+}
+
+.factoryCard-processCeil {
+  width: 3vw;
+  height: 3vw;
+  background-color: white;
+  border-radius: 0.5vw;
+}
+
+.factoryCard-processArrow {
+  font-size: 1vw;
+}
+
+.factoryCard-body {
+  width: 100%;
+  height: 60%;
+  color: #ffffff;
+}
+
+.factoryCard-title {
+  text-align: center;
+  font-size: 1.5vw;
+  font-family: 'Graduate', cursive;
+}
+
+.factoryCard-coastBox {
+  display: flex;
+  font-size: 2vw;
+  font-family: 'Oswald', serif;
+  justify-content: center;
+}
+
+.factoryCard-productBox {
+  display: flex;
+  margin-left: 0.5vw;
+  font-size: 1vw;
+  font-family: 'Oswald', serif;
+}
+
+.factoryCard-footer {
+  width: 100%;
+  height: 20%;
+}
+
+.factoryCard-storageBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.factoryCard-storageCeil {
+  width: 3vw;
+  height: 3vw;
+  background-color: white;
+  border-radius: 0.5vw;
+}

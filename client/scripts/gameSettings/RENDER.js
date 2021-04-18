@@ -108,7 +108,7 @@ function applyPostprocessors(){
       COMPOSER.setSize(windowWidth/1.5, windowHeight/1.5, true);
     }
     if(RESOLUTION === 1){
-      COMPOSER.setSize(windowWidth*pixelRatio/2, windowHeight*pixelRatio/2, true);
+      COMPOSER.setSize(windowWidth, windowHeight, true);
     }
     if(RESOLUTION === 2){
       COMPOSER.setSize(windowWidth*pixelRatio, windowHeight*pixelRatio, true);
@@ -150,7 +150,7 @@ function fullScreen(element) {
 
 function initRenderSettingsMenu(){
   const section = `
-  <div style="position:fixed">
+  <section class="nonSelectText" id="settingsSection">
     <div id="renderSettingsButton">video settings</div>
     <div id="renderSettingsSection" style="display:none">
       <input type="range" id="FPS_RANGE" name="RANGE_FPS" min="0" max="40" step="5" value="0">
@@ -164,7 +164,7 @@ function initRenderSettingsMenu(){
       <div id="fullScreenButton">Full screen</div>
     </div>
 
-  </div>
+  </section>
   `
 
 

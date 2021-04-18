@@ -17,7 +17,9 @@ import * as SENDING from './sendings.js';
 
 
 function buildRoad(pack){
+
   GAME.playersJoined[pack.player].balance -= GAME_CONTENT.ROAD_COAST;
+  UI.balanceSection.updateBalance();
 
   GAME.map.mapFlagsArr[pack.indexses[0]][pack.indexses[1]] = 3;
 

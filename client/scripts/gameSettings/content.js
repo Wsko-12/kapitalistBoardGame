@@ -1,5 +1,5 @@
 
-const PLAYER_BALANCE = 1000;
+const PLAYER_BALANCE = 1000000;
 const ROAD_COAST = 100;
 const FACTORIES = {
   waterFactory: {

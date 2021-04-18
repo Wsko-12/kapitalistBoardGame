@@ -90,12 +90,11 @@ function setSizes() {
       RENDERER.setSize(windowWidth/1.5, windowHeight/1.5, true);
     }
     if(RENDER_SETTINGS.RESOLUTION === 1){
-      RENDERER.setSize(windowWidth*pixelRatio/2, windowHeight*pixelRatio/2, true);
+      RENDERER.setSize(windowWidth, windowHeight, true);
     }
     if(RENDER_SETTINGS.RESOLUTION === 2){
       RENDERER.setSize(windowWidth*pixelRatio, windowHeight*pixelRatio, true);
     }
-
 
 
 
@@ -105,10 +104,7 @@ function setSizes() {
     POSTPROCESSOR.resize();
     CAMERA.aspect = windowWidth / windowHeight;
     CAMERA.updateProjectionMatrix();
-  }else{
-
   }
-
 
 
 };

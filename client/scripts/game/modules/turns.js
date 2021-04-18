@@ -99,12 +99,14 @@ function buildingRoad(){
   };
 
   function acceptBuild(){
+    UI.balanceSection.smallNоtification.add((GAME_CONTENT.ROAD_COAST*-1),meshFunctions.getDOMCord());
     meshFunctions.remove();
     const pack = {
       player:PLAYER.login,
       indexses:[zIndex,xIndex],
       id:generateId('road',5),
     };
+
     SENDING.roadBuilding(pack);
 
 

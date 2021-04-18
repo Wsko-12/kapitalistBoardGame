@@ -11,7 +11,29 @@ import {
 import {
   PLAYER,
 } from "/scripts/accPage.js";
+function generateId(type,x){
+	let letters = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz';
+	let numbers = '12345678012345678901234567890';
+	let lettersMix;
+  let numbersMix;
+	for(let i=0; i<10;i++){
+              lettersMix += letters;
+              numbersMix += numbers;
+            }
 
+
+	let mainArr = lettersMix.split('').concat(numbersMix.split(''));
+
+
+	let shuffledArr = mainArr.sort(function(){
+  						return Math.random() - 0.5;
+					});
+	let id = type +'_';
+	for(let i=0; i<=x;i++){
+		id += shuffledArr[i];
+	};
+	return id;
+};
 
 function applyUserInteractionOnElement(element,event,foo){
   if(event === 'move'){
@@ -60,7 +82,7 @@ const turnDeviceSection = {
 const cameraInterface = {
   addButton:function(){
     const changeFun = cameraInterface.changeCameraPosition();
-    const changeCameraPositionBtn = `<button id="changeCameraPositionBtn" style="">camera</button>`;
+    const changeCameraPositionBtn = `<button id="changeCameraPositionBtn">camera</button>`;
     document.querySelector('#body').insertAdjacentHTML('beforeEnd',changeCameraPositionBtn);
     document.querySelector('#changeCameraPositionBtn').onclick = function(){
       changeFun.change();
@@ -97,7 +119,73 @@ const cameraInterface = {
 
 
 
+const balanceSection = {
+  updateCount:10,
+  updateSpeed:50,
 
+  addSection:function(){
+    const section = `<section id="balanceSection"></section>`;
+    document.querySelector('#body').insertAdjacentHTML('beforeEnd',section);
+
+    const balanceDiv = `<div id="playerBalanceDiv">${GAME.playersJoined[PLAYER.login].balance}$</div>`;
+    document.querySelector('#balanceSection').insertAdjacentHTML('beforeEnd',balanceDiv);
+  },
+  updateBalance:function(){
+    const balanceDiv = document.querySelector('#playerBalanceDiv');
+    const balanceDivValue = parseInt(balanceDiv.innerHTML)
+
+    const playerBalance  = GAME.playersJoined[PLAYER.login].balance
+
+    const updateCount = balanceSection.updateCount;
+    if(playerBalance>balanceDivValue){
+      if(balanceDivValue+updateCount<playerBalance){
+        balanceDiv.innerHTML = balanceDivValue+updateCount+"$";
+        balanceDiv.style.color = 'green'
+        setTimeout(function(){
+          balanceSection.updateBalance();
+        },balanceSection.updateSpeed)
+      }else{
+        balanceDiv.innerHTML = playerBalance+"$";
+        balanceDiv.style.color = 'white'
+      };
+    };
+
+    if(playerBalance<balanceDivValue){
+      if(balanceDivValue-updateCount>playerBalance){
+        balanceDiv.innerHTML = balanceDivValue-updateCount+"$";
+        balanceDiv.style.color = 'red';
+        setTimeout(function(){
+          balanceSection.updateBalance();
+        },balanceSection.updateSpeed)
+      }else{
+        balanceDiv.innerHTML = playerBalance+"$";
+        balanceDiv.style.color = 'white'
+      };
+    };
+  },
+  smallNоtification:{
+    add:function(value,position){
+      const section = document.querySelector('#balanceSection');
+      const id = generateId('balanceNotification',5);
+      const color = value > 0 ? 'green' :'red';
+      const notification = `<div id="${id}" style="top:${position.y}px;left:${position.x}px;color:${color}" class="balanceSmallNоtification">${value}$</div>`;
+      const upShift = document.body.clientHeight/10;
+      section.insertAdjacentHTML('beforeEnd',notification);
+      const notificationDiv = document.querySelector(`#${id}`);
+      setTimeout(function(){
+        notificationDiv.style.top = (position.y-upShift)+"px";
+        notificationDiv.style.opacity = 0;
+      },20)
+
+      function remove(){
+        document.querySelector(`#${id}`).remove();
+      }
+      setTimeout(function() {
+        remove();
+      },2000)
+    },
+  },
+};
 
 const messagesSection = {
   addSection: function(){
@@ -390,7 +478,7 @@ const turnInterfaceSection = {
 
       document.querySelector('#acceptBuildRoadBtn').onclick = function(){
         buildingRoadAPI.acceptBuild();
-        turnInterfaceSection.rebuildSection();
+        turnInterfaceSection.buildRoadSection();
       };
       document.querySelector('#cancelBuildRoadBtn').onclick = function(){
         buildingRoadAPI.meshFunctions.remove();
@@ -416,9 +504,14 @@ const turnInterfaceSection = {
 
 
 
+
+
 function buildGameUI(){
   turnDeviceSection.addSection();
   RENDER_SETTINGS.initRenderSettingsMenu();
+
+  balanceSection.addSection();
+  balanceSection.updateBalance();
   cameraInterface.addButton();
   cameraInterface.applyDoubleClickEvent();
 
@@ -435,4 +528,5 @@ playersNamesSection,
 stocksSection,
 turnInterfaceSection,
 turnDeviceSection,
+balanceSection,
 };

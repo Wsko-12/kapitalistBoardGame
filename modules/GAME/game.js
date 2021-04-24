@@ -316,4 +316,7 @@ module.exports.gamePlaySends = {
   applyProductionTurn:function(sendPack){
     GAMES[sendPack.gameID].emit('GAME_gamePlay_applyProductionTurn',sendPack.player);
   },
+  applyCityConsumptionTurn:function(sendPack){
+      GAMES[sendPack.gameID].emit('GAME_gamePlay_applyCityConsumptionTurn');
+  },
 };

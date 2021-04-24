@@ -166,7 +166,7 @@ function buildCitiesDesignate(mapNamesArr, Regenerate) {
     login: PLAYER.login,
     game: GAME.id,
   }
-  buildCityStocks();
+  buildCityStocks(Regenerate);
 
 
 
@@ -183,9 +183,11 @@ function buildCitiesDesignate(mapNamesArr, Regenerate) {
 };
 
 
-function buildCityStocks() {
+function buildCityStocks(Regenerate) {
   for (let city in GAME.map.cities) {
     GAME.map.cities[city].updateAllStocks = updateAllStocks;
+    GAME.map.cities[city].getPrice = getPrice;
+    GAME.map.cities[city].sellProduct = sellProduct;
     for (let product in GAME_CONTENT.PRODUCTS) {
       GAME.map.cities[city].stocks[product] = {};
       GAME.map.cities[city].stocks[product].stock = [];
@@ -209,11 +211,6 @@ function buildCityStocks() {
       priceArr[i] = price + (0.25 * price * (i - (priceArr.length - 2)));
     };
 
-
-
-
-
-
     return priceArr;
   };
 
@@ -225,12 +222,35 @@ function buildCityStocks() {
     };
   };
 
-  buildFactories();
+
+  function getPrice(product){
+    for(let i=0;i<this.stocks[product].stock.length;i++){
+      if(this.stocks[product].stock[i] === 1){
+        if(i === 0){
+          return 0;
+        }else{
+          return this.stocks[product].price[i-1];
+        }
+      }
+      else{
+        return this.stocks[product].price[this.stocks[product].price.length-1];
+      };
+    };
+  };
+  function sellProduct(product){
+    const prise = this.getPrice(product);
+    this.stocks[product].stock[0] = 1;
+    return prise;
+
+  };
+
+  buildFactories(Regenerate);
 
 };
 
-function buildFactories() {
-  if (Object.keys(GAME.gameBank.factories).length === 0) {
+function buildFactories(Regenerate) {
+
+  if (Object.keys(GAME.gameBank.factories).length === 0 && !Regenerate) {
     for (let factoryType in GAME_CONTENT.FACTORIES) {
       const thisFactory = GAME_CONTENT.FACTORIES[factoryType];
 

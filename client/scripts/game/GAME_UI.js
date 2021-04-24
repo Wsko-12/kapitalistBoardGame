@@ -121,7 +121,7 @@ const cameraInterface = {
 
 
 const balanceSection = {
-  updateCount: 10,
+  updateCount: 50,
   updateSpeed: 10,
 
   addSection: function() {
@@ -165,11 +165,16 @@ const balanceSection = {
     };
   },
   smallNоtification: {
-    add: function(value, position) {
+    add: function(value, position,color) {
       const section = document.querySelector('#balanceSection');
       const id = generateId('balanceNotification', 5);
-      const color = value > 0 ? 'green' : 'red';
-      const notification = `<div id="${id}" style="top:${position.y}px;left:${position.x}px;color:${color}" class="balanceSmallNоtification">${value}$</div>`;
+
+      let colorCss= value > 0 ? 'green' : 'red';
+      if(color){
+        colorCss = color;
+      };
+      (typeof value === 'number') ? value = value+'$':false;
+      const notification = `<div id="${id}" style="top:${position.y}px;left:${position.x}px;color:${colorCss}" class="balanceSmallNоtification">${value}</div>`;
       const upShift = document.body.clientHeight / 10;
       section.insertAdjacentHTML('beforeEnd', notification);
       const notificationDiv = document.querySelector(`#${id}`);
@@ -183,7 +188,7 @@ const balanceSection = {
       }
       setTimeout(function() {
         remove();
-      }, 10000)
+      }, 3000)
     },
   },
 };

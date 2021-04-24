@@ -191,6 +191,7 @@ function buildingFactory(factoryType,factoryTitle){
 function start() {
 
   UI.turnInterfaceSection.showSection(true);
+  SENDING.makeCityConsumptionTurn();
   SENDING.makeProductionTurn();
 
   //чтобы успел прийти ответ с сервера

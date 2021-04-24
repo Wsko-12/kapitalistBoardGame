@@ -14,9 +14,10 @@
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   display: none;
-  align-items: center;
-  justify-content: center;
+  align-items:center;
+  justify-content:space-around;
   z-index: 1000;
+  text-align: center;
 }
 
 .nonSelectText {
@@ -53,12 +54,7 @@
   transition-delay: 2s,
 }
 
-.balanceSmallNоtification {
-  text-shadow: white 0 0 0.2vw;
-  font-size: 1vw;
-  position: absolute;
-  transition-duration: 2s;
-}
+
 
 #messagesSection {
   width: 100vw;
@@ -74,6 +70,12 @@
   margin: auto;
   text-shadow: white 0 0 0.2vw;
   position: absolute;
+}
+.balanceSmallNоtification {
+  text-shadow: white 0 0 0.2vw;
+  font-size: 1.5vw;
+  position: absolute;
+  transition-duration: 3s;
 }
 
 .stockSection {

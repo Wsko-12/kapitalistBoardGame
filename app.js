@@ -181,10 +181,13 @@ io.on('connection', function(socket) {
 
 
   socket.on('GAME_gamePlay_makeProductionTurn',function(sendPack){
-    
+
     GAME.gamePlaySends.applyProductionTurn(sendPack);
   });
 
+  socket.on('GAME_gamePlay_makeCityConsumptionTurn',function(sendPack){
+    GAME.gamePlaySends.applyCityConsumptionTurn(sendPack);
+  });
 
 
 

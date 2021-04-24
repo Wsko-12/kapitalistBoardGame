@@ -29,7 +29,6 @@ class playerFactoryObj {
 
 
 
-
     for(let proccessIndex = 0;proccessIndex<globalFactory.process;proccessIndex++){
       this.process.push(0);
     };
@@ -39,18 +38,42 @@ class playerFactoryObj {
     };
   };
 
-
   makeProductionTurn(){
     GAME.playersJoined[this.owner].balance -= this.salary;
     if(PLAYER.login === this.owner){
       UI.balanceSection.smallNоtification.add((this.salary*-1),SCENE.getDOMCordByMesh(GAME.renderGroups.factories[this.id].mesh));
     };
 
+
+    function makeTurn(self){
+      //если склад не заполнен
+      if(self.storage.includes(0)){
+        //если производство еще не началось
+        if(!self.process.includes(1)){
+          self.process[0] = 1;
+        }else{
+          //если последний шаг производства
+          if(self.process[self.process.length - 1] === 1){
+            self.process[self.process.length - 1] = 0;
+            self.storage.unshift(self.storage.pop());
+            self.storage[0] = 1;
+            makeTurn(self);
+          }else{
+            self.process.unshift(self.process.pop())
+          };
+        };
+      }else{
+        if(PLAYER.login === self.owner){
+          setTimeout(function(){
+            UI.balanceSection.smallNоtification.add('Storage full!',SCENE.getDOMCordByMesh(GAME.renderGroups.factories[self.id].mesh),'#ff0091');
+          },500);
+
+        };
+      };
+    };
+    makeTurn(this);
   };
 };
-
-
-
 
 
 

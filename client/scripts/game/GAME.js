@@ -141,6 +141,9 @@ document.addEventListener("DOMContentLoaded", function(){
     SENDING.applyProductionTurn(player);
   });
 
+  socket.on('GAME_gamePlay_applyCityConsumptionTurn',function(){
+    SENDING.applyCityConsumptionTurn();
+  });
 
 
 

@@ -19,15 +19,18 @@ import * as UI from '/scripts/game/GAME_UI.js';
 
 function SEND_ALL(pack) {
   pack.gameInfo = {};
+
   pack.gameInfo.playersJoined = GAME.playersJoined;
   pack.gameInfo.playersInGame = GAME.playersInGame;
   pack.gameInfo.mapStativeObjects = GAME.map.stativeObjects;
 
 
   pack.gameInfo.gameBank = GAME.gameBank;
+  if(Object.keys(GAME.gameBank).length === 0){
+    pack.gameInfo.gameBank = 'empty';
+  }
   //....
   //дописать что надо будет выслать еще
-
   socket.emit('GAME_rebuild_sendInfo', pack);
 };
 
@@ -39,6 +42,8 @@ function APPLY_ALL(returnGamePack) {
     login: PLAYER.login
   };
   applyMapLineArr(returnGamePack.map.mapLine, true);
+
+
 
 
   //востанавливаемм сохраненные классы
@@ -84,6 +89,20 @@ function factoryBuilding(pack){
 }
 
 
+
+function makeCityConsumptionTurn() {
+  const sendPack = {
+    player: PLAYER.login,
+    gameID: GAME.id,
+  };
+  socket.emit('GAME_gamePlay_makeCityConsumptionTurn', sendPack);
+};
+function applyCityConsumptionTurn() {
+ for(let city in GAME.map.cities){
+   GAME.map.cities[city].updateAllStocks();
+ };
+};
+
 function makeProductionTurn(){
   const sendPack = {
     player: PLAYER.login,
@@ -92,12 +111,14 @@ function makeProductionTurn(){
   socket.emit('GAME_gamePlay_makeProductionTurn', sendPack);
 };
 
+
 function applyProductionTurn(player){
   const playerFactories = GAME.playersJoined[player].factories.processing;
   for(let factory in playerFactories){
     playerFactories[factory].makeProductionTurn();
   };
   UI.balanceSection.updateBalance();
+
 
 
 
@@ -111,4 +132,6 @@ export {
   factoryBuilding,
   makeProductionTurn,
   applyProductionTurn,
+  makeCityConsumptionTurn,
+  applyCityConsumptionTurn,
 }

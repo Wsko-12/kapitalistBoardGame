@@ -57,7 +57,9 @@ function gameNULL(){
 
 
 
-
+    renderGroups:{
+      factories:{},
+    },
 
     startPlay:false,
     turns: {//GenerationTurns
@@ -260,6 +262,7 @@ module.exports.ReturnPlayerToGame = function(pack){
     returnGamePack.map.mapLine = GAMES[pack.game].map.mapLine;
 
 
+
     returnGamePack.map.stativeObjects = pack.gameInfo.mapStativeObjects;
     returnGamePack.playersJoined = pack.gameInfo.playersJoined;
     returnGamePack.playersInGame = pack.gameInfo.playersInGame;
@@ -306,5 +309,11 @@ module.exports.FinishRebuild = function(pack){
 module.exports.gamePlaySends = {
   buildingRoad:function(sendPack){
     GAMES[sendPack.gameID].emit('GAME_gamePlay_buildRoad',sendPack.pack);
+  },
+  buildingFactory:function(sendPack){
+    GAMES[sendPack.gameID].emit('GAME_gamePlay_buildFactory',sendPack.pack);
+  },
+  applyProductionTurn:function(sendPack){
+    GAMES[sendPack.gameID].emit('GAME_gamePlay_applyProductionTurn',sendPack.player);
   },
 };

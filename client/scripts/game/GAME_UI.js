@@ -122,7 +122,7 @@ const cameraInterface = {
 
 const balanceSection = {
   updateCount: 10,
-  updateSpeed: 50,
+  updateSpeed: 10,
 
   addSection: function() {
     const section = `<section id="balanceSection"></section>`;
@@ -183,7 +183,7 @@ const balanceSection = {
       }
       setTimeout(function() {
         remove();
-      }, 2000)
+      }, 10000)
     },
   },
 };
@@ -285,6 +285,23 @@ const cityNamesSection = {
   },
 };
 
+const factoryNamesSection  = {
+  addSection: function() {
+    const section = `<section id="factoryNamesSection"></section>`;
+    document.querySelector('#body').insertAdjacentHTML('beforeEnd', section);
+  },
+  addDiv:function(pack){
+    const div = `<div class="factoryNameDiv nonSelectText" id="factoryNameDiv_${pack.factoryIndex}">${pack.factoryTitle}</div>`;
+    document.querySelector('#factoryNamesSection').insertAdjacentHTML('beforeEnd', div);
+    return document.querySelector(`#factoryNameDiv_${pack.factoryIndex}`);
+  },
+  addPlayerNameDiv:function(pack){
+    const div = `<div class="factoryNameDiv nonSelectText" id="factoryNameDiv_${pack.factoryIndex}" style = "color:${SIT_PLACES.USER_COLORS.css[GAME.playersJoined[pack.owner].colorIndex]}">${pack.owner}</div>`;
+    document.querySelector('#factoryNamesSection').insertAdjacentHTML('beforeEnd', div);
+    return document.querySelector(`#factoryNameDiv_${pack.factoryIndex}`);
+  },
+
+};
 
 const stocksSection = {
   addSection: function() {
@@ -467,8 +484,14 @@ const factoriesBankSection = {
     if (!factoriesBankSection.domCards[factoryObj.factoryType]) {
       factoriesBankSection.domCards[factoryObj.factoryType] = {};
     }
-    factoriesBankSection.domCards[factoryObj.factoryType][factoryObj.id] = cardContent;
+    factoriesBankSection.domCards[factoryObj.factoryType][factoryObj.id] = {
+      content: cardContent,
+      title: factoryObj.title + " #" + factoryObj.index,
+    }
 
+  },
+  deleteDomCard:function(factoryType,factoryIndex){
+    delete factoriesBankSection.domCards[factoryType][factoryIndex];
   },
 
   showSection: function(bool) {
@@ -499,28 +522,28 @@ const factoriesBankSection = {
       }
 
       for (let factoryType in factoriesBankSection.domCards) {
-        const thisFactoryTypeContainer = `
-            <div class="factoryTypeContainer" id="factoryTypeContainer_${factoryType}" data-factoryType="${factoryType}">
-              <div style="width:100%;height:90%" id="factoryTypeContainer_${factoryType}_contentBox">
+        if(Object.keys(factoriesBankSection.domCards[factoryType]).length > 0){
+          const thisFactoryTypeContainer = `
+              <div class="factoryTypeContainer" id="factoryTypeContainer_${factoryType}" data-factoryType="${factoryType}">
+                <div style="width:100%;height:90%" id="factoryTypeContainer_${factoryType}_contentBox">
+                </div>
               </div>
-            </div>
-          `
-        document.querySelector('#factoryBankContainer').insertAdjacentHTML('beforeEnd', thisFactoryTypeContainer);
-        document.querySelector(`#factoryTypeContainer_${factoryType}_contentBox`).onclick = function() {
+            `
+          document.querySelector('#factoryBankContainer').insertAdjacentHTML('beforeEnd', thisFactoryTypeContainer);
+          document.querySelector(`#factoryTypeContainer_${factoryType}_contentBox`).onclick = function() {
+            factoriesBankSection.showSection(false);
+            turnInterfaceSection.buildFactorySection(factoryType);
+          };
 
-          ////BUY FUNCTION HERE
-          alert(factoryType)
-        };
-
-        let index = 1;
-        for (let factory in GAME.gameBank.factories) {
-          if (GAME.gameBank.factories[factory].factoryType === factoryType) {
-            const factoryCard = factoriesBankSection.domCards[factoryType][GAME.gameBank.factories[factory].id];
-            const cardCount = GAME_CONTENT.FACTORIES[factoryType].count;
-            console.log(cardCount);
-            document.querySelector(`#factoryTypeContainer_${factoryType}_contentBox`).insertAdjacentHTML('afterBegin', factoryCard);
-            document.querySelector(`#${GAME.gameBank.factories[factory].id}`).style.transform = `translate(${(cardCount-index)*2}vw,${(cardCount-index)*2}vw) scale(0.6)`
-            index++;
+          let index = 1;
+          for (let factory in GAME.gameBank.factories) {
+            if (GAME.gameBank.factories[factory].factoryType === factoryType) {
+              const factoryCard = factoriesBankSection.domCards[factoryType][GAME.gameBank.factories[factory].id].content;
+              const cardCount = GAME_CONTENT.FACTORIES[factoryType].count;
+              document.querySelector(`#factoryTypeContainer_${factoryType}_contentBox`).insertAdjacentHTML('afterBegin', factoryCard);
+              document.querySelector(`#${GAME.gameBank.factories[factory].id}`).style.transform = `translate(${(cardCount-index)*2}vw,${(cardCount-index)*2}vw) scale(0.6)`
+              index++;
+            };
           };
         };
       };
@@ -532,6 +555,9 @@ const factoriesBankSection = {
 
 
 };
+
+
+
 
 
 const turnInterfaceSection = {
@@ -588,9 +614,6 @@ const turnInterfaceSection = {
   },
 
 
-
-
-
   buildRoadSection: function() {
     const buildingRoadAPI = TURNS.buildingRoad();
     const section = document.querySelector('#turnInterfaceSection');
@@ -639,6 +662,10 @@ const turnInterfaceSection = {
       document.querySelector('#turnInterfaceSection').insertAdjacentHTML('beforeEnd', buildHereDiv);
 
       document.querySelector('#acceptBuildRoadBtn').onclick = function() {
+
+
+
+
         buildingRoadAPI.acceptBuild();
         turnInterfaceSection.buildRoadSection();
       };
@@ -647,6 +674,67 @@ const turnInterfaceSection = {
         turnInterfaceSection.buildRoadSection();
       };
     };
+  },
+
+
+  buildFactorySection:function(factoryType){
+    const buildingFactoryAPI = TURNS.buildingFactory(factoryType);
+    const section = document.querySelector('#turnInterfaceSection');
+
+    section.innerHTML = '';
+    const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper"></div>';
+    section.insertAdjacentHTML('beforeEnd', mouseEventsCeaper);
+    const mouseCeaper = document.querySelector('#turnInterfaceSection_mouseEventsCeaper');
+    mouseCeaper.style.pointerEvents = 'auto';
+    const cancelBtn = '<button id="cancelBuildFactoryBtn">cancel</button>';
+    section.insertAdjacentHTML('beforeEnd', cancelBtn);
+    document.querySelector('#cancelBuildFactoryBtn').onclick = function() {
+      turnInterfaceSection.rebuildSection();
+
+      clearUserInteractionOnElement(mouseCeaper, 'move');
+      clearUserInteractionOnElement(mouseCeaper, 'click');
+
+      buildingFactoryAPI.meshFunctions.remove();
+    };
+
+
+
+    applyUserInteractionOnElement(mouseCeaper, 'move', TURNS.userEvents.changeMouseCoord);
+    applyUserInteractionOnElement(mouseCeaper, 'move', function() {
+      buildingFactoryAPI.meshFunctions.moveMeshToMesh(TURNS.userEvents.getMouseCoord(), 'mapGroup');
+    });
+    applyUserInteractionOnElement(mouseCeaper, 'click', function() {
+      if (buildingFactoryAPI.checkMapIndex()) {
+        confirmBuildBlock();
+      };
+    });
+    function confirmBuildBlock() {
+      const position = buildingFactoryAPI.meshFunctions.getDOMCord();
+      const buildHereDiv = `
+        <div style="position:absolute;left:${position.x}px;top:${position.y}px;" >
+          <button id="acceptBuildRoadBtn">build</button>
+          <button id="cancelBuildRoadBtn">cancel</button>
+        </div>
+      `
+      document.querySelector('#turnInterfaceSection').innerHTML = '';
+      document.querySelector('#turnInterfaceSection').insertAdjacentHTML('beforeEnd', buildHereDiv);
+
+      document.querySelector('#acceptBuildRoadBtn').onclick = function() {
+        const factoryIndex =  Object.keys(factoriesBankSection.domCards[factoryType])[0];
+        const factoryTitle = factoriesBankSection.domCards[factoryType][factoryIndex].title;
+        factoriesBankSection.deleteDomCard(factoryType,factoryIndex);
+        buildingFactoryAPI.acceptBuild(factoryIndex,factoryTitle);
+        turnInterfaceSection.rebuildSection();
+      };
+      document.querySelector('#cancelBuildRoadBtn').onclick = function() {
+        buildingFactoryAPI.meshFunctions.remove();
+        turnInterfaceSection.buildFactorySection(factoryType);
+      };
+    };
+
+
+
+
   },
 
 };
@@ -672,6 +760,7 @@ function buildGameUI() {
 
   factoriesBankSection.addSection();
   factoriesBankSection.buildAllCards();
+  factoryNamesSection.addSection();
 
 
 
@@ -682,6 +771,7 @@ function buildGameUI() {
   cityNamesSection.addSection();
   messagesSection.addSection();
   turnInterfaceSection.addSection();
+
 };
 export {
   buildGameUI,
@@ -691,4 +781,6 @@ export {
   turnInterfaceSection,
   turnDeviceSection,
   balanceSection,
+  factoriesBankSection,
+  factoryNamesSection,
 };

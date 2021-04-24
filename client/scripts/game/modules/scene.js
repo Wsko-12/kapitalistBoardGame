@@ -14,6 +14,7 @@ import * as THREE from '/scripts/ThreeJsLib/build/three.module.js';
 import * as RENDER_SETTINGS from '/scripts/gameSettings/RENDER.js';
 import * as MODELS from '/scripts/models/models.js';
 import * as MAP_SETTINGS from "/scripts/gameSettings/map.js";
+import * as GAME_CONTENT from '/scripts/gameSettings/content.js';
 import * as SIT_PLACES from "/scripts/gameSettings/sittingPlace.js";
 import * as ANIMATION from "./animations.js";
 import * as UI from '../GAME_UI.js';
@@ -329,12 +330,19 @@ function changeUICityNamesDivPosition() {
     changeDOMElementPositionByMesh(`#cityNameDiv_${city}`, mesh, div.clientWidth / 2 * (-1), div.clientHeight / 2 * (-1));
   };
 };
-
+function changeUIFactoryNamesDivPosition(){
+  for(let factory in GAME.renderGroups.factories){
+    const thisFactory = GAME.renderGroups.factories[factory];
+    const div = thisFactory.domElement;
+    changeDOMElementPositionByMesh(`#${div.id}`, thisFactory.mesh, div.clientWidth / 2 * (-1), div.clientHeight / 2 * (-1));
+  }
+};
 
 
 function changeUIElementsPosition() {
   BUILD_PLAYERS_MESH.positionNameSign();
   changeUICityNamesDivPosition();
+  changeUIFactoryNamesDivPosition();
 };
 
 
@@ -345,9 +353,10 @@ function temporaryMesh() {
   let parentMesh;
 
 
-  function create(type) {
+  function create(type,color) {
     switch (type) {
       case 'road':
+      {
         let geom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS / 2, MAP_SETTINGS.RADIUS / 5, MAP_SETTINGS.RADIUS / 1.5);
         let mat = new THREE.MeshPhongMaterial({
           color: 0x454545
@@ -355,6 +364,21 @@ function temporaryMesh() {
         mesh = new THREE.Mesh(geom, mat);
         mesh.position.set(0, MAP_SETTINGS.RADIUS * 2, 0);
         SCENE.add(mesh);
+
+      }
+
+        break;
+      case 'factory':
+      {
+        let geom = new  THREE.CylinderGeometry( MAP_SETTINGS.RADIUS / 2,MAP_SETTINGS.RADIUS / 2,MAP_SETTINGS.RADIUS / 5, 16 );
+        let mat = new THREE.MeshPhongMaterial({
+          color: color,
+        });
+        mesh = new THREE.Mesh(geom, mat);
+        mesh.position.set(0, MAP_SETTINGS.RADIUS * 2, 0);
+        SCENE.add(mesh);
+      }
+
         break;
       default:
 
@@ -444,6 +468,8 @@ const buildGameObject = {
 
   },
   road: function(pack) {
+
+    GAME.map.mapFlagsArr[pack.indexses[0]][pack.indexses[1]] = 3;
     const ceilGroup = buildGameObject.findCeilGroupByIndeses(pack.indexses);
     const roadGeom = new THREE.BoxBufferGeometry(MAP_SETTINGS.RADIUS / 2, MAP_SETTINGS.RADIUS / 5, MAP_SETTINGS.RADIUS / 1.5);
     const roadMaterial = new THREE.MeshPhongMaterial({
@@ -452,6 +478,43 @@ const buildGameObject = {
     const roadMesh = new THREE.Mesh(roadGeom, roadMaterial);
     roadMesh.userData.id = pack.id;
     ceilGroup.add(roadMesh);
+
+  },
+
+  factory: function(pack){
+    GAME.map.mapFlagsArr[pack.indexses[0]][pack.indexses[1]] = 4;
+    const ceilGroup = buildGameObject.findCeilGroupByIndeses(pack.indexses);
+    const factoryGeom = new THREE.CylinderGeometry( MAP_SETTINGS.RADIUS / 2.5,MAP_SETTINGS.RADIUS / 2.5,MAP_SETTINGS.RADIUS / 5, 16 );
+    const factoryMat = new THREE.MeshPhongMaterial({
+      color: GAME_CONTENT.FACTORIES[pack.factoryType].color,
+    });
+    const userColorTorusGeom = new THREE.CylinderGeometry( MAP_SETTINGS.RADIUS / 2,MAP_SETTINGS.RADIUS / 2,MAP_SETTINGS.RADIUS / 6, 16 );
+    const userColorTorusMat = new THREE.MeshPhongMaterial({
+      color: SIT_PLACES.USER_COLORS.three[GAME.playersJoined[pack.owner].colorIndex],
+    });
+
+    const factoryMesh = new THREE.Mesh(factoryGeom, factoryMat);
+    const userColorTorus = new THREE.Mesh(userColorTorusGeom,userColorTorusMat);
+    factoryMesh.userData.id = pack.id;
+    if(pack.owner === PLAYER.login){
+      GAME.renderGroups.factories[pack.factoryIndex] = {
+        mesh:factoryMesh,
+        domElement:UI.factoryNamesSection.addDiv(pack),
+      };
+    }else{
+      // GAME.renderGroups.factories[pack.factoryIndex] = {
+      //   mesh:factoryMesh,
+      //   domElement:UI.factoryNamesSection.addPlayerNameDiv(pack),
+      // };
+    };
+
+    ceilGroup.add(factoryMesh);
+    ceilGroup.add(userColorTorus);
+
+
+
+
+
   },
 };
 
@@ -488,4 +551,5 @@ export {
   temporaryMesh,
   buildGameObject,
   setSizes,
+  getDOMCordByMesh,
 };

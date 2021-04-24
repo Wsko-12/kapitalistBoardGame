@@ -130,9 +130,17 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
+
   socket.on('GAME_gamePlay_buildRoad',function(pack){
     APPLY_BUILD.buildRoad(pack);
   });
+  socket.on('GAME_gamePlay_buildFactory',function(pack){
+    APPLY_BUILD.buildFactory(pack);
+  });
+  socket.on('GAME_gamePlay_applyProductionTurn',function(player){
+    SENDING.applyProductionTurn(player);
+  });
+
 
 
 

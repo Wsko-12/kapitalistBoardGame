@@ -1,7 +1,7 @@
 import {RADIUS,ROUNDS} from "/scripts/gameSettings/map.js"
 const USER_COLORS = {
-  three:[0xFFE863,0xE05260,0xC1E85E,0x77C9E4],
-  css:['#FFE863','#E05260','#C1E85E','#77C9E4']
+  three:[0xFFE863,0xE05260,0x68c400,0x77C9E4],
+  css:['#FFE863','#E05260','#68c400','#77C9E4']
 };
 const USER_SIT_DISTANCE = RADIUS*(ROUNDS*3);
 const USER_SIT_POSITIONS = {

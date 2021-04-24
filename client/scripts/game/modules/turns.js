@@ -11,6 +11,7 @@ import {
   PLAYER,
 } from "/scripts/accPage.js";
 import * as GAME_CONTENT from '/scripts/gameSettings/content.js';
+import * as MAP_SETTINGS from '/scripts/gameSettings/map.js';
 import * as SENDING from './sendings.js';
 
 
@@ -124,11 +125,95 @@ function buildingRoad(){
 
 
 
+function buildingFactory(factoryType,factoryTitle){
+  let zIndex,xIndex;
+
+
+  const ceil = GAME_CONTENT.FACTORIES[factoryType].ceil;
+  const color = GAME_CONTENT.FACTORIES[factoryType].color;
+  const meshFunctions = SCENE.temporaryMesh();
+  meshFunctions.create('factory',color);
+
+  function checkMapIndex(){
+    const parentMesh = meshFunctions.returnParentMesh();
+    if(parentMesh){
+      zIndex = parentMesh.indexses[0];
+      xIndex = parentMesh.indexses[1];
+      if(GAME.map.mapFlagsArr[zIndex][xIndex] === 2 && GAME.map.mapNamesArr[zIndex][xIndex] === ceil){
+        if(GAME.playersJoined[PLAYER.login].balance > GAME_CONTENT.FACTORIES[factoryType].coast){
+          return true
+        }else{
+          UI.messagesSection.showMessage.NotEnoughMoney(meshFunctions.getDOMCord());
+          return false
+        }
+      }else{
+        UI.messagesSection.showMessage.CantBuildHere(meshFunctions.getDOMCord());
+        return false
+      };
+    };
+
+  };
+
+  function acceptBuild(factoryIndex,factoryTitle){
+    UI.balanceSection.smallNоtification.add((GAME_CONTENT.FACTORIES[factoryType].coast*-1),meshFunctions.getDOMCord());
+    meshFunctions.remove();
+    const pack = {
+
+      owner:PLAYER.login,
+      indexses:[zIndex,xIndex],
+      id:factoryIndex,
+      factoryType:factoryType,
+      factoryIndex:factoryIndex,
+      factoryTitle:factoryTitle,
+
+    };
+    SENDING.factoryBuilding(pack);
+
+
+
+  };
+
+  return {
+    meshFunctions,
+    checkMapIndex,
+    acceptBuild,
+  };
+
+
+
+
+};
+
+
+
 
 
 function start() {
 
   UI.turnInterfaceSection.showSection(true);
+  SENDING.makeProductionTurn();
+
+  //чтобы успел прийти ответ с сервера
+  setTimeout(function(){
+    if(GAME.playersJoined[PLAYER.login].balance <= 0){
+      end();
+      return;
+    };
+
+
+
+    console.log(GAME);
+
+
+
+
+
+
+
+
+  },500)
+
+
 
 };
 
@@ -151,5 +236,6 @@ export{
   start,
   userEvents,
   buildingRoad,
+  buildingFactory,
   end,
 }

@@ -179,6 +179,8 @@
   flex-wrap: wrap;
   overflow: scroll;
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -216,13 +218,28 @@
 
 .cityNameDiv {
   position: absolute;
-  pointer-events: painted;
+  pointer-events: auto;
 }
 
 .cityNameDiv:hover {
   color: #d21717;
 }
 
+#factoryNamesSection{
+  position: fixed;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  color: white;
+  text-shadow: 0 0 2px black;
+  font-size: 0.8vw;
+}
+
+.factoryNameDiv{
+  position: absolute;
+  pointer-events: auto;
+
+}
 #turnInterfaceSection {
   width: 100vw;
   height: 100vh;
@@ -260,6 +277,10 @@
 }
 
 #cancelBuildRoadBtn {
+  pointer-events: auto;
+  position: relative;
+}
+#cancelBuildFactoryBtn {
   pointer-events: auto;
   position: relative;
 }

@@ -10,10 +10,11 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // modernization: 'fishFactory',
-    count: 5,
+    count: 2,
     type:'factory',
     title:'Water Factory',
     ceil:'sea',
+    color:0x005c70,
   },
 
   sandFactory: {
@@ -24,10 +25,11 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // child: 'cementFactory',
-    count: 5,
+    count: 2,
     type:'factory',
     title:'Sand Factory',
     ceil:'sand',
+    color: 0xc3a32a,
   },
 
   woodFactory: {
@@ -42,6 +44,7 @@ const FACTORIES = {
     type:'factory',
     title:'Wood Factory',
     ceil:'forest',
+    color:0x29201e,
   },
   // ironOreFactory: {
   //   parent: false,

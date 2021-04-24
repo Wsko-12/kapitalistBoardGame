@@ -286,6 +286,9 @@ document.addEventListener("DOMContentLoaded", function() {
       if (item.type === 'road') {
         SCENE.buildGameObject.road(item);
       };
+      if(item.type === 'factory'){
+        SCENE.buildGameObject.factory(item);
+      };
     });
 
 

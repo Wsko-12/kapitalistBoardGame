@@ -175,9 +175,15 @@ io.on('connection', function(socket) {
     GAME.gamePlaySends.buildingRoad(sendPack);
   });
 
+  socket.on('GAME_gamePlay_factoryBuild',function(sendPack){
+    GAME.gamePlaySends.buildingFactory(sendPack);
+  });
 
 
-
+  socket.on('GAME_gamePlay_makeProductionTurn',function(sendPack){
+    
+    GAME.gamePlaySends.applyProductionTurn(sendPack);
+  });
 
 
 

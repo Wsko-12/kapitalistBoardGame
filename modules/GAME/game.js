@@ -20,6 +20,7 @@ function gameNULL(){
 
 
 
+
     generated: false,
     map:{
       mapLine:[],//GenerationMapLine
@@ -66,6 +67,7 @@ function gameNULL(){
       line: [],
       index: -1,
       round:0,
+      currentTurn:'',
     },
   };
   return gameNULLOBJ;
@@ -198,10 +200,11 @@ function sendTurn(gameID){
     if(PLAYERS_ONLINE[player]){
       if(PLAYERS_ONLINE[player].inGame === gameID){
         PLAYERS_ONLINE[player].emit('GAME_turns_start');
+        GAMES[gameID].emit('GAME_turns_currentTurn',player);
         return;
       };
-
     };
+
     setTimeout(function(){
       sendTurn(gameID);
     },100);

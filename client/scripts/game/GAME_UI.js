@@ -377,11 +377,10 @@ const stocksSection = {
         searchedObj[product].stock.forEach((item, i) => {
           const element = document.querySelector(`#stockCard_${title}_${product}_process_${i}`);
           if (item === 1) {
-            element.innerHTML = product[0];
-            element.classList.add('stockCart_list-item-productCeil-full');
+            element.innerHTML = '';
+            element.classList.add(`Ceil-Full-${product}`);
           } else {
-
-            element.classList.remove('stockCart_list-item-productCeil-full');
+            element.classList.remove(`Ceil-Full-${product}`);
             element.innerHTML = searchedObj[product].price[i] + `$`;
           };
         });
@@ -418,73 +417,7 @@ const factoriesBankSection = {
   },
 
   buildFactoryCard: function(factoryObj) {
-    let processCeilsString = '';
-    let storageCeilsString = '';
-
-    for (let processCeil = 0; processCeil < factoryObj.process; processCeil++) {
-      const processCeilHTML = `
-      <div class="factoryCard-processBox">
-        <div class="factoryCard-processCeil" id="factoryCard_${factoryObj.id}_process_${processCeil}">
-
-        </div>
-        <div class="factoryCard-processArrow">
-          →
-        </div>
-      </div>
-      `
-      processCeilsString += processCeilHTML;
-    };
-
-    for (let storageCeil = 0; storageCeil < factoryObj.storage; storageCeil++) {
-      const storageCeilHTML = `
-      <div class="factoryCard-storageCeil" id="factoryCard_${factoryObj.id}_storage_${storageCeil}">
-
-      </div>
-      `
-      storageCeilsString += storageCeilHTML;
-    };
-
-    const cardContent = `
-    <div class="factoryCard" id='${factoryObj.id}' style="background-color:${MAP_SETTINGS.MAP_CELL_COLOR_CSS[factoryObj.ceil]}">
-    <div class="factoryCard-header">
-      <div class="factoryCard-salaryBox">
-        <div class="factoryCard-salaryContainer">
-          ${factoryObj.salary}$
-        </div>
-      </div>
-      <div class="factoryCard-processContainer">
-        ${processCeilsString}
-      </div>
-    </div>
-    <div class="factoryCard-body">
-      <div class="factoryCard-title">
-        ${factoryObj.title + " " + factoryObj.index}
-      </div>
-      <div class="factoryCard-coastBox">
-        <div style="margin-right:0.5vw">
-          Coast:
-        </div>
-        <div class="">
-          ${factoryObj.coast}$
-        </div>
-      </div>
-      <div class="factoryCard-productBox">
-        <div style="margin-right:0.5vw">
-          Product:
-        </div>
-        <div class="">
-          ${factoryObj.product}
-        </div>
-      </div>
-    </div>
-    <div class="factoryCard-footer">
-      <div class="factoryCard-storageBox">
-        ${storageCeilsString}
-      </div>
-
-    </div>
-    </div>
-    `;
+    const cardContent = factoryCardDOMBuilder.build(factoryObj);
 
     if (!factoriesBankSection.domCards[factoryObj.factoryType]) {
       factoriesBankSection.domCards[factoryObj.factoryType] = {};
@@ -554,15 +487,168 @@ const factoriesBankSection = {
       };
     };
   },
-
-
-
-
-
 };
 
 
+const playerInventorySection = {
+  section:null,
+  factoryCardsDiv:null,
+  addSection: function(){
+    const section = `<section id="playerInventorySection">
+      <div id="playerInventorySection_factoryCards"></div>
+    </section>`;
+    document.querySelector('#body').insertAdjacentHTML('beforeEnd', section);
+    playerInventorySection.section = document.querySelector('#playerInventorySection');
+    playerInventorySection.factoryCardsDiv = document.querySelector('#playerInventorySection_factoryCards');
+  },
+  rebuildSection:function(){
+    playerInventorySection.factoryCardsDiv.innerHTML = '';
+    const playerFactories = GAME.playersJoined[PLAYER.login].factories.processing;
+    for(let factory in playerFactories){
+      const factoryObj = playerFactories[factory];
 
+      const domCard = factoryCardDOMBuilder.build(factoryObj,'factoryCardInventary','position:relative;scale(0.5)');
+      const factoryCardContainer = `
+        <div class="factoryCardContainer" id="playerInventorySection_factoryCardContainer_${factory}">
+          ${domCard}
+        </div>
+      `;
+      playerInventorySection.factoryCardsDiv.insertAdjacentHTML('beforeEnd',factoryCardContainer);
+      factoryCardDOMBuilder.updateCard(factoryObj);
+
+      playerInventorySection.updateCards();
+
+
+
+    };
+  },
+  updateCards:function(){
+    const playerFactories = GAME.playersJoined[PLAYER.login].factories.processing;
+    for(let factory in playerFactories){
+      const factoryObj = playerFactories[factory];
+      factoryCardDOMBuilder.updateCard(factoryObj);
+
+
+      //таймаут нужен при релогине, чтобы DOM успевал набиться
+      setTimeout(function(){
+        if(factoryObj.storage.includes(1) && GAME.turns.currentTurn === PLAYER.login){//&& player have car
+          const color = MAP_SETTINGS.MAP_CELL_COLOR_CSS[GAME_CONTENT.FACTORIES[factoryObj.factoryType].ceil]
+          const sellButton = `<button id="playerInventorySection_sellButton_${factory}" class="playerInventorySection_sellButton" style="background-color:${color}">Sell</button>`;
+          if(!document.querySelector(`#playerInventorySection_sellButton_${factory}`)){
+            document.querySelector(`#playerInventorySection_factoryCardContainer_${factory}`).insertAdjacentHTML('beforeEnd',sellButton);
+            document.querySelector(`#playerInventorySection_sellButton_${factory}`).onclick = function(){
+              alert(factoryObj.id);
+            }
+          }
+        }else{
+          if(document.querySelector(`#playerInventorySection_sellButton_${factory}`)){
+            document.querySelector(`#playerInventorySection_sellButton_${factory}`).remove();
+          };
+        };
+      });
+    };
+  },
+};
+
+const factoryCardDOMBuilder = {
+  build(factoryObj, addClass='', addStyle = '',){
+    let processCeilsString = '';
+    let storageCeilsString = '';
+
+    let factoryProcess = (typeof factoryObj.process === 'number') ? factoryObj.process : factoryObj.process.length;
+    let factoryStorage = (typeof factoryObj.storage === 'number') ? factoryObj.storage : factoryObj.storage.length;
+    for (let processCeil = 0; processCeil < factoryProcess; processCeil++) {
+      const processCeilHTML = `
+      <div class="factoryCard-processBox">
+        <div class="factoryCard-processCeil" id="factoryCard_${factoryObj.id}_process_${processCeil}">
+
+        </div>
+        <div class="factoryCard-processArrow">
+          →
+        </div>
+      </div>
+      `
+      processCeilsString += processCeilHTML;
+    };
+
+    for (let storageCeil = 0; storageCeil < factoryStorage; storageCeil++) {
+      const storageCeilHTML = `
+      <div class="factoryCard-storageCeil" id="factoryCard_${factoryObj.id}_storage_${storageCeil}">
+
+      </div>
+      `
+      storageCeilsString += storageCeilHTML;
+    };
+
+    const cardContent = `
+    <div class="factoryCard ${addClass}" id='${factoryObj.id}' style="background-color:${MAP_SETTINGS.MAP_CELL_COLOR_CSS[factoryObj.ceil]}; ${addStyle}">
+    <div class="factoryCard-header">
+      <div class="factoryCard-salaryBox">
+        <div class="factoryCard-salaryContainer">
+          ${factoryObj.salary}$
+        </div>
+      </div>
+      <div class="factoryCard-processContainer">
+        ${processCeilsString}
+      </div>
+    </div>
+    <div class="factoryCard-body">
+      <div class="factoryCard-title">
+        ${factoryObj.factoryTitle ?factoryObj.factoryTitle :factoryObj.title + " #" + factoryObj.index}
+      </div>
+      <div class="factoryCard-coastBox">
+        <div style="margin-right:0.5vw">
+          Coast:
+        </div>
+        <div class="">
+          ${factoryObj.coast}$
+        </div>
+      </div>
+      <div class="factoryCard-productBox">
+        <div style="margin-right:0.5vw">
+          Product:
+        </div>
+        <div class="">
+          ${factoryObj.product}
+        </div>
+      </div>
+    </div>
+    <div class="factoryCard-footer">
+      <div class="factoryCard-storageBox">
+        ${storageCeilsString}
+      </div>
+
+    </div>
+    </div>
+    `;
+    return cardContent;
+
+  },
+
+  updateCard(factoryObj){
+    factoryObj.process.forEach((item, indx) => {
+      const element = document.querySelector(`#factoryCard_${factoryObj.id}_process_${indx}`);
+      if(element){
+        if(item === 0){
+           element.classList.remove(`Ceil-Full-${factoryObj.product}`);
+        }else{
+          element.classList.add(`Ceil-Full-${factoryObj.product}`);
+        };
+      };
+    });
+
+    factoryObj.storage.forEach((item, indx) => {
+      const element = document.querySelector(`#factoryCard_${factoryObj.id}_storage_${indx}`);
+      if(element){
+        if(item === 0){
+           element.classList.remove(`Ceil-Full-${factoryObj.product}`);
+        }else{
+          element.classList.add(`Ceil-Full-${factoryObj.product}`);
+        };
+      };
+    });
+  },
+};
 
 
 const turnInterfaceSection = {
@@ -627,10 +713,9 @@ const turnInterfaceSection = {
 
     section.innerHTML = '';
 
-    const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper"></div>';
+    const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper" style="width:100vw;height:100vh;pointer-events:auto;position:fixed"></div>';
     section.insertAdjacentHTML('beforeEnd', mouseEventsCeaper);
     const mouseCeaper = document.querySelector('#turnInterfaceSection_mouseEventsCeaper');
-    mouseCeaper.style.pointerEvents = 'auto';
 
     const cancelBtn = '<button id="cancelBuildRoadBtn">cancel</button>';
     section.insertAdjacentHTML('beforeEnd', cancelBtn);
@@ -687,7 +772,7 @@ const turnInterfaceSection = {
     const section = document.querySelector('#turnInterfaceSection');
 
     section.innerHTML = '';
-    const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper"></div>';
+      const mouseEventsCeaper = '<div id="turnInterfaceSection_mouseEventsCeaper" style="width:100vw;height:100vh;pointer-events:auto;position:fixed"></div>';
     section.insertAdjacentHTML('beforeEnd', mouseEventsCeaper);
     const mouseCeaper = document.querySelector('#turnInterfaceSection_mouseEventsCeaper');
     mouseCeaper.style.pointerEvents = 'auto';
@@ -736,12 +821,7 @@ const turnInterfaceSection = {
         turnInterfaceSection.buildFactorySection(factoryType);
       };
     };
-
-
-
-
   },
-
 };
 
 
@@ -756,17 +836,18 @@ function buildGameUI() {
   turnDeviceSection.addSection();
   RENDER_SETTINGS.initRenderSettingsMenu();
 
+    playersNamesSection.addSection();
+  playerInventorySection.addSection();
   balanceSection.addSection();
   balanceSection.updateBalance();
   cameraInterface.addButton();
   cameraInterface.applyDoubleClickEvent();
 
-  playersNamesSection.addSection();
 
   factoriesBankSection.addSection();
   factoriesBankSection.buildAllCards();
   factoryNamesSection.addSection();
-
+  playerInventorySection.rebuildSection();
 
 
 
@@ -788,4 +869,5 @@ export {
   balanceSection,
   factoriesBankSection,
   factoryNamesSection,
+  playerInventorySection,
 };

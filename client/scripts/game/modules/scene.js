@@ -41,6 +41,7 @@ function initializeScene() {
   CAMERA.position.set(0, 15, 15)
   CAMERA.lookAt(0, 0, 0);
   SCENE = new THREE.Scene();
+  SCENE.userData.blockedCeils = [];
   // const loader = new THREE.TextureLoader();
   // const backgroundTexture = loader.load( 'https://i.imgur.com/upWSJlY.jpg' );
   // SCENE.background = backgroundTexture;
@@ -195,6 +196,8 @@ function buildMapCeils() {
 
 
       if (GAME.map.mapFlagsArr[z][x] === 1) {
+        //чтобы не показывало заблокированые ячейки
+        // continue;
         const litleHexBlockMeshMaterial = new THREE.MeshBasicMaterial({
           color: 0xff2400
         });
@@ -233,6 +236,10 @@ function buildMapCeils() {
       };
 
       ceilGroup.add(hexMesh);
+      if(GAME.map.mapFlagsArr[z][x] === 1){
+        SCENE.userData.blockedCeils.push(ceilGroup);
+      };
+
       mapGroup.add(ceilGroup);
       ceilGroup.anim.animateTo(gamePositions.x, gamePositions.y, gamePositions.z);
     };
@@ -511,10 +518,7 @@ const buildGameObject = {
     ceilGroup.add(factoryMesh);
     ceilGroup.add(userColorTorus);
 
-
-
-
-
+    GAME.playersJoined[pack.owner].factories.processing[pack.factoryIndex].meshGroup = ceilGroup;
   },
 };
 

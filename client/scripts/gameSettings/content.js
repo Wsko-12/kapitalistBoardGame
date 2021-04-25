@@ -40,7 +40,7 @@ const FACTORIES = {
     coast: 2000,
     salary: 1000,
     // child: 'coalFactory',
-    count: 1,
+    count: 5,
     type:'factory',
     title:'Wood Factory',
     ceil:'forest',

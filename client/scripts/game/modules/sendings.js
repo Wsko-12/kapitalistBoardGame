@@ -58,6 +58,7 @@ function APPLY_ALL(returnGamePack) {
         factoryType:GAME.playersJoined[player].factories.processing[factory].factoryType,
         id:GAME.playersJoined[player].factories.processing[factory].id,
         owner:GAME.playersJoined[player].factories.processing[factory].owner,
+        factoryTitle:GAME.playersJoined[player].factories.processing[factory].factoryTitle,
       }
       GAME.playersJoined[player].factories.processing[factory] = new playerFactoryObj(packImitation);
       GAME.playersJoined[player].factories.processing[factory].process = savedProcess;
@@ -117,12 +118,10 @@ function applyProductionTurn(player){
   for(let factory in playerFactories){
     playerFactories[factory].makeProductionTurn();
   };
-  UI.balanceSection.updateBalance();
-
-
-
-
-
+  if(player === PLAYER.login){
+    UI.balanceSection.updateBalance();
+    UI.playerInventorySection.updateCards();
+  };
 };
 
 export {

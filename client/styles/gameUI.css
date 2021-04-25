@@ -11,7 +11,7 @@
   position: fixed;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 1);
   color: white;
   display: none;
   align-items:center;
@@ -215,16 +215,18 @@
   height: 100vh;
   color: white;
   text-shadow: 0 0 2px black;
-  font-size: 1vw;
+  font-size: 0.5vw;
 }
 
 .cityNameDiv {
   position: absolute;
   pointer-events: auto;
+  opacity: .5;
 }
 
 .cityNameDiv:hover {
-  color: #d21717;
+  opacity: 1;
+  font-size: 1.2vw;
 }
 
 #factoryNamesSection{
@@ -252,11 +254,54 @@
   flex-direction: column;
 }
 
-#turnInterfaceSection_mouseEventsCeaper {
-  width: 100%;
-  height: 100%;
+
+#playerInventorySection{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  pointer-events: none;
+  display: flex;
+
+}
+#playerInventorySection_factoryCards{
+  max-width: 50vw;
+  height: 50vh;
+  position: fixed;
+  top: 50vh;
+  justify-content: space-around;
+  overflow-x: scroll;
+   pointer-events: auto;
+}
+.playerInventorySection_sellButton{
+  transform: translateX(-4.5vw);
+  height: 10vw;
+  width: 2vw;
+  color: white;
+  text-shadow: 0 0 2px black;
+  font-size: 1vw;
+  border: none;
   pointer-events: auto;
-  position: absolute;
+}
+.playerInventorySection_sellButton:hover{
+  background-color: white;
+}
+.factoryCardContainer{
+  display: flex;
+  margin-bottom: 1%;
+  align-items: center;
+}
+.factoryCardInventary{
+  transform: scale(0.5) translateY(-40%);
+  pointer-events: auto;
+  flex-shrink: 0;
+  margin-bottom: -50%;
+}
+
+#turnInterfaceSection_mouseEventsCeaper {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: auto;
+  position: fixed;
 }
 
 #endTurnButton {
@@ -301,6 +346,7 @@
   #turnDeviceSection {
     display: flex;
   }
+
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 1024px) and (-webkit-device-pixel-ratio : 3) and (orientation : portrait) {
@@ -317,10 +363,28 @@
   #turnDeviceSection {
     display: none;
   }
+  #cityNamesSection{
+    font-size: 1vw;
+  }
+
+  .cityNameDiv {
+    position: absolute;
+    pointer-events: auto;
+    opacity: 1;
+  }
 }
 
 @media only screen and (orientation : portrait) {
   #turnDeviceSection {
     display: flex;
+  }
+  #cityNamesSection{
+    font-size: 1vw;
+  }
+
+  .cityNameDiv {
+    position: absolute;
+    pointer-events: auto;
+    opacity: 1;
   }
 }

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap');
 
 .factoryCard {
-  width: 18vw;
+  width: 18vw !important;
   height: 25vw;
   background-color: #FFD639;
   transform: scale();
@@ -99,4 +99,20 @@
   height: 3vw;
   background-color: white;
   border-radius: 0.5vw;
+}
+
+
+
+
+.Ceil-Full-water{
+  background-image: url('./images/waterProduct.png');
+  background-size: 100%;
+}
+.Ceil-Full-sand{
+  background-image: url('./images/sandProduct.png');
+  background-size: 100%;
+}
+.Ceil-Full-wood{
+  background-image: url('./images/woodProduct.png');
+  background-size: 100%;
 }

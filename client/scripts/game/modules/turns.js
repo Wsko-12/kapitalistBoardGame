@@ -168,9 +168,6 @@ function buildingFactory(factoryType,factoryTitle){
 
     };
     SENDING.factoryBuilding(pack);
-
-
-
   };
 
   return {
@@ -179,9 +176,6 @@ function buildingFactory(factoryType,factoryTitle){
     acceptBuild,
   };
 
-
-
-
 };
 
 
@@ -189,7 +183,6 @@ function buildingFactory(factoryType,factoryTitle){
 
 
 function start() {
-
   UI.turnInterfaceSection.showSection(true);
   SENDING.makeCityConsumptionTurn();
   SENDING.makeProductionTurn();
@@ -200,22 +193,9 @@ function start() {
       end();
       return;
     };
-
-
-
     console.log(GAME);
 
-
-
-
-
-
-
-
-  },500)
-
-
-
+  },100)
 };
 
 
@@ -228,6 +208,10 @@ function start() {
 
 function end() {
   UI.turnInterfaceSection.showSection(false);
+  setTimeout(function(){
+    UI.playerInventorySection.updateCards();
+  },100)
+
   const gameID = GAME.id;
   socket.emit('GAME_turns_end',gameID);
 };

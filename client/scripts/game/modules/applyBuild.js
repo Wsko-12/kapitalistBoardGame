@@ -18,6 +18,7 @@ class playerFactoryObj {
     const globalFactory = GAME_CONTENT.FACTORIES[pack.factoryType];
 
     this.factoryType = pack.factoryType;
+    this.factoryTitle = pack.factoryTitle;
     this.id = pack.id;
     this.owner = pack.owner;
     this.process = [];
@@ -26,6 +27,8 @@ class playerFactoryObj {
     this.coast = globalFactory.coast;
     this.salary = globalFactory.salary;
     this.title = globalFactory.title;
+    this.ceil = globalFactory.ceil;
+
 
 
 
@@ -130,12 +133,9 @@ function buildFactory(pack){
   GAME.map.stativeObjects.push(factoryObj);
 
   SCENE.buildGameObject.factory(pack);
-
-
-
-
-
-
+  if(pack.owner === PLAYER.login){
+    UI.playerInventorySection.rebuildSection();
+  };
 };
 
 export{

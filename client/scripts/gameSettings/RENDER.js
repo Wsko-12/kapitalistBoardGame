@@ -145,7 +145,15 @@ function fullScreen(element) {
 
 
 
-
+function showBlockedCeils(bool){
+  SCENE.userData.blockedCeils.forEach((item, i) => {
+    if(bool){
+      item.visible = true;
+    }else{
+      item.visible = false;
+    };
+  });
+};
 
 
 function initRenderSettingsMenu(){
@@ -160,7 +168,10 @@ function initRenderSettingsMenu(){
       <label for="RANGE_RESOLUTION">RESOLUTION: Standart</label>
       </br>
       <button id="EFFECTS_BTN">EFFECTS:on</button>
-
+      </br>
+      <button id="BLOCKED_CEILS_VISIBLE_BTN"></button>
+      <input type="checkbox" id="BLOCKED_CEILS_VISIBLE" checked="true">
+      <label for="BLOCKED_CEILS_VISIBLE">Show/hide blocked map ceils</label>
       <div id="fullScreenButton">Full screen</div>
     </div>
 
@@ -179,6 +190,16 @@ function initRenderSettingsMenu(){
   document.querySelector('#EFFECTS_BTN').onclick = function(){
     enableEffects();
   };
+  document.querySelector('#BLOCKED_CEILS_VISIBLE').onchange = function(e){
+
+    if (document.querySelector('#BLOCKED_CEILS_VISIBLE').checked) {
+    		showBlockedCeils(true)
+    	}
+    	else {
+    		showBlockedCeils(false)
+    	}
+  };
+
 
   function showRenderSettings(bool){
     if(bool){

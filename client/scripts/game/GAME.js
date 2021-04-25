@@ -127,6 +127,9 @@ document.addEventListener("DOMContentLoaded", function(){
   socket.on('GAME_turns_start',function() {
     TURNS.start();
   });
+  socket.on('GAME_turns_currentTurn',function(player){
+    GAME.turns.currentTurn = player;
+  });
 
 
 
